@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <midi.h>
+#include "midi.h"
 
 int main(void)
 {

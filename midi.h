@@ -1,5 +1,6 @@
 #ifndef __MIDI_H__
 #define __MIDI_H__
+#include <stdint.h>
 
 struct header_chunk_type {
     uint32_t signature = 0x4D546864;  	// "MThd"
