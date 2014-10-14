@@ -28,7 +28,7 @@ enum format {
     MULTI_TRACK_ASYNC
 };
 
-enum events {
+enum midi_event {
     NOTE_OFF            = 0x80,
     NOTE_ON             = 0x90,
     POLY_KEY_PRESS      = 0xa0,
@@ -37,6 +37,24 @@ enum events {
     CHANNEL_PRESSURE	= 0xd0,
     PITCH_BEND          = 0xe0,
     SYS_EX_MESSAGE      = 0xf0
+};
+
+enum meta_event {
+    SEQ_NUMBER  	 	  = 0X00,
+    TEXT_EVENT            = 0X01,
+    COPYRIGHT_NOTICE 	  = 0X02,
+    TRACK_NAME 			  = 0X03,
+    INSTRUMENT_NAME 	  = 0X04,
+    LYRIC_TEXT 			  = 0X05,
+    MARKER_TEXT           = 0X06,
+    CUE_POINT			  = 0X07,
+    MIDI_CPA		  	  = 0X20,
+    END_OF_TRACK 		  = 0X2f,
+    TEMPO_SETTING 		  = 0X51,
+    SMPTE_OFFSET		  = 0X54,
+    TIME_SIG		   	  = 0X58,
+    KEY_SIG               = 0X59,
+    SEQ_SPECIFIC_EVENT    = 0X7f
 };
 
 enum nodes {
