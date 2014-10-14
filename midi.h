@@ -8,26 +8,30 @@
 
 #define TRACK_SIG 0x4d54726b
 
-struct header_chunk_type {
-    uint32_t signature;  	// HEADER_SIG
-    uint32_t chunk_len;     // HEADER_LEN
-    uint16_t format;       	// track_type
-    uint16_t tracks;      	// track_nums
-    uint16_t division;    	// Time delta units per quarter-note.
-};
+header_t read_header(FILE *mid_file);
+track_t read_track(FILE *mid_file);
 
-typedef struct track_event {
+void write_header(FILE *midi_file, header_t header);
+void write_track(FILE *midi_file, track_t track);
+
+typedef struct header_s {
+    uint32_t sig;       // HEADER_SIG
+    uint32_t len;       // HEADER_LEN
+    uint16_t format;    // Track format
+    uint16_t tracks;    // Track numbers
+    uint16_t division;  // Time delta units per quarter-note.
+} header_t;
+
+struct track_event {
     uint8_t delta;
-    uint8_t midi_event;
-    uint8_t meta_event;
-    uint8_t sysex_event;
-} track_event_t;
-
-struct track_chunk_type {
-    uint32_t signature;    	// TRACK_SIG
-    uint32_t chunk_len;
-    track_event_t *events;
+    uint8_t *data;
 };
+
+typedef struct track_s {
+    uint32_t      sig;       // TRACK_SIG
+    uint32_t      len;
+    track_event  *events;
+} track_t;
 
 
 enum format {
@@ -42,30 +46,31 @@ enum midi_event {
     POLY_KEY_PRESS      = 0xa0,
     CONTROLLER_CHANGE   = 0xb0,
     PROGRAM_CHANGE      = 0xc0,
-    CHANNEL_PRESSURE	= 0xd0,
+    CHANNEL_PRESSURE    = 0xd0,
     PITCH_BEND          = 0xe0,
-    SYS_EX_MESSAGE      = 0xf0
+    SYS_EX_MESSAGE      = 0xf0,
+    META_EVENT          = 0xff
 };
 
 enum meta_event {
-    SEQ_NUMBER  	 	  = 0X00,
-    TEXT_EVENT            = 0X01,
-    COPYRIGHT_NOTICE 	  = 0X02,
-    TRACK_NAME 			  = 0X03,
-    INSTRUMENT_NAME 	  = 0X04,
-    LYRIC_TEXT 			  = 0X05,
-    MARKER_TEXT           = 0X06,
-    CUE_POINT			  = 0X07,
-    MIDI_CPA		  	  = 0X20,
-    END_OF_TRACK 		  = 0X2f,
-    TEMPO_SETTING 		  = 0X51,
-    SMPTE_OFFSET		  = 0X54,
-    TIME_SIG		   	  = 0X58,
-    KEY_SIG               = 0X59,
-    SEQ_SPECIFIC_EVENT    = 0X7f
+    SEQ_NUMBER          = 0x00,
+    TEXT_EVENT          = 0x01,
+    COPYRIGHT_NOTICE    = 0x02,
+    TRACK_NAME          = 0x03,
+    INSTRUMENT_NAME     = 0x04,
+    LYRIC_TEXT          = 0x05,
+    MARKER_TEXT         = 0x06,
+    CUE_POINT           = 0x07,
+    MIDI_CPA            = 0x20,
+    END_OF_TRACK        = 0x2F,
+    TEMPO_SETTING       = 0x51,
+    SMPTE_OFFSET        = 0x54,
+    TIME_SIG            = 0x58,
+    KEY_SIG             = 0x59,
+    SEQ_SPECIFIC_EVENT  = 0x7f
 };
 
-enum nodes {
+enum node {
     C0, CH0, D0, DH0, E0, F0, FH0, G0, GH0, A0, AH0, B0,
     C1, CH1, D1, DH1, E1, F1, FH1, G1, GH1, A1, AH1, B1,
     C2, CH2, D2, DH2, E2, F2, FH2, G2, GH2, A2, AH2, B2,
