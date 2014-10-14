@@ -1,19 +1,19 @@
 #ifndef __MIDI_H__
 #define __MIDI_H__
+
 #include <stdint.h>
 
-struct header_chunk_type {
-    uint32_t signature = 0x4D546864;  	// "MThd"
-    uint32_t chunk_len = 0x00000006;
-    uint16_t format;                  	// track_type
-    uint16_t tracks;      				// track_nums
-    uint16_t division;    				// Time delta units per quarter-note.
-};
+#define HEADER_SIG 0x4D546864
+#define HEADER_LEN 0x00000006
 
-struct track_chunk_type {
-    uint32_t signature = 0x4d54726b;    // "MTrk" = track
-    uint32_t chunk_len;
-    track_event_t *events;
+#define TRACK_SIG 0x4d54726b
+
+struct header_chunk_type {
+    uint32_t signature;  	// HEADER_SIG
+    uint32_t chunk_len;     // HEADER_LEN
+    uint16_t format;       	// track_type
+    uint16_t tracks;      	// track_nums
+    uint16_t division;    	// Time delta units per quarter-note.
 };
 
 typedef struct track_event {
@@ -22,6 +22,13 @@ typedef struct track_event {
     uint8_t meta_event;
     uint8_t sysex_event;
 } track_event_t;
+
+struct track_chunk_type {
+    uint32_t signature;    	// TRACK_SIG
+    uint32_t chunk_len;
+    track_event_t *events;
+};
+
 
 enum format {
     SINGLE_TRACK,
