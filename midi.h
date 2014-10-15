@@ -8,12 +8,6 @@
 
 #define TRACK_SIG 0x4d54726b
 
-header_t read_header(FILE *mid_file);
-track_t read_track(FILE *mid_file);
-
-void write_header(FILE *midi_file, header_t header);
-void write_track(FILE *midi_file, track_t track);
-
 typedef struct header_s {
     uint32_t sig;       // HEADER_SIG
     uint32_t len;       // HEADER_LEN
@@ -30,7 +24,7 @@ struct track_event {
 typedef struct track_s {
     uint32_t      sig;       // TRACK_SIG
     uint32_t      len;
-    track_event  *events;
+    uint8_t      *events;
 } track_t;
 
 
@@ -83,5 +77,14 @@ enum node {
     C9, CH9, D9, DH9, E9, F9, FH9, G9, GH9, A9, AH9, B9,
     C10, CH10, D10, DH10, E10, F10, FH10, G10
 };
+
+void printp(uint8_t *data,size_t buf_size, char format[]);
+uint8_t * ffread(FILE *file, long int offset ,size_t buf_size);
+
+header_t read_header(FILE *mid_file);
+track_t read_track(FILE *mid_file);
+
+void write_header(FILE *midi_file, header_t header);
+void write_track(FILE *midi_file, track_t track);
 
 #endif
