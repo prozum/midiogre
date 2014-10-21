@@ -5,7 +5,7 @@
 #include "midi.h"
 
 uint8_t header_signature[4] = HEADER_SIGNATURE
-uint8_t header_lenght[4]    = HEADER_LENGHT
+uint8_t header_length[4]    = HEADER_LENGTH
 uint8_t track_signature[4]  = TRACK_SIGNATURE
 
 void printp(uint8_t *data,size_t buf_size, char format[]) {
