@@ -7,25 +7,31 @@ int main(void)
 {
     //header_t test;
     FILE *mid_file;
-    uint8_t *tmp;
+    header_t *header;
 
     // Open file
-    mid_file = fopen("test.mid", "rb");
+    mid_file = fopen("test.mid", "r");
+    if( mid_file == NULL ) {
+        perror("Error: ");
+        return -1;
+    }
 
-    // Where to read?
-    int offset = 0;
-    // How much?
-    int size = 4;
 
-    // Read the first 4 bytes from mid_file.
-    tmp = ffread(mid_file,offset,size);
+    // Read midi header
+    header = read_header(mid_file);
+    if ( header == NULL) {
+        return -1;
+    }
 
-    // Print bytes as hex
-    printp(tmp,size,"%x");
+    // Print info
+    printf("Format:\t\t%i\n",header->format);
+    printf("Tracks:\t\t%i\n",header->tracks);
+    printf("Division:\t%i\n",header->division);
 
     // Deallocate bytes
-    free(tmp);
+    free(header);
     // Close mid_file
     fclose(mid_file);
+
     return 0;
 }

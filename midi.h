@@ -3,28 +3,26 @@
 
 #include <stdint.h>
 
-#define HEADER_SIG 0x4D546864
-#define HEADER_LEN 0x00000006
-
-#define TRACK_SIG 0x4d54726b
+#define HEADER_SIGNATURE {0x4D, 0x54, 0x68, 0x64};
+#define HEADER_LENGHT    {0x00, 0x00, 0x00, 0x06};
+#define TRACK_SIGNATURE  {0x4D, 0x54, 0x72, 0x2b};
 
 typedef struct header_s {
-    uint32_t sig;       // HEADER_SIG
-    uint32_t len;       // HEADER_LEN
     uint16_t format;    // Track format
     uint16_t tracks;    // Track numbers
-    uint16_t division;  // Time delta units per quarter-note.
+    uint16_t division;  // Division
 } header_t;
 
-struct track_event {
+typedef struct event_s {
     uint8_t delta;
+    uint8_t type;
+    uint32_t len;
     uint8_t *data;
-};
+} event_t;
 
 typedef struct track_s {
-    uint32_t      sig;       // TRACK_SIG
     uint32_t      len;
-    uint8_t      *events;
+    event_t      *events;
 } track_t;
 
 
@@ -65,16 +63,16 @@ enum meta_event {
 };
 
 enum node {
-    C0, CH0, D0, DH0, E0, F0, FH0, G0, GH0, A0, AH0, B0,
-    C1, CH1, D1, DH1, E1, F1, FH1, G1, GH1, A1, AH1, B1,
-    C2, CH2, D2, DH2, E2, F2, FH2, G2, GH2, A2, AH2, B2,
-    C3, CH3, D3, DH3, E3, F3, FH3, G3, GH3, A3, AH3, B3,
-    C4, CH4, D4, DH4, E4, F4, FH4, G4, GH4, A4, AH4, B4,
-    C5, CH5, D5, DH5, E5, F5, FH5, G5, GH5, A5, AH5, B5,
-    C6, CH6, D6, DH6, E6, F6, FH6, G6, GH6, A6, AH6, B6,
-    C7, CH7, D7, DH7, E7, F7, FH7, G7, GH7, A7, AH7, B7,
-    C8, CH8, D8, DH8, E8, F8, FH8, G8, GH8, A8, AH8, B8,
-    C9, CH9, D9, DH9, E9, F9, FH9, G9, GH9, A9, AH9, B9,
+    C0,  CH0,  D0,  DH0,  E0,  F0,  FH0,  G0,  GH0,  A0,  AH0,  B0,
+    C1,  CH1,  D1,  DH1,  E1,  F1,  FH1,  G1,  GH1,  A1,  AH1,  B1,
+    C2,  CH2,  D2,  DH2,  E2,  F2,  FH2,  G2,  GH2,  A2,  AH2,  B2,
+    C3,  CH3,  D3,  DH3,  E3,  F3,  FH3,  G3,  GH3,  A3,  AH3,  B3,
+    C4,  CH4,  D4,  DH4,  E4,  F4,  FH4,  G4,  GH4,  A4,  AH4,  B4,
+    C5,  CH5,  D5,  DH5,  E5,  F5,  FH5,  G5,  GH5,  A5,  AH5,  B5,
+    C6,  CH6,  D6,  DH6,  E6,  F6,  FH6,  G6,  GH6,  A6,  AH6,  B6,
+    C7,  CH7,  D7,  DH7,  E7,  F7,  FH7,  G7,  GH7,  A7,  AH7,  B7,
+    C8,  CH8,  D8,  DH8,  E8,  F8,  FH8,  G8,  GH8,  A8,  AH8,  B8,
+    C9,  CH9,  D9,  DH9,  E9,  F9,  FH9,  G9,  GH9,  A9,  AH9,  B9,
     C10, CH10, D10, DH10, E10, F10, FH10, G10
 };
 
@@ -212,7 +210,7 @@ enum instrument {
 void printp(uint8_t *data,size_t buf_size, char format[]);
 uint8_t * ffread(FILE *file, long int offset ,size_t buf_size);
 
-header_t read_header(FILE *mid_file);
+header_t *read_header(FILE *mid_file);
 track_t read_track(FILE *mid_file);
 
 void write_header(FILE *midi_file, header_t header);
