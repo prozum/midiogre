@@ -11,6 +11,14 @@
 #define HEADER_LENGTH    0x00000006
 #define TRACK_SIGNATURE  0x4D54726b
 
+#if defined(_WIN32)
+typedef uint8_t u_int8_t;
+typedef uint16_t u_int16_t;
+typedef uint32_t u_int32_t;
+typedef uint64_t u_int64_t;
+ 
+#endif
+
 typedef struct header_s {
     uint16_t format;    // Track format
     uint16_t tracks;    // Track numbers

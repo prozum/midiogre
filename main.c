@@ -13,7 +13,7 @@ int main(void)
 
 
     // Open file
-    mid_file = fopen("test.mid", "r");
+    mid_file = fopen("test.mid", "rb");
     if( mid_file == NULL ) {
         perror("test.mid");
         return -1;
