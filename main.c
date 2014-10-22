@@ -15,7 +15,7 @@ int main(void)
     // Open file
     mid_file = fopen("test.mid", "r");
     if( mid_file == NULL ) {
-        perror("Error: ");
+        perror("test.mid");
         return -1;
     }
 
