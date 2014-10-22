@@ -19,14 +19,6 @@ int main(void)
         return -1;
     }
 
-    /*
-    uint64_t *tmp;
-    tmp = ffread(mid_file,0,4);
-
-    printf("%x\n", *tmp);
-    */
-
-
     // Read midi header
     header = read_header(mid_file);
     if ( header == NULL) {
