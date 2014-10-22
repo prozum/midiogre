@@ -18,15 +18,19 @@ typedef struct header_s {
 } header_t;
 
 typedef struct event_s {
-    uint8_t delta;
     uint8_t type;
-    uint32_t len;
+    uint8_t type_meta;
+    uint8_t para_1;
+    uint8_t para_2;
+    uint8_t delta;
+    uint8_t len;
     uint8_t *data;
 } event_t;
 
 typedef struct track_s {
-    uint32_t      len;
-    event_t      *events;
+    uint32_t len;
+    uint32_t num;
+    event_t *events;
 } track_t;
 
 
@@ -36,16 +40,16 @@ enum format {
     MULTI_TRACK_ASYNC
 };
 
-enum midi_event {
-    NOTE_OFF            = 0x80,
-    NOTE_ON             = 0x90,
-    POLY_KEY_PRESS      = 0xa0,
-    CONTROLLER_CHANGE   = 0xb0,
-    PROGRAM_CHANGE      = 0xc0,
-    CHANNEL_PRESSURE    = 0xd0,
-    PITCH_BEND          = 0xe0,
-    SYS_EX_MESSAGE      = 0xf0,
-    META_EVENT          = 0xff
+enum midi_event {				// Parameter1	Parameter2
+    NOTE_OFF            = 0x80, // Note			Velocity
+    NOTE_ON             = 0x90, // Note			Velocity
+    POLY_KEY_PRESS      = 0xa0, // Note			Pressure
+    CONTROLLER_CHANGE   = 0xb0, // Controls1	Controls2
+    PROGRAM_CHANGE      = 0xc0, // Program		NONE
+    CHANNEL_PRESSURE    = 0xd0, // Pressure		NONE
+    PITCH_BEND          = 0xe0, // Pitch LSB	Pithc MSB
+    SYS_EX_MESSAGE      = 0xf0, // Vendor ID	N/A
+    META_EVENT          = 0xff	// Meta event	Length
 };
 
 enum meta_event {
@@ -216,6 +220,8 @@ uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size);
 
 header_t *read_header(FILE *file);
 track_t *read_tracks(FILE *file, uint16_t n);
+
+int count_events(uint8_t *data, uint32_t len);
 
 void write_header(FILE *midi_file, header_t header);
 void write_tracks(FILE *midi_file, track_t track);
