@@ -2,6 +2,10 @@
 #define __MIDI_H__
 
 #include <stdint.h>
+/*Windows compat*/
+#if defined(_WIN32)
+#include <stddef.h>
+#endif
 
 #define HEADER_SIGNATURE 0x4D546864
 #define HEADER_LENGTH    0x00000006
