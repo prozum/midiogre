@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#define HEADER_SIGNATURE {0x4D, 0x54, 0x68, 0x64}
-#define HEADER_LENGTH    {0x00, 0x00, 0x00, 0x06}
-#define TRACK_SIGNATURE  {0x4D, 0x54, 0x72, 0x2b}
+#define HEADER_SIGNATURE 0x4D546864
+#define HEADER_LENGTH    0x00000006
+#define TRACK_SIGNATURE  0x4D54726b
 
 typedef struct header_s {
     uint16_t format;    // Track format
@@ -208,12 +208,12 @@ enum instrument {
 };
 
 void printp(uint8_t *data,size_t buf_size, char format[]);
-uint8_t * ffread(FILE *file, long int offset ,size_t buf_size);
+uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size);
 
-header_t *read_header(FILE *mid_file);
-track_t read_track(FILE *mid_file);
+header_t *read_header(FILE *file);
+track_t *read_tracks(FILE *file, uint16_t n);
 
 void write_header(FILE *midi_file, header_t header);
-void write_track(FILE *midi_file, track_t track);
+void write_tracks(FILE *midi_file, track_t track);
 
 #endif
