@@ -47,7 +47,7 @@ enum midi_event {				// Parameter1	Parameter2
     CONTROLLER_CHANGE   = 0xb0, // Controls1	Controls2
     PROGRAM_CHANGE      = 0xc0, // Program		NONE
     CHANNEL_PRESSURE    = 0xd0, // Pressure		NONE
-    PITCH_BEND          = 0xe0, // Pitch LSB	Pithc MSB
+    PITCH_BEND          = 0xe0, // Pitch LSB	Pitch MSB
     SYS_EX_MESSAGE      = 0xf0, // Vendor ID	N/A
     META_EVENT          = 0xff	// Meta event	Length
 };
