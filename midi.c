@@ -142,6 +142,7 @@ int count_events(uint8_t *data, uint32_t len) {
 
     while (len > i) {
         //printf("Start: %x %u %u\n",data[i],i,result);
+
         // Skip delta time
         while (data[i++] > 0x80);
 
@@ -168,7 +169,7 @@ int count_events(uint8_t *data, uint32_t len) {
         }
         result++;
 
-        //printf("Slut %x %u %u\n",data[i],i,result);
+        //printf("End: %x %u %u\n",data[i],i,result);
     }
     return result;
 }
