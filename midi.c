@@ -106,7 +106,7 @@ track_t *read_tracks(FILE *file, uint16_t n) {
 
     track_t *tracks = malloc(sizeof(track_t)*n);
 
-    // Start at the beginning of midi_file
+    // Start at the first track
     fseek(file,14,SEEK_SET);
 
     for (i = 0; n > i; i++) {
