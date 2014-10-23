@@ -126,7 +126,7 @@ track_t *read_tracks(FILE *file, uint16_t n) {
         for (j = 0; tracks[i].len > j; j++) {
             tmp = ffread(file,0,1);
             data[j] = *tmp;
-            printf("data:\t%x\t%u\n",data[j],j);
+            //printf("data:\t%x\t%u\n",data[j],j);
         }
 
         // Count events
@@ -151,7 +151,6 @@ int count_events(uint8_t *data, uint32_t len) {
         if (PROGRAM_CHANGE > data[i] && data[i] >= NOTE_OFF ||
             SYS_EX_MESSAGE    > data[i] && data[i] >= PITCH_BEND) {
             // Events with 2 parameters
-            printf("buu: %i %i\n",CHANNEL_PRESSURE  > data[i] && data[i] >= NOTE_OFF);
             i+=3;
         } else if (PITCH_BEND > data[i] && data[i] >= PROGRAM_CHANGE) {
             // Events with 1 parameter
