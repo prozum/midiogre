@@ -39,6 +39,7 @@ int main(void)
     for (i = 0; header->tracks > i; i++) {
         printf("Track: %u\n",i+1);
         printf("Track len: %u\n",tracks[i].len);
+        printf("Track events: %u\n",tracks[i].num);
     }
 
     // Deallocate bytes
