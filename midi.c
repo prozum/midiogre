@@ -149,8 +149,8 @@ int count_events(uint8_t *data, uint32_t len) {
         //printf("Event: %x %u\n",data[i],i);
 
         // Skip event data
-        if (PROGRAM_CHANGE > data[i] && data[i] >= NOTE_OFF ||
-            SYS_EX_MESSAGE    > data[i] && data[i] >= PITCH_BEND) {
+        if ( (PROGRAM_CHANGE > data[i] && data[i] >= NOTE_OFF) ||
+             (SYS_EX_MESSAGE > data[i] && data[i] >= PITCH_BEND) ) {
             // Events with 2 parameters
             i+=3;
         } else if (PITCH_BEND > data[i] && data[i] >= PROGRAM_CHANGE) {
