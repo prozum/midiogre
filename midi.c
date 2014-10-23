@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-
 #include "midi.h"
 
 void printp(uint8_t *data,size_t buf_size, char format[]) {
