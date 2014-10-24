@@ -36,7 +36,7 @@ int main( int argc, char *argv[] )
     }
 
     for (i = 0; header->tracks > i; i++) {
-        printf("Track: \t%u\n",i+1);
+        printf("\nTrack: \t%u\n",i+1);
         printf("Track len: \t%u\n",tracks[i].len);
         printf("Track events: \t%u\n",tracks[i].num);
     }
