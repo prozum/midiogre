@@ -15,6 +15,7 @@ int l_dist(char str1[], char str2[])
         tmp = str1;
         str1 = str2;
         str2 = tmp;
+    }
 
     dist = 0;
     len1 = strlen(str1);
