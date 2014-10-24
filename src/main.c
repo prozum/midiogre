@@ -4,18 +4,17 @@
 #include "midi.h"
 
 
-int main(void)
+int main( int argc, char *argv[] )
 {
     int i;
     FILE *mid_file;
     header_t *header;
     track_t *tracks;
 
-
     // Open file
-    mid_file = fopen("test.mid", "rb");
+    mid_file = fopen(argv[1], "rb");
     if( mid_file == NULL ) {
-        perror("test.mid");
+        perror(argv[1]);
         return -1;
     }
 
