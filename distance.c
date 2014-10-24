@@ -47,6 +47,7 @@ void check_str(char *str1[], char *str2[])
     *str2 = *tmp;
 }
 
+/*
 int main(int argc, char *argv[])
 {
     int dist = l_dist(argv[1], argv[2]);
@@ -55,3 +56,4 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+*/
