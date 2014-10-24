@@ -11,4 +11,4 @@ HEADERS += \
     src/midi.h
 
 OTHER_FILES += \
-    Makefile
+    src/Makefile
