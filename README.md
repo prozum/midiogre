@@ -1,5 +1,3 @@
-midiparo
+midiogre
 ========
-Genius
-
-midiparo
+Ogres are not included.
