@@ -26,8 +26,13 @@ typedef struct event_s {
 } event_t;
 
 typedef struct track_s {
+
+    /* track length in bytes */
     uint32_t len;
+
+    /* how many elements the track contains */
     uint32_t num;
+
     event_t *events;
 } track_t;
 
