@@ -28,25 +28,24 @@ int l_dist(char str1[], char str2[])
 
     return dist + (len1 - len2);
 }
-
-/* WIP */
-/*
+/* WIP
 int wf_dist(char str1[], char str2[])
 {
     int len1, len2;
     int dist, i, j;
+    int tmp;
 
     len1 = strlen(str1);
     len2 = strlen(str2);
 
     int d_arr[len1][len2];
 
-    for (i = 0; i < len1; i++) {
+    for (i = 0; i <= len1; i++) {
         d_arr[i][0] = i;
         printf("%d\n", d_arr[i][0]);
     }
 
-    for (i = 0; i < len2; i++) {
+    for (i = 0; i <= len2; i++) {
         d_arr[0][i] = i;
         printf("%d\n", d_arr[0][i]);
     }
@@ -57,16 +56,15 @@ int wf_dist(char str1[], char str2[])
             if (str1[i - 1] == str2[j - 1]) {
                 d_arr[i][j] = d_arr[i - 1][j - 1];
             } else {
-                d_arr[i][j] = (d_arr[i-1][j] + 1) > (d_arr[i][j-1] + 1) ? (d_arr[i-1][j] + 1) : (d_arr[i][j-1] + 1);
-                d_arr[i][j] = d_arr[i][j] > (d_arr[i-1][j-1] + 1) ? d_arr[i][j] : (d_arr[i-1][j-1] + 1);
+                tmp = (d_arr[i-1][j] + 1) > (d_arr[i][j-1] + 1) ? (d_arr[i-1][j] + 1) : (d_arr[i][j-1] + 1);
+                d_arr[i][j] = tmp > (d_arr[i-1][j-1] + 1) ? tmp : (d_arr[i-1][j-1] + 1);
             }
         }
     }
 
-    return d_arr[len1 + 1][len2 + 1];
+    return d_arr[len1][len2];
 }
 */
-
 void check_str(char *str1[], char *str2[])
 {
     char **tmp;
