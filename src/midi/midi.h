@@ -22,7 +22,7 @@ typedef struct event_s {
     uint8_t para_1;   // First parameter
     uint8_t para_2;   // Second parameter
     uint8_t delta;    // Delta time
-    uint8_t *data;    // Meta event data
+    uint8_t *data;    // Meta event data (Only used for meta event. Duh)
 } event_t;
 
 typedef struct track_s {
