@@ -12,17 +12,17 @@
 #define TRACK_SIGNATURE  0x4D54726b
 
 typedef struct header_s {
-    uint16_t format;    // Track format
-    uint16_t tracks;    // Track numbers
-    uint16_t division;  // Division
+    uint16_t format;    // Midi format
+    uint16_t tracks;    // Number of tracks
+    uint16_t division;  // Time division
 } header_t;
 
 typedef struct event_s {
-    uint8_t type;
-    uint8_t para_1;
-    uint8_t para_2;
-    uint8_t delta;
-    uint8_t *data;
+    uint8_t type;     // Event type see: event_type
+    uint8_t para_1;   // First parameter
+    uint8_t para_2;   // Second parameter
+    uint8_t delta;    // Delta time
+    uint8_t *data;    // Meta event data
 } event_t;
 
 typedef struct track_s {
@@ -37,13 +37,13 @@ typedef struct track_s {
 } track_t;
 
 
-enum format {
+enum midi_format {
     SINGLE_TRACK,
     MULTI_TRACK_SYNC,
     MULTI_TRACK_ASYNC
 };
 
-enum midi_event {               // Parameter1	Parameter2
+enum event_type {               // Parameter1	Parameter2
     NOTE_OFF            = 0x80, // Note			Velocity
     NOTE_ON             = 0x90, // Note			Velocity
     POLY_KEY_PRESS      = 0xa0, // Note			Pressure
@@ -55,7 +55,7 @@ enum midi_event {               // Parameter1	Parameter2
     META_EVENT          = 0xff	// Meta event	Length
 };
 
-enum meta_event {
+enum meta_type {
     SEQ_NUMBER          = 0x00,
     TEXT_EVENT          = 0x01,
     COPYRIGHT_NOTICE    = 0x02,
