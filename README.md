@@ -22,5 +22,6 @@ midiogre
 - Ogre you can use
 - Ogre your way
 - The ogre for everyone
+- Now presenting the new eyeOgre
 
 Ogres are not included.
