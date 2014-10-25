@@ -4,11 +4,11 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    src/midi.c \
+    src/midi/midi.c \
     src/main.c
 
 HEADERS += \
-    src/midi.h
+    src/midi/midi.h
 
 OTHER_FILES += \
     src/Makefile

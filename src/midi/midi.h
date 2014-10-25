@@ -38,7 +38,7 @@ enum format {
     MULTI_TRACK_ASYNC
 };
 
-enum midi_event {				// Parameter1	Parameter2
+enum midi_event {               // Parameter1	Parameter2
     NOTE_OFF            = 0x80, // Note			Velocity
     NOTE_ON             = 0x90, // Note			Velocity
     POLY_KEY_PRESS      = 0xa0, // Note			Pressure
