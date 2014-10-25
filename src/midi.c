@@ -3,14 +3,6 @@
 #include <stdint.h>
 #include "midi.h"
 
-void printp(uint8_t *data,size_t buf_size, char format[]) {
-    uint32_t i;
-
-    for (i = 0; buf_size > i; ++i) {
-        printf(format,data[i]);
-    }
-}
-
 uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size) {
     uint32_t i;
     uint8_t tmp;
@@ -121,8 +113,10 @@ track_t *read_tracks(FILE *file, uint16_t n) {
         tmp = ffread(file,0,4);
         tracks[i].len = *tmp;
 
-        // Read data
-        data = malloc(sizeof(uint8_t)*tracks[i].len);
+        // Allocate memory for track data
+        data = malloc(sizeof(uint8_t) * tracks[i].len);
+
+        // Read track data
         for (j = 0; tracks[i].len > j; j++) {
             tmp = ffread(file,0,1);
             data[j] = *tmp;
@@ -130,17 +124,70 @@ track_t *read_tracks(FILE *file, uint16_t n) {
         }
 
         // Count events
-        tracks[i].num = count_events(data,tracks[i].len);
+        tracks[i].num = count_events(data, tracks[i].len);
+
+        // Read events
+        tracks[i].events = read_events(data,tracks[i].num);
+
+        // Deallocate memory for track data
+        free(data);
 
     }
     return tracks;
 }
 
-int count_events(uint8_t *data, uint32_t len) {
-    uint32_t i = 0;
-    uint32_t result = 0;
+event_t *read_events(uint8_t *data, uint16_t n) {
+    uint32_t j,e,i = 0;
 
-    while (len > i) {
+    event_t *events = malloc(sizeof(event_t) * n);
+
+    for (e =0; e < n; e++) {
+        //printf("Start: %x %u %u\n",data[i],i,result);
+
+        // Read delta time
+        events[e].delta = 0;
+        while ( (events[e].delta + data[i++]) > 0x80 );
+
+        // Read event type
+        events[e].type = data[i++];
+
+        // Read event parameters
+        if ( (PROGRAM_CHANGE > events[e].type && events[e].type >= NOTE_OFF) ||
+             (SYS_EX_MESSAGE > events[e].type && events[e].type >= PITCH_BEND) ) {
+            events[e].para_1 = data[i++];
+            events[e].para_2 = data[i++];
+
+        } else if (PITCH_BEND > events[e].type && events[e].type >= PROGRAM_CHANGE) {
+            events[e].para_1 = data[i++];
+        } else if (META_EVENT > events[e].type && events[e].type >= SYS_EX_MESSAGE ) {
+            printf("?????");
+            return NULL;
+        } else if (events[e].type == META_EVENT) {
+            events[e].para_1 = data[i++]; // Meta type
+            events[e].para_2 = data[i++]; // Meta length
+
+            // Allocate memory for meta event data
+            events[e].data = malloc(sizeof(uint8_t) * events[e].para_2 );
+
+            // Read meta event data
+            for (j = 0; j < events[e].para_2; j++ ) {
+                events[e].data[j] = data[i++];
+            }
+
+        } else {
+            // Control Change Messages (Data Bytes)
+            events[e].para_1 = data[i++];
+        }
+
+        //printf("End: %x %u %u\n",data[i],i,result);
+    }
+    return events;
+}
+
+int count_events(uint8_t *data, uint32_t len) {
+    uint32_t e,i=0;
+
+    for (e = 0; i < len; e++) {
         //printf("Start: %x %u %u\n",data[i],i,result);
 
         // Skip delta time
@@ -167,12 +214,26 @@ int count_events(uint8_t *data, uint32_t len) {
             // Control Change Messages (Data Bytes)
             i+=2;
         }
-        result++;
 
         //printf("End: %x %u %u\n",data[i],i,result);
     }
-    return result;
+    return e;
 }
 
 void write_header(FILE *midi_file, header_t header);
 void write_tracks(FILE *midi_file, track_t track);
+
+void free_tracks(track_t *tracks, uint16_t n) {
+    uint32_t i,j;
+
+    for (i = 0; i < n; i++ ) {
+        for (j = 0; j < tracks[i].num; j++) {
+            // Deallocate meta data
+            if (tracks[i].events[j].type == META_EVENT) {
+                free(tracks[i].events[j].data);
+            }
+        }
+        // Deallocate track events
+        free(tracks[i].events);
+    }
+}

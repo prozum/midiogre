@@ -19,11 +19,9 @@ typedef struct header_s {
 
 typedef struct event_s {
     uint8_t type;
-    uint8_t type_meta;
     uint8_t para_1;
     uint8_t para_2;
     uint8_t delta;
-    uint8_t len;
     uint8_t *data;
 } event_t;
 
@@ -215,15 +213,16 @@ enum instrument {
     GUNSHOT
 };
 
-void printp(uint8_t *data,size_t buf_size, char format[]);
 uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size);
-
-header_t *read_header(FILE *file);
-track_t *read_tracks(FILE *file, uint16_t n);
 
 int count_events(uint8_t *data, uint32_t len);
 
+header_t *read_header(FILE *file);
+track_t *read_tracks(FILE *file, uint16_t n);
+event_t *read_events(uint8_t *data, uint16_t n);
+
 void write_header(FILE *midi_file, header_t header);
 void write_tracks(FILE *midi_file, track_t track);
+void free_tracks(track_t *tracks, uint16_t n);
 
 #endif
