@@ -9,6 +9,7 @@ uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size) {
 
     uintptr_t *result;
 
+    // Allocate memory according to buf_size
     if (buf_size > 8) {
         fprintf(stderr,"Buffer size too big: 8+\n");
         return NULL;
