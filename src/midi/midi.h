@@ -2,6 +2,7 @@
 #define __MIDI_H__
 
 #include <stdint.h>
+#include <stdio.h>
 
 #if defined(_WIN32)
 #include <stddef.h>
