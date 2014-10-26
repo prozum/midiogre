@@ -4,7 +4,7 @@ activate(GtkApplication *app,
     gpointer user_data) {
     GtkWidget *window;
     window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Hello GNOME");
+    gtk_window_set_title(GTK_WINDOW(window), "Midiogre");
     gtk_widget_show_all(window);
 }
 int
