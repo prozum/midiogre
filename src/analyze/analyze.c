@@ -6,27 +6,29 @@
 song_t *song_extract(header_t *header, track_t *tracks)
 {
     song_t *song = malloc(sizeof( song_t ) * header->tracks);
-    song->nodes_all = malloc(sizeof ( node_t ));
-    uint32_t i;
+    song->notes_all = malloc(sizeof( note_t ));
+    uint32_t i, j;
 
     for (i = 0; i <= (header->tracks - 1); i++) {
-        song->nodes_all[i] = *node_extract(tracks, tracks[i].num, i);
+        song->notes_all[i] = *note_extract(tracks, tracks[i].num, i);
     }
 
     return song;
 }
 
-node_t *node_extract(track_t *tracks, uint32_t elements, uint32_t num)
+note_t *note_extract(track_t *tracks, uint32_t elements, uint32_t num)
 {
-    node_t *track_nodes = malloc(sizeof( node_t ));
-    track_nodes->nodes = malloc(sizeof ( uint8_t ) * elements);
+    note_t *track_notes = malloc(sizeof( note_t ));
+    track_notes->notes = malloc(sizeof( uint8_t ) * elements);
     uint32_t i;
+    uint32_t j = 0;
 
     for (i = 0; i <= elements; i++) {
-        if (tracks[num].events[i].type == (144 + num)) {
-            track_nodes->nodes[i] = tracks[num].events[i].para_1;
+        if (tracks[num].events[i].type >= 144 && tracks[num].events[i].type <= 159) {
+            track_notes->notes[j] = tracks[num].events[i].para_1;
+            j++;
         }
     }
 
-    return track_nodes;
+    return track_notes;
 }
