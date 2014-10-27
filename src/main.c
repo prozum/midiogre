@@ -71,8 +71,8 @@ int main( int argc, char *argv[] )
 
     /* print some different places on different tracks */
     printf("\n###NODE EXTRACTION###\n");
-    printf("Track 1 | Node 2");
-    printf("The note is: %i\n", song->notes_all[0].notes[1]);
+    printf("Track 1 | Node 0\n");
+    printf("The note is: %i\n", song->notes_all[0].notes[0]);
 
     // Deallocate header
     free(header);
