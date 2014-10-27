@@ -14,7 +14,7 @@ song_t *song_extract(header_t *header, track_t *tracks) {
 
 note_t *note_extract(track_t *tracks, uint32_t elements, uint32_t num) {
     note_t *track_notes = malloc(sizeof( note_t ));
-    track_notes->notes = malloc(sizeof( uint8_t ) * elements);
+    track_notes->notes = malloc(sizeof( uint8_t ) * (elements + 1));
     uint32_t i;
     uint32_t j = 0;
 
@@ -25,7 +25,7 @@ note_t *note_extract(track_t *tracks, uint32_t elements, uint32_t num) {
         }
     }
 
-    track_notes->notes[j + 1] = '\0';
+    track_notes->notes[j] = '\0';
 
     return track_notes;
 }
