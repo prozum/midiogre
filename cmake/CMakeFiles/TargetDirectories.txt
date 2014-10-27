@@ -1,2 +1,0 @@
-C:/Users/Test/Google Drev/Universitetet/14-15/Projekter/P1/midiparo/midiparo/cmake/src/midi/CMakeFiles/midi.dir
-C:/Users/Test/Google Drev/Universitetet/14-15/Projekter/P1/midiparo/midiparo/cmake/src/cli/CMakeFiles/midiogre_cli.dir

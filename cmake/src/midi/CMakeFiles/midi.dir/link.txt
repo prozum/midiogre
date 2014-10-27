@@ -1,2 +1,0 @@
-C:\Programs\MinGW\bin\ar.exe cr libmidi.a  CMakeFiles/midi.dir/midi.c.obj
-C:\Programs\MinGW\bin\ranlib.exe libmidi.a
