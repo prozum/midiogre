@@ -73,5 +73,8 @@ int main( int argc, char *argv[] )
     // Close mid_file
     fclose(mid_file);
 
+    // When running in therminal, moves "Press <RETURN> to close this window..." to new line
+    printf("\n");
+
     return 0;
 }
