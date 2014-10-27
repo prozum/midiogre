@@ -1,7 +1,9 @@
 #include "../midi/midi.h"
-#include "distance.h"
+
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* struct that contains the node on a single track */
 typedef struct note_s
