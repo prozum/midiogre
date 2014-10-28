@@ -64,11 +64,11 @@ int main( int argc, char *argv[] )
         }
     }
 
-    // Deallocate header
-    free(header);
-
     // Deallocate tracks
     free_tracks(tracks,header->tracks);
+
+    // Deallocate header
+    free(header);
 
     // Close mid_file
     fclose(mid_file);
