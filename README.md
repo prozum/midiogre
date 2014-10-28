@@ -1,6 +1,7 @@
 midiogre
 ========
 - Connecting ogres
+- *It'll be ogre before you know it.*
 - Build for ogres ahead
 - Touch the ogre
 - Born to ogre
