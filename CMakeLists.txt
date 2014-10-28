@@ -4,9 +4,6 @@ include(cmake/options.cmake)
 
 include(cmake/showoptions.cmake)
 
-if (MINGW)
-endif(MINGW)
-
 project(midiogre C)
 
 
