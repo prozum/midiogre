@@ -74,11 +74,11 @@ int main( int argc, char *argv[] )
     printf("Track 1 | Node 0\n");
     printf("The note is: %i\n", song->notes_all[0].notes[0]);
 
-    // Deallocate header
-    free(header);
-
     // Deallocate tracks
     free_tracks(tracks,header->tracks);
+
+    // Deallocate header
+    free(header);
 
     // Close mid_file
     fclose(mid_file);
