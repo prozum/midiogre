@@ -9,7 +9,7 @@ midiogre
 - Play the ogre
 - Never ogre
 - The way to ogre
-- A breth of fresh ogre
+- A breath of fresh ogre
 - The power of ogre
 - The joy of ogre
 - Exceed your ogre
