@@ -157,7 +157,7 @@ event_t *read_events(uint8_t *data, uint16_t n) {
         events[e].type = data[i++];
 
         // Read event parameters
-        if ( (PROGRAM_CHANGE > events[e].type && events[e].type >= NOTE_OFF) ||
+        if ( (PROGRAM_CHANGE > events[e].type && events[e].type >= off_chan_1) ||
              (SYS_EX_MESSAGE > events[e].type && events[e].type >= PITCH_BEND) ) {
             events[e].para_1 = data[i++];
             events[e].para_2 = data[i++];
@@ -196,7 +196,7 @@ int count_events(uint8_t *data, uint32_t len) {
         while (data[i++] > 0x80);
 
         // Skip event data
-        if ( (PROGRAM_CHANGE > data[i] && data[i] >= NOTE_OFF) ||
+        if ( (PROGRAM_CHANGE > data[i] && data[i] >= off_chan_1) ||
              (SYS_EX_MESSAGE > data[i] && data[i] >= PITCH_BEND) ) {
             // Events with 2 parameters
             i+=3;

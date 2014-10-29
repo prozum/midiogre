@@ -44,9 +44,55 @@ enum midi_format {
     MULTI_TRACK_ASYNC
 };
 
+/* Parameter1       Parameter2 */
+/* Note             Velocity   */
+enum note_on {
+    on_chan_1           = 0x90,
+    on_chan_2           = 0x91,
+    on_chan_3           = 0x92,
+    on_chan_4           = 0x93,
+    on_chan_5           = 0x94,
+    on_chan_6           = 0x95,
+    on_chan_7           = 0x96,
+    on_chan_8           = 0x97,
+    on_chan_9           = 0x98,
+    on_chan_10          = 0x99,
+    on_chan_11          = 0x9a,
+    on_chan_12          = 0x9b,
+    on_chan_13          = 0x9c,
+    on_chan_14          = 0x9d,
+    on_chan_15          = 0x9e,
+    on_chan_16          = 0x9f
+};
+
+typedef enum note_on NOTE_ON;
+
+/* Parameter1       Parameter2 */
+/* Note             Velocity   */
+enum note_off {
+    off_chan_1          = 0xa0,
+    off_chan_2          = 0xa1,
+    off_chan_3          = 0xa2,
+    off_chan_4          = 0xa3,
+    off_chan_5          = 0xa4,
+    off_chan_6          = 0xa5,
+    off_chan_7          = 0xa6,
+    off_chan_8          = 0xa7,
+    off_chan_9          = 0xa8,
+    off_chan_10         = 0xa9,
+    off_chan_11         = 0xaa,
+    off_chan_12         = 0xab,
+    off_chan_13         = 0xac,
+    off_chan_14         = 0xad,
+    off_chan_15         = 0xae,
+    off_chan_16         = 0xaf
+};
+
+typedef enum note_off NOTE_OFF;
+
 enum event_type {               // Parameter1	Parameter2
-    NOTE_OFF            = 0x80, // Note			Velocity
-    NOTE_ON             = 0x90, // Note			Velocity
+//  NOTE_OFF            = 0x80, // Note			Velocity
+//  NOTE_ON             = 0x90, // Note			Velocity
     POLY_KEY_PRESS      = 0xa0, // Note			Pressure
     CONTROLLER_CHANGE   = 0xb0, // Controls1	Controls2
     PROGRAM_CHANGE      = 0xc0, // Program		NONE
