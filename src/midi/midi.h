@@ -23,19 +23,19 @@ typedef struct event_s {
     uint8_t para_1;   // First parameter
     uint8_t para_2;   // Second parameter
     uint8_t delta;    // Delta time
-    uint8_t *data;    // Meta event data (Only used for meta event. Duh)
+    uint8_t *data;    // Pointer to meta event data (Only used for meta event duh)
 } event_t;
 
 typedef struct track_s {
-
-    /* track length in bytes */
-    uint32_t len;
-
-    /* how many elements the track contains */
-    uint32_t num;
-
-    event_t *events;
+    uint32_t len;     // Track length in bytes
+    uint32_t num;     // Number of events in track
+    event_t *events;  // Pointer to events
 } track_t;
+
+typedef struct midi_s {
+    header_t header;
+    track_t *tracks;
+} midi_t;
 
 
 enum midi_format {
