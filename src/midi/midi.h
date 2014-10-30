@@ -31,6 +31,11 @@ typedef struct track_s {
     event_t *events;  // Pointer to events
 } track_t;
 
+typedef struct midi_s {
+    header_t header;
+    track_t *tracks;
+} midi_t;
+
 
 enum midi_format {
     SINGLE_TRACK,

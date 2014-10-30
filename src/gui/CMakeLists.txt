@@ -8,7 +8,10 @@ link_directories (${CMAKE_LIBRARY_DIRS})
 add_definitions(${GTK3_CFLAGS_OTHER})
 
 add_executable(midiogre_gui
-    main.c
+    midiogre-main.c
+    midiogre-app.c
+    midiogre-window.c
+    midiogre-midi.c
 )
 
 target_link_libraries( midiogre_gui midi ${GTK3_LIBRARIES})
