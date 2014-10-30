@@ -12,33 +12,38 @@
 #define HEADER_LENGTH    0x00000006
 #define TRACK_SIGNATURE  0x4D54726b
 
-typedef struct header_s {
-    uint16_t format;    // Midi format
-    uint16_t tracks;    // Number of tracks
-    uint16_t division;  // Time division
+typedef struct header_s
+{
+    uint16_t format;    /* Midi format      */
+    uint16_t tracks;    /* Number of tracks */
+    uint16_t division;  /* Time division    */
 } header_t;
 
-typedef struct event_s {
-    uint8_t type;     // Event type see: event_type
-    uint8_t para_1;   // First parameter
-    uint8_t para_2;   // Second parameter
-    uint8_t delta;    // Delta time
-    uint8_t *data;    // Pointer to meta event data (Only used for meta event duh)
+typedef struct event_s
+{
+    uint8_t type;     /* Event type see: event_type                                */
+    uint8_t para_1;   /* First parameter                                           */
+    uint8_t para_2;   /* Second parameter                                          */
+    uint8_t delta;    /* Delta time                                                */
+    uint8_t *data;    /* Pointer to meta event data (Only used for meta event duh) */
 } event_t;
 
-typedef struct track_s {
-    uint32_t len;     // Track length in bytes
-    uint32_t num;     // Number of events in track
-    event_t *events;  // Pointer to events
+typedef struct track_s
+{
+    uint32_t len;     /* Track length in bytes     */
+    uint32_t num;     /* Number of events in track */
+    event_t *events;  /* Pointer to events         */
 } track_t;
 
-typedef struct midi_s {
+typedef struct midi_s
+{
     header_t header;
     track_t *tracks;
 } midi_t;
 
 
-enum midi_format {
+enum midi_format
+{
     SINGLE_TRACK,
     MULTI_TRACK_SYNC,
     MULTI_TRACK_ASYNC
@@ -50,7 +55,8 @@ enum midi_format {
  * See:
  * http://www.midi.org/techspecs/midimessages.php
  */
-typedef enum {
+typedef enum
+{
     NOTE_OFF_1          = 0x80,
     NOTE_OFF_2          = 0x81,
     NOTE_OFF_3          = 0x82,
@@ -181,7 +187,8 @@ typedef enum {
     SYSTEM_RESET        = 0xff
 } message_t;
 
-enum meta_type {
+enum meta_type
+{
     SEQ_NUMBER          = 0x00,
     TEXT_EVENT          = 0x01,
     COPYRIGHT_NOTICE    = 0x02,
@@ -199,7 +206,8 @@ enum meta_type {
     SEQ_SPECIFIC_EVENT  = 0x7f
 };
 
-enum node {
+enum node
+{
     C0,  CH0,  D0,  DH0,  E0,  F0,  FH0,  G0,  GH0,  A0,  AH0,  B0,
     C1,  CH1,  D1,  DH1,  E1,  F1,  FH1,  G1,  GH1,  A1,  AH1,  B1,
     C2,  CH2,  D2,  DH2,  E2,  F2,  FH2,  G2,  GH2,  A2,  AH2,  B2,
@@ -213,7 +221,8 @@ enum node {
     C10, CH10, D10, DH10, E10, F10, FH10, G10
 };
 
-enum instrument {
+enum instrument
+{
     ACOUSTIC_GRAND_PIANO,
     BRIGHT_ACOUSTIC_PIANO,
     ELECTRIC_GRAND_PIANO,
