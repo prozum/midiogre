@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include "midi.h"
 
-uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size) {
+uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size)
+{
     uint32_t i;
     uint8_t tmp;
 
@@ -44,7 +45,8 @@ uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size) {
     return result;
 }
 
-header_t *read_header(FILE *file) {
+header_t *read_header(FILE *file)
+{
     uintptr_t *tmp;
 
     // Allocate memory for header data
@@ -95,7 +97,8 @@ header_t *read_header(FILE *file) {
     return header;
 }
 
-track_t *read_tracks(FILE *file, uint16_t n) {
+track_t *read_tracks(FILE *file, uint16_t n)
+{
     uint32_t i,j;
     uintptr_t *tmp;
     uint8_t *data;
@@ -141,7 +144,8 @@ track_t *read_tracks(FILE *file, uint16_t n) {
     return tracks;
 }
 
-event_t *read_events(uint8_t *data, uint16_t n) {
+event_t *read_events(uint8_t *data, uint16_t n)
+{
     uint32_t j,e,i = 0;
 
     // Allocate memory for events
@@ -187,7 +191,8 @@ event_t *read_events(uint8_t *data, uint16_t n) {
     return events;
 }
 
-int count_events(uint8_t *data, uint32_t len) {
+int count_events(uint8_t *data, uint32_t len)
+{
     uint32_t e,i=0;
 
     // Until end of data
@@ -221,7 +226,8 @@ int count_events(uint8_t *data, uint32_t len) {
 void write_header(FILE *midi_file, header_t header);
 void write_tracks(FILE *midi_file, track_t track);
 
-void free_tracks(track_t *tracks, uint16_t n) {
+void free_tracks(track_t *tracks, uint16_t n)
+{
     uint32_t i,j;
 
     // For each track
