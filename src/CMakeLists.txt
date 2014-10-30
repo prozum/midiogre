@@ -6,7 +6,8 @@ include_directories(
 
 if(GUI)
 	add_subdirectory(gui)
-else()
-	add_subdirectory(cli)
 endif(GUI)
 
+if(CLI)
+    add_subdirectory(cli)
+endif(CLI)
