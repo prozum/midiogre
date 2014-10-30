@@ -2,6 +2,7 @@
 #define __MIDI_H__
 
 #include <stdint.h>
+#include <stdio.h>
 
 #if defined(_WIN32)
 #include <stddef.h>
@@ -43,9 +44,51 @@ enum midi_format {
     MULTI_TRACK_ASYNC
 };
 
-enum event_type {               // Parameter1	Parameter2
-    NOTE_OFF            = 0x80, // Note			Velocity
-    NOTE_ON             = 0x90, // Note			Velocity
+/* Parameter1       Parameter2 */
+/* Note             Velocity   */
+typedef enum NOTE_ON {
+    NOTE_ON_1 = 0x90,
+    NOTE_ON_2,
+    NOTE_ON_3,
+    NOTE_ON_4,
+    NOTE_ON_5,
+    NOTE_ON_6,
+    NOTE_ON_7,
+    NOTE_ON_8,
+    NOTE_ON_9,
+    NOTE_ON_10,
+    NOTE_ON_11,
+    NOTE_ON_12,
+    NOTE_ON_13,
+    NOTE_ON_14,
+    NOTE_ON_15,
+    NOTE_ON_16 
+}e_note_on;
+
+/* Parameter1       Parameter2 */
+/* Note             Velocity   */
+typedef enum NOTE_OFF {
+    NOTE_OFF_1 = 0x80,
+    NOTE_OFF_2,
+    NOTE_OFF_3,
+    NOTE_OFF_4,
+    NOTE_OFF_5,
+    NOTE_OFF_6,
+    NOTE_OFF_7,
+    NOTE_OFF_8,
+    NOTE_OFF_9,
+    NOTE_OFF_10,
+    NOTE_OFF_11,
+    NOTE_OFF_12,
+    NOTE_OFF_13,
+    NOTE_OFF_14,
+    NOTE_OFF_15,
+    NOTE_OFF_16
+}e_note_off;
+
+typedef enum EVENTS {               // Parameter1	Parameter2
+//  NOTE_OFF            = 0x80, // Note			Velocity
+//  NOTE_ON             = 0x90, // Note			Velocity
     POLY_KEY_PRESS      = 0xa0, // Note			Pressure
     CONTROLLER_CHANGE   = 0xb0, // Controls1	Controls2
     PROGRAM_CHANGE      = 0xc0, // Program		NONE
@@ -53,7 +96,7 @@ enum event_type {               // Parameter1	Parameter2
     PITCH_BEND          = 0xe0, // Pitch LSB	Pitch MSB
     SYS_EX_MESSAGE      = 0xf0, // Vendor ID	N/A
     META_EVENT          = 0xff	// Meta event	Length
-};
+}e_event;
 
 enum meta_type {
     SEQ_NUMBER          = 0x00,

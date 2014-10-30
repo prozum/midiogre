@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "midi/midi.h"
+#include "analyze/distance.h"
+#include "analyze/analyze.h"
 
 
 
@@ -11,6 +13,7 @@ int main( int argc, char *argv[] )
     FILE *mid_file;
     header_t *header;
     track_t *tracks;
+    song_t *song;
 
     // Open file
     mid_file = fopen(argv[1], "rb");
@@ -63,6 +66,14 @@ int main( int argc, char *argv[] )
             printf("%x ",tracks[t-1].events[e-1].data[i]);
         }
     }
+
+    /* extracting all the nodes of the song */
+    song = song_extract(header, tracks);
+
+    /* print some different places on different tracks */
+    printf("\n###NODE EXTRACTION###\n");
+    printf("Track 1 | Node 0\n");
+    printf("The note is: %i\n", song->notes_all[0].notes[0]);
 
     // Deallocate tracks
     free_tracks(tracks,header->tracks);

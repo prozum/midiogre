@@ -1,38 +1,40 @@
 #include "analyze.h"
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
 
-song_t song_extract(header_t *header, track_t *tracks)
-{
-    song_t song;
+song_t *song_extract(header_t *header, track_t *tracks) {
 
-    /* elements in tracks */
-    uint32_t elements;
+    song_t *song = malloc(sizeof( song_t ) * header->tracks);
+    song->notes_all = malloc(sizeof( note_t ));
 
-    /* quantity of tracks */
-    uint32_t track_quant = header->tracks;
     uint32_t i;
 
-    for (i = 0; i < track_quant; i++) {
-        elements =  tracks[i].num;
+    for (i = 0; i <= (header->tracks - 1); i++) {
 
-        song.nodes_arr[i] = nodes_extract(tracks, elements, i);
+        song->notes_all[i] = *note_extract(tracks, tracks[i].num, i);
     }
 
     return song;
 }
 
-char *nodes_extract(track_t *tracks, uint32_t elements, uint32_t num)
-{
-    char *track_nodes;
-    uint32_t i;
+note_t *note_extract(track_t *tracks, uint32_t elements, uint32_t num) {
+
+    note_t *track_notes = malloc(sizeof( note_t ));
+    track_notes->notes = malloc(sizeof( uint8_t ) * (elements + 1));
+    track_notes->velocity = malloc(sizeof( uint8_t ) * (elements + 1));
+
+    uint32_t i, j = 0;
 
     for (i = 0; i <= elements; i++) {
-        if (tracks[num].events[num].type == (144 + num)) {
-            track_nodes[i] = tracks[num].events[num].para_1;
+        if (tracks[num].events[i].type >= 144 && tracks[num].events[i].type <= 159) {
+
+            track_notes->notes[j] = tracks[num].events[i].para_1;
+            track_notes->velocity[j] = tracks[num].events[i].para_2;
+
+            j++;
         }
     }
 
-    return track_nodes;
+    track_notes->notes[j] = '\0';
+    track_notes->velocity[j] = '\0';
+
+    return track_notes;
 }
