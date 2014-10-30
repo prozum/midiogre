@@ -64,14 +64,17 @@ int main( int argc, char *argv[] )
         }
     }
 
-    // Deallocate header
-    free(header);
-
     // Deallocate tracks
     free_tracks(tracks,header->tracks);
 
+    // Deallocate header
+    free(header);
+
     // Close mid_file
     fclose(mid_file);
+
+    // When running in therminal, moves "Press <RETURN> to close this window..." to new line
+    printf("\n");
 
     return 0;
 }

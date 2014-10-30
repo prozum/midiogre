@@ -15,3 +15,9 @@ add_executable(midiogre_gui
 )
 
 target_link_libraries( midiogre_gui midi ${GTK3_LIBRARIES})
+
+install(TARGETS midiogre_gui  
+RUNTIME DESTINATION bin
+ARCHIVE DESTINATION lib
+LIBRARY DESTINATION lib
+COMPONENT library)
