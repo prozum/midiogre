@@ -46,47 +46,47 @@ enum midi_format {
 
 /* Parameter1       Parameter2 */
 /* Note             Velocity   */
-typedef enum note_on {
-    on_chan_1           = 0x90,
-    on_chan_2           = 0x91,
-    on_chan_3           = 0x92,
-    on_chan_4           = 0x93,
-    on_chan_5           = 0x94,
-    on_chan_6           = 0x95,
-    on_chan_7           = 0x96,
-    on_chan_8           = 0x97,
-    on_chan_9           = 0x98,
-    on_chan_10          = 0x99,
-    on_chan_11          = 0x9a,
-    on_chan_12          = 0x9b,
-    on_chan_13          = 0x9c,
-    on_chan_14          = 0x9d,
-    on_chan_15          = 0x9e,
-    on_chan_16          = 0x9f
-}NOTE_ON;
+typedef enum NOTE_ON {
+    NOTE_ON_1 = 0x90,
+    NOTE_ON_2,
+    NOTE_ON_3,
+    NOTE_ON_4,
+    NOTE_ON_5,
+    NOTE_ON_6,
+    NOTE_ON_7,
+    NOTE_ON_8,
+    NOTE_ON_9,
+    NOTE_ON_10,
+    NOTE_ON_11,
+    NOTE_ON_12,
+    NOTE_ON_13,
+    NOTE_ON_14,
+    NOTE_ON_15,
+    NOTE_ON_16 
+}e_note_on;
 
 /* Parameter1       Parameter2 */
 /* Note             Velocity   */
-typedef enum note_off {
-    off_chan_1          = 0xa0,
-    off_chan_2          = 0xa1,
-    off_chan_3          = 0xa2,
-    off_chan_4          = 0xa3,
-    off_chan_5          = 0xa4,
-    off_chan_6          = 0xa5,
-    off_chan_7          = 0xa6,
-    off_chan_8          = 0xa7,
-    off_chan_9          = 0xa8,
-    off_chan_10         = 0xa9,
-    off_chan_11         = 0xaa,
-    off_chan_12         = 0xab,
-    off_chan_13         = 0xac,
-    off_chan_14         = 0xad,
-    off_chan_15         = 0xae,
-    off_chan_16         = 0xaf
-}NOTE_OFF;
+typedef enum NOTE_OFF {
+    NOTE_OFF_1 = 0x80,
+    NOTE_OFF_2,
+    NOTE_OFF_3,
+    NOTE_OFF_4,
+    NOTE_OFF_5,
+    NOTE_OFF_6,
+    NOTE_OFF_7,
+    NOTE_OFF_8,
+    NOTE_OFF_9,
+    NOTE_OFF_10,
+    NOTE_OFF_11,
+    NOTE_OFF_12,
+    NOTE_OFF_13,
+    NOTE_OFF_14,
+    NOTE_OFF_15,
+    NOTE_OFF_16
+}e_note_off;
 
-enum event_type {               // Parameter1	Parameter2
+typedef enum EVENTS {               // Parameter1	Parameter2
 //  NOTE_OFF            = 0x80, // Note			Velocity
 //  NOTE_ON             = 0x90, // Note			Velocity
     POLY_KEY_PRESS      = 0xa0, // Note			Pressure
@@ -96,7 +96,7 @@ enum event_type {               // Parameter1	Parameter2
     PITCH_BEND          = 0xe0, // Pitch LSB	Pitch MSB
     SYS_EX_MESSAGE      = 0xf0, // Vendor ID	N/A
     META_EVENT          = 0xff	// Meta event	Length
-};
+}e_event;
 
 enum meta_type {
     SEQ_NUMBER          = 0x00,
