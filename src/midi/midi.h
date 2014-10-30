@@ -46,7 +46,7 @@ enum midi_format {
 
 /* Parameter1       Parameter2 */
 /* Note             Velocity   */
-enum note_on {
+typedef enum note_on {
     on_chan_1           = 0x90,
     on_chan_2           = 0x91,
     on_chan_3           = 0x92,
@@ -63,13 +63,11 @@ enum note_on {
     on_chan_14          = 0x9d,
     on_chan_15          = 0x9e,
     on_chan_16          = 0x9f
-};
-
-typedef enum note_on NOTE_ON;
+}NOTE_ON;
 
 /* Parameter1       Parameter2 */
 /* Note             Velocity   */
-enum note_off {
+typedef enum note_off {
     off_chan_1          = 0xa0,
     off_chan_2          = 0xa1,
     off_chan_3          = 0xa2,
@@ -86,9 +84,7 @@ enum note_off {
     off_chan_14         = 0xad,
     off_chan_15         = 0xae,
     off_chan_16         = 0xaf
-};
-
-typedef enum note_off NOTE_OFF;
+}NOTE_OFF;
 
 enum event_type {               // Parameter1	Parameter2
 //  NOTE_OFF            = 0x80, // Note			Velocity
