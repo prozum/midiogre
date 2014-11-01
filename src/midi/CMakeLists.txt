@@ -1,3 +1,4 @@
 add_library(midi
-	midi.c
+    midi.c
+    util.c
 )

@@ -2,17 +2,15 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "midi/midi.h"
+#include "midi/util.h"
 #include "analyze/distance.h"
 #include "analyze/analyze.h"
-
-
 
 int main( int argc, char *argv[] )
 {
     uint32_t i,j,t,e;
     FILE *mid_file;
-    header_t *header;
-    track_t *tracks;
+    mid_t *mid;
     song_t *song;
 
     /* Open file */
@@ -22,69 +20,28 @@ int main( int argc, char *argv[] )
         return -1;
     }
 
-    /* Read midi header */
-    header = read_header(mid_file);
-    if ( header == NULL) {
-        return -1;
-    }
+    /* Read mid */
+    mid = read_mid(mid_file);
 
-    /* Print header info */
-    printf("<###HEAD INFO###>\n");
-    printf("Format:\t\t%i\n",header->format);
-    printf("Tracks:\t\t%i\n",header->tracks);
-    printf("Division:\t%i\n",header->division);
-
-    /* Read midi tracks */
-    tracks = read_tracks(mid_file,header->tracks);
-    if ( tracks == NULL) {
-        return -1;
-    }
-
-    /* Print info for tracks */
-    printf("\n<###TRACK INFO###>\n");
-    for (i = 0; header->tracks > i; i++) {
-        printf("Track: \t%u\n",i+1);
-        printf("Track len: \t%u\n",tracks[i].len);
-        printf("Track events: \t%u\n",tracks[i].num);
-    }
-
-
-    /* Print data for third event in first track */
-    t = 1;
-    e = 3;
-    printf("\n<###EVENT INFO###>\n");
-    printf("Track %2u | Event %2u\n",t,e);
-    printf("Type : %x\n",tracks[t-1].events[e-1].type);
-    printf("Para1: %x\n",tracks[t-1].events[e-1].para_1);
-    printf("Para2: %x\n",tracks[t-1].events[e-1].para_2);
-    printf("Delta: %x\n",tracks[t-1].events[e-1].delta);
-
-    // Meta event data
-    if (tracks[t-1].events[e-1].type == META_EVENT) {
-        printf("Data: ");
-        for (i = 0; i < tracks[t-1].events[e-1].para_2; i++ ) {
-            printf("%x ",tracks[t-1].events[e-1].data[i]);
-        }
-    }
+    print_header(mid);
+    print_tracks(mid);
+    print_event(mid,1,1);
 
     /* Extracting all the nodes of the song */
-    song = song_extract(header, tracks);
+    //song = song_extract(header, tracks);
 
     /* Print some different places on different tracks */
-    printf("\n###NODE EXTRACTION###\n");
-    printf("Track 1 | Node 0\n");
-    printf("The note is: %i\n", song->notes_all[0].notes[0]);
+    //printf("\n###NODE EXTRACTION###\n");
+    //printf("Track 1 | Node 0\n");
+    //printf("The note is: %i\n", song->notes_all[0].notes[0]);
 
-    /* Deallocate tracks */
-    free_tracks(tracks,header->tracks);
 
-    /* Deallocate header */
-    free(header);
+    /* Deallocate mid */
+    free_mid(mid);
 
     /* Close mid_file */
     fclose(mid_file);
 
-    /* When running in terminal, moves "Press <RETURN> to close this window..." to new line */
     printf("\n");
 
     return 0;

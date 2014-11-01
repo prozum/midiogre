@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+
 #include "midi.h"
 
 uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size)
@@ -27,7 +28,7 @@ uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size)
         return NULL;
     }
 
-    /* Assign result a value (Windows compatibility) */
+    /*  Initialize result (Windows compatibility) */
     *result = 0;
 
     /* Setup offset */
@@ -45,12 +46,12 @@ uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size)
     return result;
 }
 
-header_t *read_header(FILE *file)
+mid_t *read_mid(FILE *file)
 {
     uintptr_t *tmp;
 
     /* Allocate memory for header data */
-    header_t *header = malloc(sizeof(header_t));
+    mid_t *mid = malloc(sizeof(mid_t));
 
     /* Start at the beginning of midi_file */
     fseek(file,0,SEEK_SET);
@@ -61,7 +62,7 @@ header_t *read_header(FILE *file)
     /* Check if signature is valid */
     if (*tmp != HEADER_SIGNATURE) {
         fprintf(stderr,"Header signature is invalid\n");
-        free(header);
+        free(mid);
         return NULL;
     }
 
@@ -71,45 +72,53 @@ header_t *read_header(FILE *file)
     /* Check if length is valid */
     if (*tmp != HEADER_LENGTH) {
         fprintf(stderr,"Header length is invalid\n");
-        free(header);
+        free(mid);
         return NULL;
     }
 
     /* Read format */
     tmp = ffread(file,0,2);
-    header->format = *tmp;
+    mid->format = *tmp;
 
     /* Check if format has a valid value */
-    if (header->format > MULTI_TRACK_ASYNC) {
+    if (mid->format > MULTI_TRACK_ASYNC) {
         fprintf(stderr,"Midi format is invalid\n");
-        free(header);
+        free(mid);
         return NULL;
     }
 
     /* Read number of tracks */
     tmp = ffread(file,0,2);
-    header->tracks = *tmp;
+    mid->tracks = *tmp;
 
     /* Read division */
     tmp = ffread(file,0,2);
-    header->division = *tmp;
+    mid->division = *tmp;
 
-    return header;
+    /* Read tracks */
+    mid->track = read_tracks(file,mid->tracks);
+    if ( mid->track == NULL) {
+        fprintf(stderr,"Midi tracks are invalid\n");
+        free(mid);
+        return NULL;
+    }
+
+    return mid;
 }
 
-track_t *read_tracks(FILE *file, uint16_t n)
+track_t *read_tracks(FILE *file, uint16_t num)
 {
     uint32_t i,j;
     uintptr_t *tmp;
     uint8_t *data;
 
-    track_t *tracks = malloc(sizeof(track_t)*n);
+    track_t *tracks = calloc(sizeof(track_t),num);
 
     /* Start at the first track */
-    fseek(file,14,SEEK_SET);
+    fseek(file,FIRST_TRACK_POS,SEEK_SET);
 
     /* For each track */
-    for (i = 0; n > i; i++) {
+    for (i = 0; i < num; i++) {
         /* Check signature */
         tmp = ffread(file,0,4);
         if (*tmp != TRACK_SIGNATURE) {
@@ -131,10 +140,10 @@ track_t *read_tracks(FILE *file, uint16_t n)
         }
 
         /* Count events */
-        tracks[i].num = count_events(data, tracks[i].len);
+        tracks[i].events = count_events(data, tracks[i].len);
 
         /* Read events */
-        tracks[i].events = read_events(data,tracks[i].num);
+        tracks[i].event = read_events(data,tracks[i].events);
 
         /* Deallocate memory for track data */
         free(data);
@@ -143,51 +152,52 @@ track_t *read_tracks(FILE *file, uint16_t n)
     return tracks;
 }
 
-event_t *read_events(uint8_t *data, uint16_t n)
+event_t *read_events(uint8_t *data, uint16_t num)
 {
-    uint32_t j,e,i = 0;
+    uint32_t i,j,e = 0;
 
     /* Allocate memory for events */
-    event_t *events = malloc(sizeof(event_t) * n);
+    event_t *event = calloc(sizeof(event_t),num);
 
-    /* Read events */
-    for (e =0; e < n; e++) {
+    /* Until end last event */
+    for (e = 0; e < num; e++) {
         /* Read delta time */
-        events[e].delta = 0;
-        while ( (events[e].delta + data[i++]) > 0x80 );
+        event[e].delta = 0;
+        while ( (event[e].delta + data[i++]) > 0x80 );
 
-        /* Read event type */
-        events[e].type = data[i++];
+        /* Read event msg */
+        event[e].msg = data[i++];
 
         /* Read event parameters */
-        if ( (PROGRAM_CHANGE > events[e].type && events[e].type >= off_chan_1) ||
-             (SYS_EX_MESSAGE > events[e].type && events[e].type >= PITCH_BEND) ) {
-            events[e].para_1 = data[i++];
-            events[e].para_2 = data[i++];
+        if ( (CTRL_MODE_16 >= event[e].msg && event[e].msg >= NOTE_OFF_1) ||
+             (PITCH_BEND_16 >= event[e].msg && event[e].msg >= PITCH_BEND_1) ) {
+            event[e].para_1 = data[i++];
+            event[e].para_2 = data[i++];
 
-        } else if (PITCH_BEND > events[e].type && events[e].type >= PROGRAM_CHANGE) {
-            events[e].para_1 = data[i++];
-        } else if (META_EVENT > events[e].type && events[e].type >= SYS_EX_MESSAGE ) {
+        } else if (CHAN_AFT_16 >= event[e].msg && event[e].msg >= PRG_CHANGE_1) {
+            event[e].para_1 = data[i++];
+        } else if (ACTIVE_SENSING > event[e].msg && event[e].msg >= SYS_EXCUSIVE) {
+            /* TODO */
             printf("?????");
             return NULL;
-        } else if (events[e].type == META_EVENT) {
-            events[e].para_1 = data[i++]; /* Meta type   */
-            events[e].para_2 = data[i++]; /* Meta length */
+        } else if (event[e].msg == META_MSG) {
+            event[e].para_1 = data[i++]; /* Meta msg   */
+            event[e].para_2 = data[i++]; /* Meta length */
 
             /* Allocate memory for meta event data */
-            events[e].data = malloc(sizeof(uint8_t) * events[e].para_2 );
+            event[e].mdata = calloc(sizeof(uint8_t), event[e].para_2 );
 
             /* Read meta event data */
-            for (j = 0; j < events[e].para_2; j++ ) {
-                events[e].data[j] = data[i++];
+            for (j = 0; j < event[e].para_2; j++ ) {
+                event[e].mdata[j] = data[i++];
             }
 
         } else {
             /* Control Change Messages (Data Bytes) */
-            events[e].para_1 = data[i++];
+            event[e].para_1 = data[i++];
         }
     }
-    return events;
+    return event;
 }
 
 int count_events(uint8_t *data, uint32_t len)
@@ -200,17 +210,18 @@ int count_events(uint8_t *data, uint32_t len)
         while (data[i++] > 0x80);
 
         /* Skip event data */
-        if ( (PROGRAM_CHANGE > data[i] && data[i] >= off_chan_1) ||
-             (SYS_EX_MESSAGE > data[i] && data[i] >= PITCH_BEND) ) {
+        if ( (CTRL_MODE_16 >= data[i] && data[i] >= NOTE_OFF_1) ||
+             (PITCH_BEND_16 >= data[i] && data[i] >= PITCH_BEND_1) ) {
             /* Events with 2 parameters */
             i+=3;
-        } else if (PITCH_BEND > data[i] && data[i] >= PROGRAM_CHANGE) {
+        } else if (CHAN_AFT_16 >= data[i] && data[i] >= PRG_CHANGE_1) {
             /* Events with 1 parameter */
             i+=2;
-        } else if (META_EVENT > data[i] && data[i] >= SYS_EX_MESSAGE ) {
+        } else if (ACTIVE_SENSING > data[i] && data[i] >= SYS_EXCUSIVE) {
+            /* TODO */
             printf("?????");
             return -1;
-        } else if (data[i] == META_EVENT) {
+        } else if (data[i] == META_MSG) {
             i+=2;       /* Skib to length */
             i+=data[i]; /* Skib length    */
             i++;
@@ -222,26 +233,28 @@ int count_events(uint8_t *data, uint32_t len)
     return e;
 }
 
-void write_header(FILE *midi_file, header_t header);
-void write_tracks(FILE *midi_file, track_t track);
+void write_mid(FILE *midi_file, mid_t mid);
 
-void free_tracks(track_t *tracks, uint16_t n)
+void free_mid(mid_t *mid)
 {
     uint32_t i,j;
 
     /* For each track */
-    for (i = 0; i < n; i++ ) {
+    for (i = 0; i < mid->tracks; i++ ) {
         /* For events in track */
-        for (j = 0; j < tracks[i].num; j++) {
-            /* If event is meta event */
-            if (tracks[i].events[j].type == META_EVENT) {
+        for (j = 0; j < mid->track[i].events; j++) {
+            /* If meta event */
+            if (mid->track[i].event[j].msg == META_MSG) {
                 /* Deallocate meta event data */
-                free(tracks[i].events[j].data);
+                free(mid->track[i].event[j].mdata);
             }
         }
         /* Deallocate track events */
-        free(tracks[i].events);
+        free(mid->track[i].events);
     }
     /* Deallocate tracks */
-    free(tracks);
+    free(mid->track);
+
+    /* Deallocate mid */
+    free(mid);
 }
