@@ -19,7 +19,7 @@ else()
     message("* Build with MinGW : No (default)")
 endif()
 
-if( DOCS )
+if( DOC )
     message("* Generate documentaion : Yes ")
 else()
     message("* Generate documentaion : No (default)")
