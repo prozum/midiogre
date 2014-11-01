@@ -171,7 +171,7 @@ typedef enum
  * See:
  * http://somascape.org/midi/tech/mfile.html#meta
  */
-enum meta_msg
+typedef enum meta_msg
 {
     SEQ_NUMBER          = 0x00,
     TEXT_EVENT          = 0x01,
