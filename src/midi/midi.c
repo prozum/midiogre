@@ -250,7 +250,7 @@ void free_mid(mid_t *mid)
             }
         }
         /* Deallocate track events */
-        free(mid->track[i].events);
+        free(mid->track[i].event);
     }
     /* Deallocate tracks */
     free(mid->track);
