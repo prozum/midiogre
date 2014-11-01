@@ -13,7 +13,7 @@ if (DOC)
         	message(FATAL_ERROR "Doxygen not found!")
     endif()
 
-    set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in)
+    set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Doxyfile.in)
     set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
     configure_file(${doxyfile_in} ${doxyfile} @ONLY)

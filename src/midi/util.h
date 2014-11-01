@@ -1,6 +1,8 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
+/** @file util.h */
+
 #include "midi.h"
 
 void print_header(mid_t *mid);

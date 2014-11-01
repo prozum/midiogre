@@ -1,6 +1,8 @@
 #ifndef __MIDI_H__
 #define __MIDI_H__
 
+/** @file midi.h */
+
 #include <stdint.h>
 #include <stdio.h>
 
@@ -169,7 +171,7 @@ typedef enum
  * See:
  * http://somascape.org/midi/tech/mfile.html#meta
  */
-enum
+enum meta_msg
 {
     SEQ_NUMBER          = 0x00,
     TEXT_EVENT          = 0x01,
@@ -191,7 +193,7 @@ enum
 /**
  * MIDI node
  */
-typedef enum
+typedef enum nodes
 {
     C0,  CH0,  D0,  DH0,  E0,  F0,  FH0,  G0,  GH0,  A0,  AH0,  B0,
     C1,  CH1,  D1,  DH1,  E1,  F1,  FH1,  G1,  GH1,  A1,  AH1,  B1,
@@ -209,7 +211,7 @@ typedef enum
 /**
  * MIDI instrument
  */
-enum
+typedef enum instruments
 {
     ACOUSTIC_GRAND_PIANO,
     BRIGHT_ACOUSTIC_PIANO,
