@@ -343,26 +343,26 @@ enum
 
 typedef struct event_s
 {
-    msg_t   msg;      /* Event type see:            */
-    uint8_t para_1;   /* First parameter            */
-    uint8_t para_2;   /* Second parameter           */
-    uint8_t delta;    /* Delta time                 */
-    uint8_t *mdata;   /* Pointer to meta event data */
+    msg_t   msg;      /**< Event type                 */
+    uint8_t para_1;   /**< First parameter            */
+    uint8_t para_2;   /**< Second parameter           */
+    uint8_t delta;    /**< Delta time                 */
+    uint8_t *mdata;   /**< Pointer to meta event data */
 } event_t;
 
 typedef struct track_s
 {
-    uint32_t len;    /* Track length in bytes     */
-    uint32_t events; /* Number of events in track */
-    event_t *event;  /* Pointer to events         */
+    uint32_t len;    /**< Track length in bytes     */
+    uint32_t events; /**< Number of events in track */
+    event_t *event;  /**< Pointer to events         */
 } track_t;
 
 typedef struct mid_s
 {
-    fmt_t format;       /* Midi format       */
-    uint16_t division;  /* Time division     */
-    uint16_t tracks;    /* Number of tracks  */
-    track_t *track;     /* Pointer to tracks */
+    fmt_t format;       /**< Midi format       */
+    uint16_t division;  /**< Time division     */
+    uint16_t tracks;    /**< Number of tracks  */
+    track_t *track;     /**< Pointer to tracks */
 } mid_t;
 
 uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size);
