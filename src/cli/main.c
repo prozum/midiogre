@@ -8,7 +8,6 @@
 
 int main( int argc, char *argv[] )
 {
-    uint32_t i,j,t,e;
     FILE *mid_file;
     mid_t *mid;
     song_t *song;
