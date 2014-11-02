@@ -15,13 +15,16 @@ struct _MidiogreAppWindowClass
 G_DEFINE_TYPE(MidiogreAppWindow, midiogre_app_window, GTK_TYPE_APPLICATION_WINDOW);
 
 static void
-midiogre_app_window_init (MidiogreAppWindow *app)
+midiogre_app_window_init (MidiogreAppWindow *win)
 {
+    gtk_widget_init_template (GTK_WIDGET (win));
 }
 
 static void
 midiogre_app_window_class_init (MidiogreAppWindowClass *class)
 {
+    gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (class),
+                                                   "../share/midiogre/midiogre.glade");
 }
 
 

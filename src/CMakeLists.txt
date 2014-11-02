@@ -32,4 +32,11 @@ if(MAIN)
             LIBRARY DESTINATION lib
             COMPONENT library)
 
+    install (FILES ${CMAKE_SOURCE_DIR}/res/midiogre.glade
+             DESTINATION share/midiogre)
+
+    # TODO: Desktop file
+    #install (FILES ${CMAKE_SOURCE_DIR}/res/midiogre.desktop
+    #         DESTINATION share/midiogre)
+
 endif(MAIN)
