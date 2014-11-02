@@ -15,4 +15,4 @@ add_custom_target(doc ALL
     COMMENT "Generating documentation with Doxygen"
     VERBATIM)
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc/midiogre)
