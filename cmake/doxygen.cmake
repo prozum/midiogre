@@ -1,7 +1,7 @@
 find_package(Doxygen)
 
 if(NOT DOXYGEN_FOUND)
-    	message(FATAL_ERROR "Doxygen not found!")
+        message(FATAL_ERROR "Please install: doxygen")
 endif()
 
 set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Doxyfile.in)
