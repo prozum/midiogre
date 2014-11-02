@@ -1,2 +1,2 @@
 add_subdirectory(info)
-add_subdirectory(analyze)
+add_subdirectory(extract)

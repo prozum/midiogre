@@ -1,10 +1,11 @@
+#include <mid/mid.h>
+#include <mid/mid-util.h>
+#include <distance/distance.h>
+#include <analyze/analyze.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "midi/midi.h"
-#include "midi/util.h"
-#include "analyze/distance.h"
-#include "analyze/analyze.h"
 
 int main( int argc, char *argv[] )
 {
@@ -23,7 +24,7 @@ int main( int argc, char *argv[] )
     mid = read_mid(mid_file);
     
     /* Extracting all the nodes of the song */
-    song = song_extract(header, tracks);
+    song = song_extract(mid);
     
     /* Print some different places on different tracks */
     printf("\n###NODE EXTRACTION###\n");
