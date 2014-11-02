@@ -1,8 +1,7 @@
+#include "mid-util.h"
+#include "mid.h"
+
 #include <stdio.h>
-
-#include "midi.h"
-#include "util.h"
-
 
 void print_header(mid_t *mid)
 {
@@ -23,6 +22,7 @@ void print_tracks(mid_t *mid)
         printf("Track events: \t%u\n",mid->track[i].events);
     }
 }
+
 void print_event(mid_t *mid, unsigned int t, unsigned int e)
 {
     int i;

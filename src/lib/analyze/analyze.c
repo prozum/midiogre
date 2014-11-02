@@ -1,5 +1,10 @@
-#include "midi/midi.h"
 #include "analyze.h"
+
+#include <mid/mid.h>
+
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
 song_t *song_extract(mid_t *mid) {
     uint32_t i;
@@ -8,7 +13,6 @@ song_t *song_extract(mid_t *mid) {
     song->notes_all = malloc(sizeof( note_t ));
 
     for (i = 0; i < mid->tracks; i++) {
-
         song->notes_all[i] = *note_extract( &mid->track[i], mid->track[i].events, i);
     }
 

@@ -18,10 +18,10 @@ if(MAIN)
 	    midiogre-main.c
 	    midiogre-app.c
 	    midiogre-window.c
-	    midiogre-midi.c
+	    midiogre-mid.c
 	)
 	
-	target_link_libraries( midiogre midi ${GTK3_LIBRARIES})
+	target_link_libraries( midiogre mid ${GTK3_LIBRARIES})
 	
 	install(TARGETS midiogre  
 	RUNTIME DESTINATION bin

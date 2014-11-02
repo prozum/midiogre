@@ -2,6 +2,7 @@
 #define __MIDIOGREWIN_H
 
 #include "midiogre-app.h"
+
 #include <gtk/gtk.h>
 
 #define MIDIOGRE_APP_WINDOW_TYPE (midiogre_app_window_get_type ())

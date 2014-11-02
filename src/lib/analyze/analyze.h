@@ -1,9 +1,7 @@
-#include "midi/midi.h"
+#ifndef __ANALYZE_H__
+#define __ANALYZE_H__
 
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <mid/mid.h>
 
 /* struct that contains the node on a single track */
 typedef struct note_s
@@ -24,3 +22,5 @@ song_t *song_extract(mid_t *mid);
 
 /* returns all the nodes for a single track */
 note_t *note_extract(track_t *track, uint32_t event_count, uint32_t track_num);
+
+#endif

@@ -1,7 +1,7 @@
-#ifndef __MIDI_H__
-#define __MIDI_H__
+#ifndef __MID_H__
+#define __MID_H__
 
-/** @file midi.h */
+/** @file mid.h */
 
 #include <stdint.h>
 #include <stdio.h>

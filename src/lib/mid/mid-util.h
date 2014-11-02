@@ -1,9 +1,9 @@
-#ifndef __UTIL_H__
-#define __UTIL_H__
+/** @file mid-util.h */
 
-/** @file util.h */
+#ifndef __MIDIUTIL_H__
+#define __MIDIUTIL_H__
 
-#include "midi.h"
+#include "mid.h"
 
 void print_header(mid_t *mid);
 void print_tracks(mid_t *mid);

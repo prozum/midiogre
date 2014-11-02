@@ -1,8 +1,8 @@
+#include "mid.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-
-#include "midi.h"
 
 uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size)
 {

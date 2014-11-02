@@ -1,4 +1,5 @@
 #include "midiogre-window.h"
+
 #include <gtk/gtk.h>
 
 struct _MidiogreAppWindow

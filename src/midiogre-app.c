@@ -1,5 +1,6 @@
 #include "midiogre-app.h"
 #include "midiogre-window.h"
+
 #include <gtk/gtk.h>
 
 struct _MidiogreApp
@@ -22,7 +23,7 @@ midiogre_app_init (MidiogreApp *app)
 static void
 midiogre_app_activate (GApplication *app)
 {
-    GtkWindow *win;
+    GtkApplicationWindow *win;
 
     win = midiogre_app_window_new (MIDIOGRE_APP (app));
     gtk_window_present (GTK_WINDOW (win));
