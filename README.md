@@ -41,7 +41,8 @@ CMake Argument  | Default Value | Meaning
 -DDOC           |       0       | Build Documentation
 
 So to install Midiogre to /home/user/midiogre 
-without samples and documentation you would do as following:
+
+without samples and documentation you could do the following:
 
 ```bash
 [user midiogre-git]$ mkdir build && cd build
