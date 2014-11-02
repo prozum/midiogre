@@ -1,13 +1,32 @@
-add_subdirectory(midi)
-
 include_directories(
-	${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/src/lib
 )
 
-if(GUI)
-	add_subdirectory(gui)
-endif(GUI)
+add_subdirectory(lib)
 
-if(CLI)
-    add_subdirectory(cli)
-endif(CLI)
+if(MAIN)
+	find_package( PkgConfig REQUIRED )
+	pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+	
+	include_directories (${GTK3_INCLUDE_DIRS})
+	
+	link_directories (${CMAKE_LIBRARY_DIRS})
+	
+	add_definitions(${GTK3_CFLAGS_OTHER})
+	
+	add_executable(midiogre
+	    midiogre-main.c
+	    midiogre-app.c
+	    midiogre-window.c
+	    midiogre-midi.c
+	)
+	
+	target_link_libraries( midiogre midi ${GTK3_LIBRARIES})
+	
+	install(TARGETS midiogre  
+	RUNTIME DESTINATION bin
+	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION lib
+	COMPONENT library)
+
+endif(MAIN)

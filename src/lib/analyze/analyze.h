@@ -1,4 +1,4 @@
-#include "../midi/midi.h"
+#include "midi/midi.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -23,4 +23,4 @@ typedef struct song_s
 song_t *song_extract(mid_t *mid);
 
 /* returns all the nodes for a single track */
-note_t *note_extract(track_t *tracks, uint32_t event_count, uint32_t track_num);
+note_t *note_extract(track_t *track, uint32_t event_count, uint32_t track_num);
