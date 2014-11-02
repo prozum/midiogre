@@ -13,7 +13,7 @@ struct _MidiogreAppClass
     GtkApplicationClass parent_class;
 };
 
-G_DEFINE_TYPE(MidiogreApp, midiogre_app, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE(MidiogreApp, midiogre_app, GTK_TYPE_APPLICATION)
 
 static void
 midiogre_app_init (MidiogreApp *app)
@@ -23,7 +23,7 @@ midiogre_app_init (MidiogreApp *app)
 static void
 midiogre_app_activate (GApplication *app)
 {
-    GtkApplicationWindow *win;
+    MidiogreAppWindow *win;
 
     win = midiogre_app_window_new (MIDIOGRE_APP (app));
     gtk_window_present (GTK_WINDOW (win));
