@@ -23,7 +23,7 @@ midiogre_app_window_init (MidiogreAppWindow *win)
 static void
 midiogre_app_window_class_init (MidiogreAppWindowClass *class)
 {
-    gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (class),
+    gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS (class),
                                                    "../share/midiogre/midiogre.glade");
 }
 

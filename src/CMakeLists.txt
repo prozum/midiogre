@@ -7,7 +7,7 @@ if(MAIN)
     endif()
 
     #pkg_check_modules(GTK3 gtk+-3.0)
-    pkg_check_modules_fullpath(GTK3 gtk+-3.0)
+    pkg_check_modules_fullpath(GTK3 gtk+-3.0>=3.10)
     if (NOT GTK3_FOUND)
         message(FATAL_ERROR  "Please install: gtk3-devel")
     endif()
