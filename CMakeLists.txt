@@ -10,6 +10,7 @@ cmake_minimum_required(VERSION 2.8)
 
 include(cmake/options.cmake)
 include(cmake/showoptions.cmake)
+include(cmake/PkgCheckModulesFullpath.cmake)
 
 include_directories(
         ${CMAKE_SOURCE_DIR}/src/lib
