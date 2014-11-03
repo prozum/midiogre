@@ -1,10 +1,15 @@
 message("* Installing to : ${CMAKE_INSTALL_PREFIX}")
-message("")
 
 if( MAIN )
     message("* Build Midiogre : Yes")
 else()
     message("* Build Midiogre : No (default)")
+endif()
+
+if( DEBUG )
+    message("* Build in debug mode : Yes")
+else()
+    message("* Build in debug mode : No (default)")
 endif()
 
 if( MINGW )

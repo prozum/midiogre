@@ -13,8 +13,15 @@ include(cmake/showoptions.cmake)
 include(cmake/PkgCheckModulesFullpath.cmake)
 
 include_directories(
-        ${CMAKE_SOURCE_DIR}/src/lib
+    ${CMAKE_SOURCE_DIR}/src/lib
 )
+
+if (DEBUG)
+    set(CMAKE_BUILD_TYPE Debug)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
+else()
+    set(CMAKE_BUILD_TYPE Release)
+endif(DEBUG)
 
 
 add_subdirectory(src)
