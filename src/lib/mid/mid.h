@@ -171,7 +171,7 @@ typedef enum
  * See:
  * http://somascape.org/midi/tech/mfile.html#meta
  */
-typedef enum meta_msg
+typedef enum
 {
     SEQ_NUMBER          = 0x00,
     TEXT_EVENT          = 0x01,
@@ -193,7 +193,7 @@ typedef enum meta_msg
 /**
  * MIDI node
  */
-typedef enum nodes
+typedef enum
 {
     C0,  CH0,  D0,  DH0,  E0,  F0,  FH0,  G0,  GH0,  A0,  AH0,  B0,
     C1,  CH1,  D1,  DH1,  E1,  F1,  FH1,  G1,  GH1,  A1,  AH1,  B1,
@@ -211,7 +211,7 @@ typedef enum nodes
 /**
  * MIDI instrument
  */
-typedef enum instruments
+typedef enum
 {
     ACOUSTIC_GRAND_PIANO,
     BRIGHT_ACOUSTIC_PIANO,
