@@ -37,7 +37,7 @@ Here is a description of Midiogres CMake arguments
 CMake Argument  | Default Value | Meaning
 -------------   | ------------- | -------------
 -DMAIN          |       0       | Build Midiogre
--DMAIN          |       0       | Build in Debug Mode
+-DDEBUG         |       0       | Build in Debug Mode
 -DSAMPLES       |       1       | Build Samples
 -DDOC           |       0       | Build Documentation
 
