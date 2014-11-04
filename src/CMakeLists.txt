@@ -12,6 +12,25 @@ if(MAIN)
         message(FATAL_ERROR  "Please install: gtk3-devel")
     endif()
 
+    _pkgconfig_invoke("glib-2.0" GLIB2 PREFIX
+                      "" "--variable=prefix")
+
+    find_program(GLIB_COMPILE_RESOURCES
+                NAMES glib-compile-resources
+                HINTS ${GLIB2_PREFIX})
+
+    if (NOT GLIB_COMPILE_RESOURCES)
+        message(FATAL_ERROR "Please install: glib2-devel")
+    endif()
+
+    file(REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/midiogre-res.c)
+
+    add_custom_command (
+        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/midiogre-res.c
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/res/
+        COMMAND ${GLIB_COMPILE_RESOURCES} --generate-source --target=${CMAKE_CURRENT_SOURCE_DIR}/midiogre-res.c midiogre.gresource.xml
+    )
+
     include_directories(${GTK3_INCLUDE_DIRS})
 
     link_directories(${GTK3_LIBRARY_DIRS})
@@ -22,19 +41,19 @@ if(MAIN)
         midiogre-main.c
         midiogre-app.c
         midiogre-window.c
+        midiogre-res.c
         midiogre-mid.c
     )
 
-    target_link_libraries( midiogre mid ${GTK3_LIBRARIES})
+    target_link_libraries(midiogre
+                          mid
+                          ${GTK3_LIBRARIES})
 
     install(TARGETS midiogre
             RUNTIME DESTINATION bin
             ARCHIVE DESTINATION lib
             LIBRARY DESTINATION lib
             COMPONENT library)
-
-    install (FILES ${CMAKE_SOURCE_DIR}/res/midiogre.glade
-             DESTINATION share/midiogre)
 
     # TODO: Desktop file
     #install (FILES ${CMAKE_SOURCE_DIR}/res/midiogre.desktop
