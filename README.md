@@ -29,11 +29,17 @@ midiogre
 
 Ogres are not included.
 
+Dependencies
+--------------------
+- CMake      >= 2.8
+- Doxygen    >= 1.8
+- GTK+       >= 3.10
+
 Compile Instructions
 --------------------
 Midiogre uses CMake as build system.
 
-Here is a description of Midiogres CMake arguments
+Here is a description of Midiogres CMake arguments:
 
 CMake Argument  | Default Value | Meaning
 -------------   | ------------- | -------------
@@ -42,12 +48,13 @@ CMake Argument  | Default Value | Meaning
 -DSAMPLES       |       1       | Build Samples
 -DDOC           |       1       | Build Documentation
 
-So to install Midiogre to /home/user/midiogre 
-
-without samples and documentation you could do the following:
+### Compile Example
+So to install Midiogre to */home/user/midiogre* without samples you could do the following:
 
 ```bash
-[user midiogre-git]$ mkdir build && cd build
-[user midiogre-git/build]$ cmake .. -DMAIN=1 -DSAMPLES=0 -DCMAKE_INSTALL_PREFIX=/home/user/midiogre
-[user midiogre-git/build]$ make install
+git clone git@github.com:prozum/midiogre.git 
+mkdir midiogre-build && cd midiogre-build
+cmake ../midiogre -DMAIN=1 -DSAMPLES=0 \
+	-DCMAKE_INSTALL_PREFIX=/home/user/midiogre
+make install
 ```
