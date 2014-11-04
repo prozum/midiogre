@@ -23,8 +23,6 @@ if(MAIN)
         message(FATAL_ERROR "Please install: glib2-devel")
     endif()
 
-    file(REMOVE ${CMAKE_CURRENT_SOURCE_DIR}/midiogre-res.c)
-
     add_custom_command (
         OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/midiogre-res.c
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/res/
