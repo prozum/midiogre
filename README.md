@@ -3,6 +3,7 @@ midiogre
 - Connecting ogres
 - *Get ogre it*
 - *It'll be ogre before you know it.*
+- *Let's get this ogre with*
 - Build for ogres ahead
 - Touch the ogre
 - Born to ogre
