@@ -38,9 +38,9 @@ Here is a description of Midiogres CMake arguments
 CMake Argument  | Default Value | Meaning
 -------------   | ------------- | -------------
 -DMAIN          |       0       | Build Midiogre
--DDEBUG         |       0       | Build in Debug Mode
+-DDEBUG         |       1       | Build in Debug Mode
 -DSAMPLES       |       1       | Build Samples
--DDOC           |       0       | Build Documentation
+-DDOC           |       1       | Build Documentation
 
 So to install Midiogre to /home/user/midiogre 
 
