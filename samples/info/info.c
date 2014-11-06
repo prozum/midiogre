@@ -20,6 +20,7 @@ int main( int argc, char *argv[] )
     /* Read mid */
     mid = read_mid(mid_file);
 
+    /* Print mid data */
     print_header(mid);
     print_tracks(mid);
     print_event(mid,1,1);
