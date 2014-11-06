@@ -5,6 +5,7 @@ compiler:
   - clang
 
 before_install:
+  - sudo apt-get -qq update
   - sudo apt-get -qq install pkg-config libgtk-3-dev
 
 install:
