@@ -31,10 +31,10 @@ Ogres are not included.
 
 Dependencies
 --------------------
-- CMake      >= 2.8
-- pkg-config >= 0.26
-- Doxygen    >= 1.8
-- GTK+       >= 3.10
+- CMake		≥ 2.8
+- pkg-config	≥ 0.26
+- Doxygen	≥ 1.8
+- GTK+		≥ 3.10
 
 Compile Instructions
 --------------------
