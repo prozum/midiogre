@@ -5,10 +5,11 @@ compiler:
   - clang
 
 before_install:
+  - sudo sed -i "s/precise/trusty/g" /etc/apt/sources.list
   - sudo apt-get -qq update
-  - sudo apt-get -qq install pkg-config libgtk-3-dev
-  - pkg-config --version
+  - sudo apt-get -qq --no-install-recommends install cmake pkg-config doxygen libgtk-3-dev
   - cmake --version
+  - pkg-config --version
 
 install:
   - mkdir build
