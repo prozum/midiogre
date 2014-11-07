@@ -20,4 +20,4 @@ install:
 
 script:
   - make -j 10
-  - make install
+  - sudo make install
