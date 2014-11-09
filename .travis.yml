@@ -19,5 +19,21 @@ install:
   - cmake ../ -DMAIN=1
 
 script:
-  - make -j 10
+  - make -j 8
   - sudo make install
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "1fIoq5UgyTMR/3PurWRdzKLdO3Zbc6BWZ9sfWmtnM/GVzdqi5AhUkvw5QSBJ+482FtV2ib9G6a9lutyCgnbxOZiCcgDALLm9BigK8t/fb6x9R9cT0Nw6yGmSh5pUYpkK9pwvPq/eERlGCXy9SE2qCV3/B+W/rrE2fJzA5kRe4BE="
+
+addons:
+  coverity_scan:
+    project:
+      name: "prozum/midiogre"
+      description: "Build submitted via Travis CI"
+    notification_email: nimoov@prozum.dk
+    build_command_prepend: "make clean"
+    build_command:   "make -j 8"
+    branch_pattern: coverity
