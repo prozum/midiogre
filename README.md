@@ -1,3 +1,6 @@
+[![Travis: Build Status](https://travis-ci.org/prozum/midiogre.svg?branch=master)](https://travis-ci.org/prozum/midiogre)
+[![Coverity: Analysis Status](https://scan.coverity.com/projects/3450)](https://scan.coverity.com/projects/3450)
+
 midiogre
 ========
 - Connecting ogres
