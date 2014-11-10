@@ -183,6 +183,7 @@ event_t *read_events(uint8_t *data, uint16_t num)
         } else if (ACTIVE_SENSING > event[e].msg && event[e].msg >= SYS_EXCUSIVE) {
             /* TODO */
             printf("?????");
+            free(event)
             return NULL;
         } else if (event[e].msg == META_MSG) {
             event[e].para_1 = data[i++]; /* Meta msg   */
