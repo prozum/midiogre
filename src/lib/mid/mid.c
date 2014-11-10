@@ -12,7 +12,7 @@ uint32_t *ffread(FILE *file, long int offset, size_t buf_size)
     uint32_t *result;
 
     /* Check buf_size */
-    if (buf_size > 4 || buf_size < 0) {
+    if (buf_size > 4) {
         fprintf(stderr,"Buffer size invalid\n");
         return NULL;
     }
@@ -108,15 +108,15 @@ track_t *read_tracks(FILE *file, uint16_t num)
     uintptr_t *tmp;
     uint8_t *data;
 
-    track_t *tracks = calloc(sizeof(track_t),num);
 
     /* Start at the first track */
     if ( fseek(file,FIRST_TRACK_POS,SEEK_SET) != 0 )
     {
         fprintf(stderr,"fseek failed\n");
-        free(result);
         return NULL;
     }
+    
+    track_t *tracks = calloc(sizeof(track_t),num);
 
     /* For each track */
     for (i = 0; i < num; i++) {
