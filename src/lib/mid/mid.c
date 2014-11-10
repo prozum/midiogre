@@ -105,9 +105,8 @@ mid_t *read_mid(FILE *file)
 track_t *read_tracks(FILE *file, uint16_t num)
 {
     uint32_t i,j;
-    uintptr_t *tmp;
+    uint32_t *tmp;
     uint8_t *data;
-
 
     /* Start at the first track */
     if ( fseek(file,FIRST_TRACK_POS,SEEK_SET) != 0 )
