@@ -154,7 +154,8 @@ track_t *read_tracks(FILE *file, uint16_t num)
 
 event_t *read_events(uint8_t *data, uint16_t num)
 {
-    uint32_t i,j,e = 0;
+    uint32_t i,j,e;
+    i = e = 0;
 
     /* Allocate memory for events */
     event_t *event = calloc(sizeof(event_t),num);
