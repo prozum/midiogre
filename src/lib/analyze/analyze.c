@@ -11,7 +11,7 @@ song_t *song_extract(mid_t *mid) {
 
     song_t *song = malloc(sizeof( song_t ) * mid->tracks);
     song->notes_all = malloc(sizeof( note_t ) * 16);
-    song->velocity_all = malloc(sizeof( note_t ) * 16)
+    song->velocity_all = malloc(sizeof( note_t ) * 16);
 
     for (i = 0; i < mid->tracks; i++) {
         song->notes_all[i] = *note_extract( mid->track, mid->track[i].events, i);
