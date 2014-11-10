@@ -9,9 +9,9 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get -qq --no-install-recommends install cmake pkg-config doxygen libgtk-3-dev libexpat1-dev
   - echo "DEBUG:"
-  - pkg-config --version
   - cmake --version
   - pkg-config --version
+  - doxygen --version
 
 install:
   - mkdir build
