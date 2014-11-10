@@ -4,35 +4,35 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-uintptr_t *ffread(FILE *file, long int offset ,size_t buf_size)
+uintptr_t *ffread(FILE *file, long int offset, size_t buf_size)
 {
     uint32_t i;
     uint8_t tmp;
 
     uintptr_t *result;
 
-    /* Allocate memory according to buf_size */
-    if (buf_size > 8) {
-        fprintf(stderr,"Buffer size too big: 8+\n");
+    /* Check buf_size */
+    if (buf_size > 4) {
+        fprintf(stderr,"Buffer size too big: 4+\n");
         return NULL;
-    } else if (buf_size > 4) {
-        result = malloc(sizeof(uint64_t));
-    } else if (buf_size > 2) {
-        result = malloc(sizeof(uint32_t));
-    } else if (buf_size > 1) {
-        result = malloc(sizeof(uint16_t));
-    } else if (buf_size > 0) {
-        result = malloc(sizeof(uint8_t));
-    } else {
+    } else (buf_size < 0) {
         fprintf(stderr,"Buffer size too small: 0-\n");
         return NULL;
     }
+    
+    /* Allocate memory */
+    result = malloc(sizeof(uint32_t));
 
     /*  Initialize result (Windows compatibility) */
     *result = 0;
 
     /* Setup offset */
-    fseek(file,offset,SEEK_CUR);
+    if ( fseek(file,offset,SEEK_CUR) != 0)
+    {
+        perror("fseek failed");
+        free(result);
+        return NULL;
+    }
 
     /* Read one byte at a time! (Endianness) */
     for(i = 1; buf_size > i; ++i) {
