@@ -4,19 +4,23 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-uintptr_t *ffread(FILE *file, long int offset, size_t buf_size)
+uint32_t *ffread(FILE *file, long int offset, size_t buf_size)
 {
     uint32_t i;
     uint8_t tmp;
 
-    uintptr_t *result;
+    uint32_t *result;
 
     /* Check buf_size */
-    if (buf_size > 4) {
-        fprintf(stderr,"Buffer size too big: 4+\n");
+    if (buf_size > 4 || buf_size < 0) {
+        fprintf(stderr,"Buffer size invalid\n");
         return NULL;
-    } else (buf_size < 0) {
-        fprintf(stderr,"Buffer size too small: 0-\n");
+    }
+    
+    /* Setup offset */
+    if ( fseek(file,offset,SEEK_CUR) != 0)
+    {
+        fprintf(stderr,"fseek failed\n");
         return NULL;
     }
     
@@ -25,14 +29,6 @@ uintptr_t *ffread(FILE *file, long int offset, size_t buf_size)
 
     /*  Initialize result (Windows compatibility) */
     *result = 0;
-
-    /* Setup offset */
-    if ( fseek(file,offset,SEEK_CUR) != 0)
-    {
-        perror("fseek failed");
-        free(result);
-        return NULL;
-    }
 
     /* Read one byte at a time! (Endianness) */
     for(i = 1; buf_size > i; ++i) {
@@ -115,7 +111,12 @@ track_t *read_tracks(FILE *file, uint16_t num)
     track_t *tracks = calloc(sizeof(track_t),num);
 
     /* Start at the first track */
-    fseek(file,FIRST_TRACK_POS,SEEK_SET);
+    if ( fseek(file,FIRST_TRACK_POS,SEEK_SET) != 0 )
+    {
+        fprintf(stderr,"fseek failed\n");
+        free(result);
+        return NULL;
+    }
 
     /* For each track */
     for (i = 0; i < num; i++) {
