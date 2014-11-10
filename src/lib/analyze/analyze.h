@@ -3,18 +3,16 @@
 
 #include <mid/mid.h>
 
-/** Struct that contains the information of nodes on a single track */
-typedef struct note_s
-{
-    uint8_t *notes;    /**< ADD DOXYGEN DOC HERE */
-    uint8_t *velocity; /**< ADD DOXYGEN DOC HERE */
+/** Struct that contains the information of notes on a single track */
+typedef struct note_s {
+    uint8_t *notes;    /**< Contains notes for a single track */
+    uint8_t *velocity; /**< Contains velocity of notes for a single track */
 } note_t;
 
 /** Struct that contains an array with all the information of nodes for all tracks */
-typedef struct song_s
-{
-    note_t *notes_all;    /**< ADD DOXYGEN DOC HERE */
-    note_t *velocity_all; /**< ADD DOXYGEN DOC HERE */
+typedef struct song_s {
+    note_t *notes_all;    /**< Contains all the notes for all the tracks */
+    note_t *velocity_all; /**< Contains all the velocities for all notes on all tracks */
 } song_t;
 
 /** Returns all the nodes for all the tracks */
