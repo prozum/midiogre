@@ -157,8 +157,8 @@ event_t *read_events(uint8_t *data, uint16_t num)
     uint32_t j,i,e;
     event_t *event;
     
-    /* Start at first byte and event */
-    i = e = 0;
+    /* Start at first byte */
+    i = 0;
 
     /* Allocate memory for events */
     event = calloc(sizeof(event_t),num);
