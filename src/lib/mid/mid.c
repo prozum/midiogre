@@ -50,7 +50,7 @@ mid_t *read_mid(FILE *file)
     tmp = ffread(file,0,4);
 
     /* Check if signature is valid */
-    if (*tmp != HEADER_SIGNATURE) {
+    if (tmp != HEADER_SIGNATURE) {
         fprintf(stderr,"Header signature is invalid\n");
         free(mid);
         return NULL;
@@ -60,7 +60,7 @@ mid_t *read_mid(FILE *file)
     tmp = ffread(file,0,4);
 
     /* Check if length is valid */
-    if (*tmp != HEADER_LENGTH) {
+    if (tmp != HEADER_LENGTH) {
         fprintf(stderr,"Header length is invalid\n");
         free(mid);
         return NULL;
