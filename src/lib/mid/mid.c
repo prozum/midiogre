@@ -117,6 +117,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
         tmp = ffread(file,0,4);
         if (tmp != TRACK_SIGNATURE) {
             fprintf(stderr,"Track signature is invalid\n");
+            free(tracks);
             return NULL;
         }
 
