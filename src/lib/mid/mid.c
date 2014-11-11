@@ -162,7 +162,7 @@ event_t *read_events(uint8_t *data, uint16_t num)
     for (e = 0; e < num; e++) {
         /* Read delta time */
         event[e].delta = 0;
-        while ( (event[e].delta + data[i++]) > 0x80 );
+        while ( (event[e].delta += data[i++]) > 0x80 );
 
         /* Read event msg */
         event[e].msg = data[i++];
