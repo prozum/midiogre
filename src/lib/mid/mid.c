@@ -14,14 +14,14 @@ uint32_t ffread(FILE *file, long int offset, size_t buf_size)
     /* Check buf_size */
     if (buf_size > 4) {
         fprintf(stderr,"Buffer size invalid\n");
-        return NULL;
+        return 0;
     }
     
     /* Setup offset */
     if ( fseek(file,offset,SEEK_CUR) != 0)
     {
         fprintf(stderr,"fseek failed\n");
-        return NULL;
+        return 0;
     }
     
     /* Read one byte at a time! (Endianness) */
