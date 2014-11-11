@@ -4,12 +4,12 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-uint32_t *ffread(FILE *file, long int offset, size_t buf_size)
+uint32_t ffread(FILE *file, long int offset, size_t buf_size)
 {
     uint32_t i;
     uint8_t tmp;
 
-    uint32_t *result;
+    uint32_t result = 0;
 
     /* Check buf_size */
     if (buf_size > 4) {
@@ -24,27 +24,21 @@ uint32_t *ffread(FILE *file, long int offset, size_t buf_size)
         return NULL;
     }
     
-    /* Allocate memory */
-    result = malloc(sizeof(uint32_t));
-
-    /*  Initialize result (Windows compatibility) */
-    *result = 0;
-
     /* Read one byte at a time! (Endianness) */
     for(i = 1; buf_size > i; ++i) {
         fread(&tmp,1,1,file);
-        *result += tmp;
-        *result <<= 8;
+        result += tmp;
+        result <<= 8;
     }
     fread(&tmp,1,1,file);
-    *result += tmp;
+    result += tmp;
 
     return result;
 }
 
 mid_t *read_mid(FILE *file)
 {
-    uintptr_t *tmp;
+    uint32_t tmp;
 
     /* Allocate memory for header data */
     mid_t *mid = malloc(sizeof(mid_t));
@@ -74,7 +68,7 @@ mid_t *read_mid(FILE *file)
 
     /* Read format */
     tmp = ffread(file,0,2);
-    mid->format = *tmp;
+    mid->format = tmp;
 
     /* Check if format has a valid value */
     if (mid->format > MULTI_TRACK_ASYNC) {
@@ -85,11 +79,11 @@ mid_t *read_mid(FILE *file)
 
     /* Read number of tracks */
     tmp = ffread(file,0,2);
-    mid->tracks = *tmp;
+    mid->tracks = tmp;
 
     /* Read division */
     tmp = ffread(file,0,2);
-    mid->division = *tmp;
+    mid->division = tmp;
 
     /* Read tracks */
     mid->track = read_tracks(file,mid->tracks);
@@ -105,7 +99,7 @@ mid_t *read_mid(FILE *file)
 track_t *read_tracks(FILE *file, uint16_t num)
 {
     uint32_t i,j;
-    uint32_t *tmp;
+    uint32_t tmp;
     uint8_t *data;
 
     /* Start at the first track */
@@ -121,14 +115,14 @@ track_t *read_tracks(FILE *file, uint16_t num)
     for (i = 0; i < num; i++) {
         /* Check signature */
         tmp = ffread(file,0,4);
-        if (*tmp != TRACK_SIGNATURE) {
+        if (tmp != TRACK_SIGNATURE) {
             fprintf(stderr,"Track signature is invalid\n");
             return NULL;
         }
 
         /* Read length */
         tmp = ffread(file,0,4);
-        tracks[i].len = *tmp;
+        tracks[i].len = tmp;
 
         /* Allocate memory for track data */
         data = malloc(sizeof(uint8_t) * tracks[i].len);
@@ -136,7 +130,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
         /* Read track data */
         for (j = 0; tracks[i].len > j; j++) {
             tmp = ffread(file,0,1);
-            data[j] = *tmp;
+            data[j] = tmp;
         }
 
         /* Count events */
@@ -154,7 +148,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
 
 event_t *read_events(uint8_t *data, uint16_t num)
 {
-    uint32_t j,i,e;
+    uint32_t i,j,e;
     event_t *event;
     
     /* Start at first byte */

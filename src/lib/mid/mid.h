@@ -367,7 +367,7 @@ typedef struct mid_s
     track_t *track;     /**< Pointer to tracks */
 } mid_t;
 
-uint32_t *ffread(FILE *file, long int offset ,size_t buf_size);
+uint32_t ffread(FILE *file, long int offset ,size_t buf_size);
 
 int count_events(uint8_t *data, uint32_t len);
 
