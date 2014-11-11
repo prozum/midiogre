@@ -1,9 +1,22 @@
 #ifndef __MID_H
 #define __MID_H
 
-#include <mid/midi.h>
+#include <mid/mid.h>
 
-void mid_import(midi_t midi);
-void mid_export(midi_t *midi);
+#include <gtk/gtk.h>
+
+enum
+{
+  COLUMN_TYPE,
+  COLUMN_PARA_1,
+  COLUMN_PARA_2,
+  COLUMN_DELTA,
+  COLUMN_MDATA,
+  NUM_COLUMNS
+};
+
+
+void mid_import(GFile *mid_gfile, GtkWidget *treeview);
+void mid_export(mid_t *mid);
 
 #endif

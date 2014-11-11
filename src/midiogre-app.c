@@ -20,6 +20,7 @@ midiogre_app_init (MidiogreApp *app)
 {
 }
 
+/** Is called when midiogre is launched with no commandline arguments */
 static void
 midiogre_app_activate (GApplication *app)
 {
@@ -29,6 +30,7 @@ midiogre_app_activate (GApplication *app)
     gtk_window_present (GTK_WINDOW (win));
 }
 
+/** Is called when midiogre is launched with commandline arguments */
 static void
 midiogre_app_open (GApplication  *app,
                   GFile        **files,
@@ -46,21 +48,24 @@ midiogre_app_open (GApplication  *app,
         win = midiogre_app_window_new (MIDIOGRE_APP (app));
 
     for (i = 0; i < n_files; i++)
-        midiogre_app_window_open (win, files[i]);
+        midiogre_app_window_open(win, files[i]);
 
-    gtk_window_present (GTK_WINDOW (win));
+    gtk_window_present(GTK_WINDOW(win));
 }
 
 static void
 midiogre_app_class_init (MidiogreAppClass *class)
 {
-    G_APPLICATION_CLASS (class)->activate = midiogre_app_activate;
-    G_APPLICATION_CLASS (class)->open = midiogre_app_open;
+    /* Overwrite default activate function */
+    G_APPLICATION_CLASS(class)->activate = midiogre_app_activate;
+
+    /* Overwrite default open function */
+    G_APPLICATION_CLASS(class)->open = midiogre_app_open;
 }
 
 
 MidiogreApp *
-midiogre_app_new (void)
+midiogre_app_new(void)
 {
     return g_object_new (MIDIOGRE_APP_TYPE,
          "application-id", "org.prozum.Midiogre",

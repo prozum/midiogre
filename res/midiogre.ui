@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <!-- interface-requires gtk+ 3.10 -->
   <template class="MidiogreAppWindow" parent="GtkApplicationWindow">
     <property name="title" translatable="yes">Midiogre</property>
     <property name="default-width">800</property>

@@ -8,8 +8,9 @@
 #define MIDIOGRE_APP_WINDOW_TYPE (midiogre_app_window_get_type ())
 #define MIDIOGRE_APP_WINDOW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), MIDIOGRE_APP_WINDOW_TYPE, MidiogreAppWindow))
 
-typedef struct _MidiogreAppWindow         MidiogreAppWindow;
-typedef struct _MidiogreAppWindowClass    MidiogreAppWindowClass;
+typedef struct _MidiogreAppWindow           MidiogreAppWindow;
+typedef struct _MidiogreAppWindowClass      MidiogreAppWindowClass;
+typedef struct _MidiogreAppWindowPrivate    MidiogreAppWindowPrivate;
 
 GType                   midiogre_app_window_get_type     (void);
 MidiogreAppWindow      *midiogre_app_window_new          (MidiogreApp *app);
