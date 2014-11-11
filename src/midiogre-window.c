@@ -51,29 +51,19 @@ midiogre_app_window_open(MidiogreAppWindow *win,
     MidiogreAppWindowPrivate *priv;
     gchar *basename;
 
-    GtkWidget *sw, *view, *treeview;
-    //gchar *contents;
-    //gsize length;
+    GtkWidget *notebook;
 
     priv = midiogre_app_window_get_instance_private(win);
     basename = g_file_get_basename(file);
 
-    treeview = gtk_tree_view_new();
+    notebook = gtk_notebook_new ();
 
-    mid_import(file,treeview);
+    gtk_widget_show(notebook);
 
-    /* Setup scroll container */
-    sw = gtk_scrolled_window_new(NULL, NULL);
-    gtk_widget_show(sw);
-    gtk_widget_set_hexpand(sw, TRUE);
-    gtk_widget_set_vexpand(sw, TRUE);
-
-    gtk_container_add(GTK_CONTAINER(sw), treeview );
-
-
+    mid_import(file,notebook);
 
     /* Add file to stack */
-    gtk_stack_add_titled(GTK_STACK(priv->stack), sw, basename, basename);
+    gtk_stack_add_titled(GTK_STACK(priv->stack), notebook, basename, basename);
 
     g_free (basename);
 }

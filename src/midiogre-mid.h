@@ -16,7 +16,7 @@ enum
 };
 
 
-void mid_import(GFile *mid_gfile, GtkWidget *treeview);
+void mid_import(GFile *mid_gfile, GtkWidget *notebook);
 void mid_export(mid_t *mid);
 
 #endif
