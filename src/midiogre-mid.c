@@ -117,6 +117,7 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
         gtk_notebook_append_page (GTK_NOTEBOOK (notebook),
                                         sw,
                                         gtk_label_new (str));
+        free_mid(mid);
     }
 }
 
