@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     MidiogreApp *app;
 
     /* Needed for Glib older than 2.36 (Windows) */
-    g_type_init();
+    //g_type_init();
 
     app = midiogre_app_new();
     
