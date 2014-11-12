@@ -29,6 +29,7 @@ midiogre
 - Ogre your way
 - The ogre for everyone
 - Now presenting the new eyeOgre
+- The way it's meant to be ogred
 
 Ogres are not included.
 
