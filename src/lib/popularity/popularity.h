@@ -4,9 +4,9 @@
 void testTime();
 unsigned int getUnixTimeStamp();
 unsigned int startTime();
-unsigned int compareTime(unsigned int startTime, unsigned int currentTime);
+unsigned int compareTime(unsigned int startTime);
 int isPlayed(int plays);
-int positivePlayCount(int playCount);
-double weigth(unsigned int time, int playCount);
+int absPlayCount(int playCount);
+double weigth(unsigned int startTime, int playCount);
 
 #endif

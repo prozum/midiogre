@@ -10,7 +10,7 @@
 
 /*Print current time in Unix Time in secounds*/
 void testTime(){
-    printf("%d sekunder\n",getUnixTimeStamp());
+    printf("%d sekunder\ns",getUnixTimeStamp());
 }
 
 /*Get Unix Time, and returns it in seconds*/
@@ -19,29 +19,28 @@ unsigned int getUnixTimeStamp(){
 }
 
 /*Calculates diffrence between the starttime(time of creation) of the song and current time*/
-unsigned int compareTime(unsigned int startTime, unsigned int currentTime){
-    return currentTime-startTime;
+unsigned int compareTime(unsigned int startTime){
+    return (unsigned)time(NULL)-startTime;
 }
 
 /*Checks if the song has been played*/
 int isPlayed(int plays){
     if(plays>0)
         return 1;
-    else if(plays == 0)
-        return 0;
     else
-        return -1;
+        return 0;
 }
 
 /*Ensures the playcount always is possitive or equal 0*/
-int positivePlayCount(int playCount){
-    if(playCount >= 1)
-        return playCount;
+int absPlayCount(int playCount){
+    if(abs(playCount) >= 1)
+        return abs(playCount);
     else
         return 1;
 }
 
 /*Calculates the score af the song*/
-double weigth(unsigned int time, int playCount){
-    return log10((double)positivePlayCount(playCount))+(isPlayed(playCount)*time)/TIMECONSTANT;
+/*No matter how old the song is, it wont get any score before it is viewed at least once*/
+double weigth(unsigned int startTime, int playCount){
+    return log10((double)absPlayCount(playCount))+(isPlayed(playCount)*compareTime(startTime))/TIMECONSTANT;
 }
