@@ -7,15 +7,11 @@
 /*The functions below are used for the reddit algorith*/
 
 #define TIMECONSTANT 45000
+#define BASETIME 1416174518 /*Added 22:48 16/11/2014*/
 
-/*Get Unix Time, and returns it in seconds*/
-unsigned int getUnixTimeStamp(){
-    return (unsigned int)time(NULL);
-}
-
-/*Calculates diffrence between the starttime(time of creation) of the song and current time*/
-unsigned int compareTime(unsigned int startTime){
-    return (unsigned int)time(NULL)-startTime;
+/*Alt time calculator based on the actual model used på reddit as found here: amix.dk/blog/post/19588*/
+unsigned int calcAge(unsigned int postTime){
+    return postTime - BASETIME;
 }
 
 /*Checks if the song has been played*/
@@ -36,6 +32,6 @@ unsigned int playCount(unsigned int plays){
 
 /*Calculates the score af the song*/
 /*No matter how old the song is, it wont get any weigth before it is viewed more than once, or once and has been around for a longer time*/
-double weigth(unsigned int startTime, int plays){
-    return log10((double)playCount(plays))+(isPlayed(plays)*compareTime(startTime))/TIMECONSTANT;
+double weigth(unsigned int age, int plays){
+    return log10((double)playCount(plays))+(isPlayed(plays)*calcAge(age))/TIMECONSTANT;
 }
