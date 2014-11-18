@@ -9,10 +9,11 @@
 void
 mid_import(GFile *mid_gfile, GtkWidget *notebook)
 {
-    int i,j;
+    int i,j,k;
+    int len;
     FILE *mid_file;
     mid_t *mid;
-    char *str;
+    char tmp[3],*str;
 
     GtkWidget *treeview, *sw;
     GtkTreeModel *model = NULL;
@@ -29,6 +30,7 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
     mid = read_mid(mid_file);
     fclose(mid_file);
 
+    /* For each track */
     for (i = 0; i < mid->tracks; i++)
     {
         /* Setup column data types */
@@ -39,16 +41,54 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
                                       G_TYPE_UINT,
                                       G_TYPE_STRING);
 
+        /* For each event in track */
         for (j = 0; j < mid->track[i].events; j++) {
-            gtk_list_store_append (store, &iter);
-            gtk_list_store_set (store, &iter,
-                                COLUMN_TYPE,   mid->track[i].event[j].msg,
-                                COLUMN_PARA_1, mid->track[i].event[j].para_1,
-                                COLUMN_PARA_2, mid->track[i].event[j].para_2,
-                                COLUMN_DELTA,  mid->track[i].event[j].delta,
-                                COLUMN_MDATA,  (char *) mid->track[i].event[j].mdata,
-                                -1);
+
+            /* If meta message */
+            if (mid->track[i].event[j].msg == META_MSG) {
+
+                /* Find string length */
+                len = mid->track[i].event[j].para_2 * 3;
+
+                str = (char *) g_malloc( (len + 1) * sizeof(char) );
+                strcpy(str,"");
+
+                /* For each byte in meta data */
+                for (k = 0; k < mid->track[i].event[j].para_2; k++) {
+
+                    /* Convert MData to hex */
+                    if (mid->track[i].event[j].mdata[k] > 0xF) {
+                        g_sprintf(&tmp,"%x ",mid->track[i].event[j].mdata[k]);
+                    } else {
+                        g_sprintf(&tmp,"0%x ",mid->track[i].event[j].mdata[k]);
+                    }
+                    strcat(str,tmp);
+                }
+
+                gtk_list_store_append (store, &iter);
+                gtk_list_store_set (store, &iter,
+                                    COLUMN_TYPE,   mid->track[i].event[j].msg,
+                                    COLUMN_PARA_1, mid->track[i].event[j].para_1,
+                                    COLUMN_PARA_2, mid->track[i].event[j].para_2,
+                                    COLUMN_DELTA,  mid->track[i].event[j].delta,
+                                    COLUMN_MDATA,  str,
+                                    -1);
+                free(str);
+
+            /* Not meta message */
+            } else {
+                gtk_list_store_append (store, &iter);
+                gtk_list_store_set (store, &iter,
+                                    COLUMN_TYPE,   mid->track[i].event[j].msg,
+                                    COLUMN_PARA_1, mid->track[i].event[j].para_1,
+                                    COLUMN_PARA_2, mid->track[i].event[j].para_2,
+                                    COLUMN_DELTA,  mid->track[i].event[j].delta,
+                                    COLUMN_MDATA,  "N/A",
+                                    -1);
+
+            }
         }
+
 
         /* Create model from store */
         model = GTK_TREE_MODEL(store);
@@ -113,12 +153,11 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
 
         gtk_container_add(GTK_CONTAINER(sw), treeview );
 
-        str = g_strdup_printf("Track %i",i+1);
         gtk_notebook_append_page (GTK_NOTEBOOK (notebook),
                                         sw,
-                                        gtk_label_new (str));
-        free_mid(mid);
+                                        gtk_label_new (g_strdup_printf("Track %i",i+1)));
     }
+    free_mid(mid);
 }
 
 /** Export tree view data to mid struct */

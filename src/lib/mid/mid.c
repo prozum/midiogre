@@ -4,6 +4,11 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+/**
+ * Fixed ffread. 
+ * - Reads one byte at the time. 
+ * - Adds offset
+ */
 uint32_t ffread(FILE *file, long int offset, size_t buf_size)
 {
     uint32_t i;
@@ -17,7 +22,7 @@ uint32_t ffread(FILE *file, long int offset, size_t buf_size)
         return 0;
     }
     
-    /* Setup offset */
+    /* Setup offset from current position */
     if ( fseek(file,offset,SEEK_CUR) != 0)
     {
         fprintf(stderr,"fseek failed\n");
@@ -36,6 +41,7 @@ uint32_t ffread(FILE *file, long int offset, size_t buf_size)
     return result;
 }
 
+/** Read mid file */
 mid_t *read_mid(FILE *file)
 {
     uint32_t tmp;
@@ -96,6 +102,7 @@ mid_t *read_mid(FILE *file)
     return mid;
 }
 
+/** Read tracks */
 track_t *read_tracks(FILE *file, uint16_t num)
 {
     uint32_t i,j;
@@ -113,6 +120,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
 
     /* For each track */
     for (i = 0; i < num; i++) {
+        
         /* Check signature */
         tmp = ffread(file,0,4);
         if (tmp != TRACK_SIGNATURE) {
@@ -147,6 +155,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
     return tracks;
 }
 
+/* Read events */
 event_t *read_events(uint8_t *data, uint16_t num)
 {
     uint32_t i,j,e;
@@ -170,10 +179,12 @@ event_t *read_events(uint8_t *data, uint16_t num)
         /* Read event parameters */
         if ( (CTRL_MODE_16 >= event[e].msg && event[e].msg >= NOTE_OFF_1) ||
              (PITCH_BEND_16 >= event[e].msg && event[e].msg >= PITCH_BEND_1) ) {
+            /* Events with two parameters */
             event[e].para_1 = data[i++];
             event[e].para_2 = data[i++];
 
         } else if (CHAN_AFT_16 >= event[e].msg && event[e].msg >= PRG_CHANGE_1) {
+            /* Events with one parameters */
             event[e].para_1 = data[i++];
         } else if (ACTIVE_SENSING > event[e].msg && event[e].msg >= SYS_EXCUSIVE) {
             /* TODO */
@@ -181,6 +192,7 @@ event_t *read_events(uint8_t *data, uint16_t num)
             free(event);
             return NULL;
         } else if (event[e].msg == META_MSG) {
+            /* Meta events */
             event[e].para_1 = data[i++]; /* Meta msg   */
             event[e].para_2 = data[i++]; /* Meta length */
 
@@ -200,7 +212,8 @@ event_t *read_events(uint8_t *data, uint16_t num)
     return event;
 }
 
-int count_events(uint8_t *data, uint32_t len)
+/* Count events in event data */
+uint32_t count_events(uint8_t *data, uint32_t len)
 {
     uint32_t e,i=0;
 
@@ -235,16 +248,20 @@ int count_events(uint8_t *data, uint32_t len)
 
 void write_mid(FILE *midi_file, mid_t mid);
 
+/** Deallocate data in mid_t */
 void free_mid(mid_t *mid)
 {
     uint32_t i,j;
 
     /* For each track */
     for (i = 0; i < mid->tracks; i++ ) {
+        
         /* For events in track */
         for (j = 0; j < mid->track[i].events; j++) {
+
             /* If meta event */
             if (mid->track[i].event[j].msg == META_MSG) {
+                
                 /* Deallocate meta event data */
                 free(mid->track[i].event[j].mdata);
             }
