@@ -42,7 +42,7 @@ Dependencies
 
 Compile Instructions
 --------------------
-Midiogre uses CMake as build system.
+Midiogre uses the CMake build system.
 
 Here is a description of Midiogres CMake arguments:
 
@@ -54,7 +54,7 @@ CMake Argument  | Default Value | Meaning
 -DDOC           |       1       | Build Documentation
 
 ### Compile Example
-So to install Midiogre to */home/user/midiogre* without samples you could do the following:
+To install Midiogre to */home/user/midiogre* without samples you could do the following:
 
 ```bash
 git clone git@github.com:prozum/midiogre.git 
