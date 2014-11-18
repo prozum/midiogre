@@ -319,7 +319,7 @@ typedef enum
     FX_8_SCI_FI,
     SITAR,
     BANJO,
-    SHAMISEN,
+    SHAMISEN, /**< Japser banjo */
     KOTO,
     KALIMBA,
     BAG_PIPE,
