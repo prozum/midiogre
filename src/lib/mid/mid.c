@@ -230,7 +230,7 @@ uint32_t count_events(uint8_t *data, uint32_t len)
         } else if (CHAN_AFT_16 >= data[i] && data[i] >= PRG_CHANGE_1) {
             /* Events with 1 parameter */
             i+=2;
-        } else if (ACTIVE_SENSING > data[i] && data[i] >= SYS_EXCUSIVE) {
+        } else if (ACTIVE_SENSING > data[i] && data[i] >= SYS_EXCLUSIVE) {
             /* TODO */
             printf("?????");
             return -1;
