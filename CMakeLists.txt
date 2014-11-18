@@ -13,15 +13,15 @@ include(cmake/options.cmake)
 include(cmake/showoptions.cmake)
 include(cmake/PkgCheckModulesFullpath.cmake)
 
-# C Flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm")
-
 if (DEBUG)
     set(CMAKE_BUILD_TYPE Debug)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
 else()
     set(CMAKE_BUILD_TYPE Release)
 endif(DEBUG)
+
+# C Flags
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm")
 
 # Include libs
 include_directories(
