@@ -369,7 +369,7 @@ typedef struct mid_s
 
 uint32_t ffread(FILE *file, long int offset ,size_t buf_size);
 
-int count_events(uint8_t *data, uint32_t len);
+uint32_t count_events(uint8_t *data, uint32_t len);
 
 mid_t *read_mid(FILE *file);
 track_t *read_tracks(FILE *file, uint16_t num);
