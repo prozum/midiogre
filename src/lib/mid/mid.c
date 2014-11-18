@@ -186,7 +186,7 @@ event_t *read_events(uint8_t *data, uint16_t num)
         } else if (CHAN_AFT_16 >= event[e].msg && event[e].msg >= PRG_CHANGE_1) {
             /* Events with one parameters */
             event[e].para_1 = data[i++];
-        } else if (ACTIVE_SENSING > event[e].msg && event[e].msg >= SYS_EXCUSIVE) {
+        } else if (ACTIVE_SENSING > event[e].msg && event[e].msg >= SYS_EXCLUSIVE) {
             /* TODO */
             printf("?????");
             free(event);
