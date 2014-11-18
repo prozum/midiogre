@@ -34,7 +34,7 @@ typedef enum
  */
 typedef enum
 {
-    NOTE_OFF_1          = 0x80,
+    NOTE_OFF_1          = 0x80, /**< Sent when note is released */
     NOTE_OFF_2          = 0x81,
     NOTE_OFF_3          = 0x82,
     NOTE_OFF_4          = 0x83,
@@ -50,7 +50,7 @@ typedef enum
     NOTE_OFF_14         = 0x8d,
     NOTE_OFF_15         = 0x8e,
     NOTE_OFF_16         = 0x8f,
-    NOTE_ON_1           = 0x90,
+    NOTE_ON_1           = 0x90, /**< Sent when note is pressed */
     NOTE_ON_2           = 0x91,
     NOTE_ON_3           = 0x92,
     NOTE_ON_4           = 0x93,
@@ -66,7 +66,7 @@ typedef enum
     NOTE_ON_14          = 0x9d,
     NOTE_ON_15          = 0x9e,
     NOTE_ON_16          = 0x9f,
-    POLY_AFT_1          = 0xa0,
+    POLY_AFT_1          = 0xa0, /**< Key pressure value*/
     POLY_AFT_2          = 0xa1,
     POLY_AFT_3          = 0xa2,
     POLY_AFT_4          = 0xa3,
@@ -82,7 +82,7 @@ typedef enum
     POLY_AFT_14         = 0xad,
     POLY_AFT_15         = 0xae,
     POLY_AFT_16         = 0xaf,
-    CTRL_MODE_1         = 0xb0,
+    CTRL_MODE_1         = 0xb0, /**< Sent when controller changes (pedals and levers etc.)*/
     CTRL_MODE_2         = 0xb1,
     CTRL_MODE_3         = 0xb2,
     CTRL_MODE_4         = 0xb3,
@@ -98,7 +98,7 @@ typedef enum
     CTRL_MODE_14        = 0xbd,
     CTRL_MODE_15        = 0xbe,
     CTRL_MODE_16        = 0xbf,
-    PRG_CHANGE_1        = 0xc0,
+    PRG_CHANGE_1        = 0xc0, /**< Sent when patch number changes*/
     PRG_CHANGE_2        = 0xc1,
     PRG_CHANGE_3        = 0xc2,
     PRG_CHANGE_4        = 0xc3,
@@ -114,7 +114,7 @@ typedef enum
     PRG_CHANGE_14       = 0xcd,
     PRG_CHANGE_15       = 0xce,
     PRG_CHANGE_16       = 0xcf,
-    CHAN_AFT_1          = 0xd0,
+    CHAN_AFT_1          = 0xd0, /**< Channel pressure. Different from Key pressure. Use to get single greatest pressure value of all keys*/
     CHAN_AFT_2          = 0xd1,
     CHAN_AFT_3          = 0xd2,
     CHAN_AFT_4          = 0xd3,
@@ -130,7 +130,7 @@ typedef enum
     CHAN_AFT_14         = 0xdd,
     CHAN_AFT_15         = 0xde,
     CHAN_AFT_16         = 0xdf,
-    PITCH_BEND_1        = 0xe0,
+    PITCH_BEND_1        = 0xe0, /**< Sent to indicate pitch bend change(wheel or lever)*/
     PITCH_BEND_2        = 0xe1,
     PITCH_BEND_3        = 0xe2,
     PITCH_BEND_4        = 0xe3,
@@ -146,23 +146,23 @@ typedef enum
     PITCH_BEND_14       = 0xed,
     PITCH_BEND_15       = 0xee,
     PITCH_BEND_16       = 0xef,
-    SYS_EXCUSIVE        = 0xf0,
-    TIME_CODE           = 0xf1,
-    SONG_POS_PTR        = 0xf2,
-    SONG_SELECT         = 0xf3,
-    FUNC_UNDEF_1        = 0xf4,
-    FUNC_UNDEF_2        = 0xf5,
-    TUNE_REQ            = 0xf6,
-    END_SYSEX           = 0xf7,
-    TIMING_CLOCK        = 0xf8,
-    FUNC_UNDEF_3        = 0xf9,
-    FUNC_START          = 0xfa,
-    FUNC_CONTINUE       = 0xfb,
-    FUNC_STOP           = 0xfc,
-    FUNC_UNDEF_4        = 0xfd,
-    ACTIVE_SENSING      = 0xfe,
-    SYS_RESET           = 0xff,
-    META_MSG            = 0xff
+    SYS_EXCLUSIVE       = 0xf0, /**< Messaging to midi hardware - start with 0xf0*/
+    TIME_CODE           = 0xf1, /**< Time code*/
+    SONG_POS_PTR        = 0xf2, /**< Song position pointer*/
+    SONG_SELECT         = 0xf3, /**< Song Select*/
+    FUNC_UNDEF_1        = 0xf4, /**< Function undefined 1*/
+    FUNC_UNDEF_2        = 0xf5, /**< Function undefined 2*/
+    TUNE_REQ            = 0xf6, /**< Tune requirement*/
+    END_SYSEX           = 0xf7, /**< Messaging to midi hardware - End with 0xf7*/
+    TIMING_CLOCK        = 0xf8, /**< Timing clock*/
+    FUNC_UNDEF_3        = 0xf9, /**< Function undefined 3*/
+    FUNC_START          = 0xfa, /**< Function start*/
+    FUNC_CONTINUE       = 0xfb, /**< Function continue*/
+    FUNC_STOP           = 0xfc, /**< Function stop*/
+    FUNC_UNDEF_4        = 0xfd, /**< Function undefined 4*/
+    ACTIVE_SENSING      = 0xfe, /**< Active sensing*/
+    SYS_RESET           = 0xff, /**< system reset*/
+    META_MSG            = 0xff  /**< Meta message*/
 } msg_t;
 
 /**
@@ -173,21 +173,21 @@ typedef enum
  */
 typedef enum
 {
-    SEQ_NUMBER          = 0x00,
-    TEXT_EVENT          = 0x01,
-    COPYRIGHT_NOTICE    = 0x02,
-    TRACK_NAME          = 0x03,
-    INSTRUMENT_NAME     = 0x04,
-    LYRIC_TEXT          = 0x05,
-    MARKER_TEXT         = 0x06,
-    CUE_POINT           = 0x07,
-    MIDI_CPA            = 0x20,
-    END_OF_TRACK        = 0x2F,
-    TEMPO_SETTING       = 0x51,
-    SMPTE_OFFSET        = 0x54,
-    TIME_SIG            = 0x58,
-    KEY_SIG             = 0x59,
-    SEQ_SPECIFIC_EVENT  = 0x7f
+    SEQ_NUMBER          = 0x00, /**< 16-bit value specifying the sequence number, is optional, should occur at time = 0, and prior to any MIDI events */
+    TEXT_EVENT          = 0x01, /**< This event is optional, and is used to include comments and other user information */
+    COPYRIGHT_NOTICE    = 0x02, /**< contains a copyright message comprising the characters '(C)' along with the year and owner of the copyright, optional */
+    TRACK_NAME          = 0x03, /**< If it occurs in the first track of a format 0 or 1 MIDI file, then it gives the Sequence Name, otherwise gives Track Name */
+    INSTRUMENT_NAME     = 0x04, /**< Optional event to provide textual clue regarding instrumentation. Recommended to be at the start of track */
+    LYRIC_TEXT          = 0x05, /**< Lyric of song. Placed appropriately throughout track */
+    MARKER_TEXT         = 0x06, /**< Used to mark points in a song such as verses */
+    CUE_POINT           = 0x07, /**< optional event is used to describe something that happens within a film, video or stage production at that point in the musical score. Eg 'Car crashes', 'Door opens', etc. */
+    MIDI_CPA            = 0x20, /**< optional event is used to associate any subsequent SysEx and Meta events with a particular MIDI channel, and will remain in effect until the next MIDI Channel Prefix Meta event or the next MIDI event. */
+    END_OF_TRACK        = 0x2F, /**< mandatory event must be the last event in each MTrk chunk, and that should be the only occurrence per track. */
+    TEMPO_SETTING       = 0x51, /**< 24-bit value specifying the tempo as the number of microseconds per quarter note, Specifying tempos as time per beat. */
+    SMPTE_OFFSET        = 0x54, /**< optional event, if present, should occur at the start of a track, at time = 0, and prior to any MIDI events. It is used to specify the SMPTE time at which the track is to start */
+    TIME_SIG            = 0x58, /**< There should generally be a Time Signature Meta event at the beginning of a track (at time = 0), otherwise a default 4/4 time signature will be assumed */
+    KEY_SIG             = 0x59, /**< specifies key signatures */
+    SEQ_SPECIFIC_EVENT  = 0x7f  /**< The first 1 or 3 bytes of data is a manufacturer's ID code */
 } meta_t;
 
 /**
