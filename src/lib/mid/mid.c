@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 /**
- * Fixed ffread. 
+ * Fixed fread. 
  * - Reads one byte at the time. 
  * - Adds offset
  */
