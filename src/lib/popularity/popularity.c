@@ -4,7 +4,7 @@
 #include <time.h>
 #include "popularity.h"
 
-/*The functions below are used for the reddit algorith*/
+/*The functions below are used for the reddit algorithm*/
 
 #define TIMECONSTANT 45000
 #define BASETIME 1416174518 /*Added 22:48 16/11/2014*/
@@ -31,7 +31,7 @@ unsigned int playCount(unsigned int plays){
 }
 
 /*Calculates the score af the song*/
-/*No matter how old the song is, it wont get any weigth before it is viewed more than once, or once and has been around for a longer time*/
-double weigth(unsigned int age, int plays){
+/*No matter how old the song is, it wont get any weight before it is viewed more than once, or once and has been around for a longer time*/
+double weight(unsigned int age, int plays){
     return log10((double)playCount(plays))+(isPlayed(plays)*calcAge(age))/TIMECONSTANT;
 }
