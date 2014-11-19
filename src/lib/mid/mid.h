@@ -211,6 +211,9 @@ typedef enum
 
 /**
  * MIDI instrument
+ *
+ * See:
+ * http://www.midi.org/techspecs/gm1sound.php
  */
 typedef enum
 {
