@@ -106,10 +106,10 @@ typedef enum
     EFFECTS_5_DEPTH     = 0x5f,
     DATA_INC            = 0x60,
     DATA_DEC            = 0x61,
-    NREG_PARA_NUM       = 0x62,
-    NREG_PARA_NUM       = 0x63,
-    REG_PARA_NUM        = 0x64,
-    REG_PARA_NUM        = 0x65,
+    NREG_PARA_NUM_LSB   = 0x62,
+    NREG_PARA_NUM_MSB   = 0x63,
+    REG_PARA_NUM_LSB    = 0x64,
+    REG_PARA_NUM_MSB    = 0x65,
                          
     ALL_SOUND_OFF       = 0x78,
     RESET_ALL_CTRLS     = 0x79,
@@ -118,7 +118,6 @@ typedef enum
     OMNI_MODE_OFF       = 0x7c,
     OMNI_MODE_ON        = 0x7d,
     MONO_MODE_ON        = 0x7e,
-    POLY_MODE_ON        = 0x7f, 
     POLY_MODE_ON        = 0x7f,
     NOTE_OFF_1          = 0x80, /**< Sent when note is released */
     NOTE_OFF_2          = 0x81,
