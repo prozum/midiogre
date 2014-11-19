@@ -31,7 +31,8 @@ midiogre
 - Now presenting the new eyeOgre
 - The way it's meant to be ogred
 - Once you go Ogre you never go back
-Ogres are not included.
+- Ogre is love, ogre is life
+- Ogres are not included.
 
 Dependencies
 --------------------
