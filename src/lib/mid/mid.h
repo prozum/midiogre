@@ -34,7 +34,7 @@ typedef enum
  */
 typedef enum
 {
-	POLY_MODE_ON		= 0x7f,
+    POLY_MODE_ON        = 0x7f,
     NOTE_OFF_1          = 0x80, /**< Sent when note is released */
     NOTE_OFF_2          = 0x81,
     NOTE_OFF_3          = 0x82,
