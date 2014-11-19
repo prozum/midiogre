@@ -3,12 +3,6 @@ add_subdirectory(lib)
 
 # Main Program 
 if(MAIN)
-    # Find PkgConfig
-    find_package( PkgConfig )
-    if (NOT PKGCONFIG_FOUND)
-        message(FATAL_ERROR  "Please install: pkgconfig")
-    endif()
-
     # Find GTK3
     pkg_check_modules_fullpath(GTK3 gtk+-3.0>=3.10)
     if (NOT GTK3_FOUND)

@@ -27,6 +27,11 @@ endif(DEBUG)
 include_directories(
     ${CMAKE_SOURCE_DIR}/src/lib
 )
+# Find PkgConfig
+find_package( PkgConfig )
+if (NOT PKGCONFIG_FOUND)
+    message(FATAL_ERROR  "Please install: pkgconfig")
+endif()
 
 # Main source dir
 add_subdirectory(src)
