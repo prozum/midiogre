@@ -18,7 +18,7 @@ struct _MidiogreAppWindowPrivate
     GtkWidget *stack;
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE(MidiogreAppWindow, midiogre_app_window, GTK_TYPE_APPLICATION_WINDOW);
+G_DEFINE_TYPE_WITH_PRIVATE(MidiogreAppWindow, midiogre_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
 static void
 midiogre_app_window_init (MidiogreAppWindow *win)

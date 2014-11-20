@@ -13,7 +13,7 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
     int len;
     FILE *mid_file;
     mid_t *mid;
-    char tmp[3],*str;
+    char tmp[3],*str[NUM_COLUMNS];
 
     GtkWidget *treeview, *sw;
     GtkTreeModel *model = NULL;
@@ -35,14 +35,20 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
     {
         /* Setup column data types */
         store = gtk_list_store_new (NUM_COLUMNS,
-                                      G_TYPE_UINT,
-                                      G_TYPE_UINT,
-                                      G_TYPE_UINT,
-                                      G_TYPE_UINT,
+                                      G_TYPE_STRING,
+                                      G_TYPE_STRING,
+                                      G_TYPE_STRING,
+                                      G_TYPE_STRING,
                                       G_TYPE_STRING);
 
         /* For each event in track */
         for (j = 0; j < mid->track[i].events; j++) {
+
+            /* Convert data to hex */
+            str[0] = g_strdup_printf("%x",mid->track[i].event[j].msg);
+            str[1] = g_strdup_printf("%x",mid->track[i].event[j].para_1);
+            str[2] = g_strdup_printf("%x",mid->track[i].event[j].para_2);
+            str[3] = g_strdup_printf("%x",mid->track[i].event[j].delta);
 
             /* If meta message */
             if (mid->track[i].event[j].msg == META_MSG) {
@@ -50,8 +56,8 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
                 /* Find string length */
                 len = mid->track[i].event[j].para_2 * 3;
 
-                str = (char *) g_malloc( (len + 1) * sizeof(char) );
-                strcpy(str,"");
+                str[4] = (char *) g_malloc( (len + 1) * sizeof(char) );
+                strcpy(str[4],"");
 
                 /* For each byte in meta data */
                 for (k = 0; k < mid->track[i].event[j].para_2; k++) {
@@ -62,33 +68,30 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
                     } else {
                         g_sprintf(&tmp,"0%x ",mid->track[i].event[j].mdata[k]);
                     }
-                    strcat(str,tmp);
+                    strcat(str[4],tmp);
                 }
-
-                gtk_list_store_append (store, &iter);
-                gtk_list_store_set (store, &iter,
-                                    COLUMN_TYPE,   mid->track[i].event[j].msg,
-                                    COLUMN_PARA_1, mid->track[i].event[j].para_1,
-                                    COLUMN_PARA_2, mid->track[i].event[j].para_2,
-                                    COLUMN_DELTA,  mid->track[i].event[j].delta,
-                                    COLUMN_MDATA,  str,
-                                    -1);
-                free(str);
-
             /* Not meta message */
             } else {
-                gtk_list_store_append (store, &iter);
-                gtk_list_store_set (store, &iter,
-                                    COLUMN_TYPE,   mid->track[i].event[j].msg,
-                                    COLUMN_PARA_1, mid->track[i].event[j].para_1,
-                                    COLUMN_PARA_2, mid->track[i].event[j].para_2,
-                                    COLUMN_DELTA,  mid->track[i].event[j].delta,
-                                    COLUMN_MDATA,  "N/A",
-                                    -1);
+                str[4] = g_strdup_printf("N/A");
+            }
 
+            /* Put strings in store */
+            gtk_list_store_append (store, &iter);
+            gtk_list_store_set (store, &iter,
+                                COLUMN_TYPE,   str[0],
+                                COLUMN_PARA_1, str[1],
+                                COLUMN_PARA_2, str[2],
+                                COLUMN_DELTA,  str[3],
+                                COLUMN_MDATA,  str[4],
+                                -1);
+
+            /* Deallocate strings */
+            for(k = 0; k < NUM_COLUMNS; k++) {
+                free(str[k]);
             }
         }
 
+        //free_mid(mid);
 
         /* Create model from store */
         model = GTK_TREE_MODEL(store);
