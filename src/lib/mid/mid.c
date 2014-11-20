@@ -108,6 +108,8 @@ track_t *read_tracks(FILE *file, uint16_t num)
     uint32_t i,j;
     uint32_t tmp;
     uint8_t *data;
+    
+    track_t *tracks;
 
     /* Start at the first track */
     if ( fseek(file,FIRST_TRACK_POS,SEEK_SET) != 0 )
@@ -116,7 +118,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
         return NULL;
     }
     
-    track_t *tracks = calloc(sizeof(track_t),num);
+    tracks = calloc(sizeof(track_t),num);
 
     /* For each track */
     for (i = 0; i < num; i++) {
