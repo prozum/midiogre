@@ -20,7 +20,7 @@ before_install:
 install:
   - mkdir build
   - cd build
-  - cmake ../ -DMAIN=1
+  - cmake ../ -DMAIN=1 -DDOC=0
 
 script:
   - make -j 8
