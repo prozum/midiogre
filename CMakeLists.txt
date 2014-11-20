@@ -13,9 +13,6 @@ include(cmake/options.cmake)
 include(cmake/showoptions.cmake)
 include(cmake/PkgCheckModulesFullpath.cmake)
 
-# C Flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lm")
-
 if (DEBUG)
     set(CMAKE_BUILD_TYPE Debug)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
@@ -27,6 +24,7 @@ endif(DEBUG)
 include_directories(
     ${CMAKE_SOURCE_DIR}/src/lib
 )
+
 # Find PkgConfig
 find_package( PkgConfig )
 if (NOT PKGCONFIG_FOUND)
