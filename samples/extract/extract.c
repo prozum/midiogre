@@ -12,7 +12,7 @@ int main( int argc, char *argv[] )
 {
     FILE *mid_file;
     mid_t *mid;
-    song_t *song;
+    song_data_t song_data;
 
     /* Open file */
     mid_file = fopen(argv[1], "rb");
@@ -22,23 +22,9 @@ int main( int argc, char *argv[] )
     }
     
     /* Read mid */
-    mid = read_mid(mid_file);
-    song_data_t song_data;
 
-
-    
-    /* Extracting all the nodes of the song */
-    //song = song_extract(mid);
-    
-    /* Print some different places on different tracks */
-   // printf("\n###NODE EXTRACTION###\n");
-    //printf("Track 1\n");
-
-    //printf("%s\n\n", song->notes_all[1].notes);
-
-    //printf("%s\n", song->notes_all[2].notes);
-
-    /* Deallocate mid */
+    song_data.channels = channel_extract(mid);
+ 
     free_mid(mid);
     
     /* Close mid_file */

@@ -5,35 +5,34 @@
 
 #include <mid/mid.h>
 
-/** Struct that contains the information of notes on a single track */
+/** Contains the information of a single note */
 typedef struct note_s
 {
-    uint8_t pitch;    /**< Contains tones for a single track */
+    uint8_t pitch;
     uint8_t onset;
     uint8_t offset;
 } note_t;
 
+/* Contains information about notes on a given channel */
 typedef struct channel_s
 {
     note_t *notes;
+    uint32_t channel_length;
 } channel_t;
 
-/** Struct that contains an array with all the information of nodes for all tracks */
+/** Contains song data */
 typedef struct song_data_s
 {
-    channel_t *channels;    /**< Contains all the notes for all the tracks */
+    channel_t *channels;    /**< Contains the 16 channels */
 } song_data_t;
 
+/** Returns channels for a MIDI file */
 channel_t *channel_extract(mid_t *mid);
 
-void note_extract(mid_t *mid, channel_t *channels, uint32_t events);
+/** Extracts the notes for channels on a track */
+void note_extract(track_t track, channel_t *channels);
 
-uint32_t find_note_off(track_t track, uint32_t event_position, uint8_t note_off);
-
-/** Returns all the nodes for all the tracks */
-//song_t *song_extract(mid_t *mid);
-
-/** Returns all the nodes for a single track */
-//note_t note_extract(track_t *track, uint32_t event_count, uint32_t track_num);
+/** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
+uint32_t note_off_time(track_t track, uint32_t event_position, uint8_t note_off);
 
 #endif
