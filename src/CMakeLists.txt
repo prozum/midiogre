@@ -3,6 +3,14 @@ add_subdirectory(lib)
 
 # Main Program 
 if(MAIN)
+    # Find glib-2
+    pkg_check_modules_fullpath(GLIB2 glib-2.0)
+    if (NOT GLIB2_FOUND)
+        message(FATAL_ERROR  "Please install: glib2-devel")
+    endif()
+    
+    include_directories(${GLIB2_INCLUDE_DIR})
+
     # Find GTK3
     pkg_check_modules_fullpath(GTK3 gtk+-3.0>=3.10)
     if (NOT GTK3_FOUND)

@@ -3,20 +3,26 @@
 #include <mid/mid.h>
 #include <mid/mid-util.h>
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+
 #include <gtk/gtk.h>
+#include <glib.h>
 
 /** Import mid struct to tree view */
 void
 mid_import(GFile *mid_gfile, GtkWidget *notebook)
 {
-    int i,j,k;
-    int len;
-    FILE *mid_file;
-    mid_t *mid;
+    uint32_t i,j,k;
+    uint32_t len;
     char tmp[3],*str[NUM_COLUMNS];
 
-    GtkWidget *treeview, *sw;
-    GtkTreeModel *model = NULL;
+    FILE *mid_file;
+    mid_t *mid;
+    
+    GtkWidget *treeview,*sw;
+    GtkTreeModel *model;
     GtkListStore *store;
     GtkTreeIter iter;
 
@@ -91,59 +97,56 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
             }
         }
 
-        //free_mid(mid);
-
         /* Create model from store */
         model = GTK_TREE_MODEL(store);
 
         /* Create tree view */
         treeview = gtk_tree_view_new_with_model(model);
-        //gtk_tree_view_set_model(treeview,model);
 
         /* Type column */
-        renderer = gtk_cell_renderer_text_new ();
-        column = gtk_tree_view_column_new_with_attributes ("Type",
+        renderer = gtk_cell_renderer_text_new();
+        column = gtk_tree_view_column_new_with_attributes("Type",
                                                              renderer,
                                                              "text",
                                                              COLUMN_TYPE,
                                                              NULL);
-        gtk_tree_view_append_column (treeview, column);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* Para_1 column */
-        renderer = gtk_cell_renderer_text_new ();
-        column = gtk_tree_view_column_new_with_attributes ("Para 1",
+        renderer = gtk_cell_renderer_text_new();
+        column = gtk_tree_view_column_new_with_attributes("Para 1",
                                                              renderer,
                                                              "text",
                                                              COLUMN_PARA_1,
                                                              NULL);
-        gtk_tree_view_append_column (treeview, column);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* Para_2 column */
-        renderer = gtk_cell_renderer_text_new ();
-        column = gtk_tree_view_column_new_with_attributes ("Para 2",
+        renderer = gtk_cell_renderer_text_new();
+        column = gtk_tree_view_column_new_with_attributes("Para 2",
                                                              renderer,
                                                              "text",
                                                              COLUMN_PARA_2,
                                                              NULL);
-        gtk_tree_view_append_column (treeview, column);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* Delta column */
-        renderer = gtk_cell_renderer_text_new ();
-        column = gtk_tree_view_column_new_with_attributes ("Delta",
+        renderer = gtk_cell_renderer_text_new();
+        column = gtk_tree_view_column_new_with_attributes("Delta",
                                                              renderer,
                                                              "text",
                                                              COLUMN_DELTA,
                                                              NULL);
-        gtk_tree_view_append_column (treeview, column);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* MData column */
-        renderer = gtk_cell_renderer_text_new ();
-        column = gtk_tree_view_column_new_with_attributes ("MData",
+        renderer = gtk_cell_renderer_text_new();
+        column = gtk_tree_view_column_new_with_attributes("MData",
                                                              renderer,
                                                              "text",
                                                              COLUMN_MDATA,
                                                              NULL);
-        gtk_tree_view_append_column (treeview, column);
+        gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* Show tree view */
         gtk_widget_show(treeview);
