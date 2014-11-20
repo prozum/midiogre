@@ -6,13 +6,13 @@ int main(int argc, char *argv[])
     gint retval;
     MidiogreApp *app;
 
-    /* Needed for Glib older than 2.36 (Windows) */
-    //g_type_init();
-
+    /* Create GTJ aoo */
     app = midiogre_app_new();
     
+    /* Run GTK app */
     retval = g_application_run(G_APPLICATION(app), argc, argv);
     
+    /* Deallocate app */
     g_object_unref(app);
 
     return retval;
