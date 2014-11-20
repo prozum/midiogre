@@ -17,7 +17,7 @@ typedef struct note_s
 typedef struct channel_s
 {
     note_t *notes;
-    uint32_t channel_length = 0;
+    uint32_t channel_length;
 } channel_t;
 
 /** Contains song data */
@@ -30,7 +30,7 @@ typedef struct song_data_s
 channel_t *channel_extract(mid_t *mid);
 
 /** Extracts the notes for channels on a track */
-void note_extract(track_t track, channel_t *channels)
+void note_extract(track_t track, channel_t *channels);
 
 /** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
 uint32_t note_off_time(track_t track, uint32_t event_position, uint8_t note_off);

@@ -18,6 +18,7 @@ channel_t *channel_extract(mid_t *mid)
 
     for (i = 0; i < CHANNELS; i++) {
         channels[i].notes = malloc( sizeof( note_t ) * total_events );
+        channels[i].channel_length = 0;
     }
 
     for (i = 0; i < mid->tracks; i++) {
@@ -39,9 +40,9 @@ void note_extract(track_t track, channel_t *channels)
             uint8_t tmp = track.event[i].msg - NOTE_ON_1;
             uint32_t channel_length = channels[tmp].channel_length;
 
-            channels[tmp].notes[channel_length][0] = track.event[i].para_1;
-            channels[tmp].notes[channel_length][1] = time;
-            channels[tmp].notes[channel_length][2] = time + note_off_time(track, i, track.event[i].msg - 0x10);
+            channels[tmp].notes[channel_length].pitch = track.event[i].para_1;
+            channels[tmp].notes[channel_length].onset = time;
+            channels[tmp].notes[channel_length].offset = time + note_off_time(track, i, track.event[i].msg - 0x10);
             channels[tmp].channel_length++;
         }
     }
