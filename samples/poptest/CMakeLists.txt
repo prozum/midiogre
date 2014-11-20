@@ -3,7 +3,6 @@ add_executable(poptest
 )
 
 target_link_libraries(poptest
-        m
         popularity
 )
 
