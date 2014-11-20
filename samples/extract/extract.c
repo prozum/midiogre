@@ -20,11 +20,13 @@ int main( int argc, char *argv[] )
         perror(argv[1]);
         return -1;
     }
-    
+
+    mid = read_mid(mid_file);
+ 
     /* Read mid */
 
     song_data.channels = channel_extract(mid);
- 
+
     free_mid(mid);
     
     /* Close mid_file */
