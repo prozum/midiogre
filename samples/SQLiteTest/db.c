@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sqlite3.h>
-#include <mid.h>
+#include <mid/mid.h>
+#include <mid/mid-util.h>
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
    int i;
@@ -14,6 +15,18 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 
 int main(int argc, char* argv[])
 {
+   FILE *mid_file;
+   mid_t *mid;
+
+   /* Open file */
+   mid_file = fopen(argv[1], "rb");
+   if( mid_file == NULL ) {
+      perror(argv[1]);
+      return -1;
+   }
+   /* Read mid */
+   mid = read_mid(mid_file);
+
    sqlite3 *db;
    char *zErrMsg = 0;
    int  rc;
@@ -33,8 +46,10 @@ int main(int argc, char* argv[])
          "ARTIST      CHAR(32)  ," \
          "Album       CHAR(32)  ," \
          "Name        CHAR(32)  ," \
-         "Track       INT );";
-
+         "INSERT INTO midiFile (Name),"  \
+         "VALUES ('lol');";
+         
+         
    /* Execute SQL statement */
    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
    if( rc != SQLITE_OK ){
@@ -44,5 +59,16 @@ int main(int argc, char* argv[])
       fprintf(stdout, "Table created successfully\n");
    }
    sqlite3_close(db);
+
+
+   /* Deallocate mid */
+    free_mid(mid);
+
+    /* Close mid_file */
+    fclose(mid_file);
+
+    printf("\n");
+
+
    return 0;
 }
