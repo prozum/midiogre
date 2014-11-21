@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
            VALUES ('BONO','Money For Bono','Raining Kush',1);";
 
    sql3 = "INSERT INTO midiFile(ARTIST,Album,Name,Track) \
-           VALUES ('BONO2','Money For Bono','More4me',2);";
+           VALUES ('BONO','Money For Bono','More4me',2);";
 
    /* Execute SQL statement */
    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
