@@ -11,7 +11,9 @@ add_executable(db
 )
 
 target_link_libraries(db
+	mid
 	${SQLITE3_LIBRARIES}
+	
 )
 
 install(TARGETS db DESTINATION bin)
