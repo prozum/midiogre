@@ -29,16 +29,16 @@ void print_event(mid_t *mid, unsigned int t, unsigned int e)
 
     printf("\n<###EVENT INFO###>\n");
     printf("Track %2u | Event %2u\n",t,e);
-    printf("Msg : %x\n",mid->track[t-1].event[e-1].msg);
-    printf("Para1: %x\n",mid->track[t-1].event[e-1].para_1);
-    printf("Para2: %x\n",mid->track[t-1].event[e-1].para_2);
-    printf("Delta: %x\n",mid->track[t-1].event[e-1].delta);
+    printf("Msg : %x\n",mid->track[t].event[e].msg);
+    printf("Para1: %x\n",mid->track[t].event[e].para_1);
+    printf("Para2: %x\n",mid->track[t].event[e].para_2);
+    printf("Delta: %x\n",mid->track[t].event[e].delta);
 
     /* Meta message data */
-    if (mid->track[t-1].event[e-1].msg == SYS_RESET) {
-        printf("Data: ");
-        for (i = 0; i < mid->track[t-1].event[e-1].para_2; i++ ) {
-            printf("%x ",mid->track[t-1].event[e-1].mdata[i]);
+    if (mid->track[t].event[e].msg == SYS_RESET) {
+        printf("MData: ");
+        for (i = 0; i < mid->track[t].event[e].para_2; i++ ) {
+            printf("%x ",mid->track[t].event[e].mdata[i]);
         }
     }
     printf("\n");
