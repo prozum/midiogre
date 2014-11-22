@@ -3,7 +3,7 @@ add_executable(poptest
 )
 
 target_link_libraries(poptest
-        popularity
+        pop
 )
 
 install(TARGETS poptest DESTINATION bin)
