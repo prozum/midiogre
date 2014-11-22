@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
     gint retval;
     MidiogreApp *app;
 
-    /* Create GTJ aoo */
+    /* Create GTK app */
     app = midiogre_app_new();
     
     /* Run GTK app */

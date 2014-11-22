@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <sqlite3.h>
+
 #include <mid/mid.h>
 #include <mid/mid-util.h>
 

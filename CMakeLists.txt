@@ -12,34 +12,29 @@ cmake_minimum_required(VERSION 2.8)
 include(cmake/options.cmake)
 include(cmake/showoptions.cmake)
 include(cmake/PkgCheckModulesFullpath.cmake)
+include(cmake/deps.cmake)
 
-if (DEBUG)
+if(DEBUG)
     set(CMAKE_BUILD_TYPE Debug)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
 else()
     set(CMAKE_BUILD_TYPE Release)
-endif(DEBUG)
+endif()
 
 # Include libs
 include_directories(
-    ${CMAKE_SOURCE_DIR}/src/lib
+    src/lib
 )
-
-# Find PkgConfig
-find_package( PkgConfig )
-if (NOT PKGCONFIG_FOUND)
-    message(FATAL_ERROR  "Please install: pkgconfig")
-endif()
 
 # Main source dir
 add_subdirectory(src)
 
 # Samples source dir
-if (SAMPLES)
+if(SAMPLES)
 	add_subdirectory(samples)
 endif()
 
 # Generate documentation
-if (DOC)
+if(DOC)
 	include(cmake/doxygen.cmake)
 endif()

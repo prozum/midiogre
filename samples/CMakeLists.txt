@@ -1,4 +1,11 @@
 add_subdirectory(info)
 add_subdirectory(extract)
 add_subdirectory(poptest)
-add_subdirectory(SQLiteTest)
+
+if(SQL)
+    add_subdirectory(SQLiteTest)
+endif()
+
+if(GUI)
+    add_subdirectory(ginfo)
+endif()
