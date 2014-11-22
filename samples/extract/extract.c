@@ -13,6 +13,7 @@ int main( int argc, char *argv[] )
     FILE *mid_file;
     mid_t *mid;
     song_data_t song_data;
+    int i;
 
     /* Open file */
     mid_file = fopen(argv[1], "rb");
@@ -26,6 +27,12 @@ int main( int argc, char *argv[] )
     /* Read mid */
 
     song_data.channels = channel_extract(mid);
+
+    printf("\n");
+
+    for (i = 0; i < 2; i++) {
+        printf("%d %d %d\n", song_data.channels[0].notes[i].pitch, song_data.channels[0].notes[i].onset, song_data.channels[0].notes[i].offset);
+    }
 
     free_mid(mid);
     
