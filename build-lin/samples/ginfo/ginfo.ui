@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
+<!--*- mode: xml -*-->
+<interface>
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+      <!-- column-name gint -->
+      <column type="gint"/>
+      <!-- column-name gchararray2 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">John</col>
+        <col id="1" translatable="yes">Doe</col>
+        <col id="2">25</col>
+        <col id="3" translatable="yes">This is the John Doe row</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Mary</col>
+        <col id="1" translatable="yes">Unknown</col>
+        <col id="2">50</col>
+        <col id="3" translatable="yes">This is the Mary Unknown row</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkWindow" id="window1">
+    <property name="can_focus">False</property>
+    <property name="title">GtkBuilder demo</property>
+    <property name="default_width">440</property>
+    <property name="default_height">250</property>
+    <child>
+      <object class="GtkVBox" id="vbox1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkMenuBar" id="menubar1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="menubar1-atkobject">
+                <property name="AtkObject::accessible-name">The menubar</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolbar" id="toolbar1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child internal-child="accessible">
+              <object class="AtkObject" id="toolbar1-atkobject">
+                <property name="AtkObject::accessible-name">The toolbar</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkTreeView" id="treeview1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="model">liststore1</property>
+                <property name="tooltip_column">3</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="treeview-selection1"/>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column1">
+                    <property name="title">Name</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="renderer1"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column2">
+                    <property name="title">Surname</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="renderer2"/>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="column3">
+                    <property name="title">Age</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="renderer3"/>
+                      <attributes>
+                        <attribute name="text">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child internal-child="accessible">
+                  <object class="AtkObject" id="treeview1-atkobject">
+                    <property name="AtkObject::accessible-name">Name list</property>
+                    <property name="AtkObject::accessible-description">
+                                    A list of person with name, surname and age columns
+                                  </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStatusbar" id="statusbar1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAboutDialog" id="aboutdialog1">
+    <property name="can_focus">False</property>
+    <property name="type_hint">normal</property>
+    <property name="program_name">GtkBuilder demo</property>
+    <property name="logo_icon_name">gtk3-demo</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="aboutdialog-vbox1">
+        <property name="can_focus">False</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="aboutdialog-action_area1">
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <accessibility>
+      <relation type="subwindow-of" target="window1"/>
+    </accessibility>
+  </object>
+</interface>
