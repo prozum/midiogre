@@ -23,7 +23,7 @@ int main( int argc, char *argv[] )
     /* Print mid data */
     print_header(mid);
     print_tracks(mid);
-    print_event(mid,1,1);
+    print_event(mid,0,0);
 
     /* Deallocate mid */
     free_mid(mid);
