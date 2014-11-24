@@ -4,7 +4,7 @@ add_subdirectory(extract)
 add_subdirectory(poptest)
 
 if(SQL)
-    add_subdirectory(dbtest)
+    add_subdirectory(SQLiteTest)
 endif()
 
 if(GUI)
