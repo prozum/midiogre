@@ -2,6 +2,7 @@
 #include <mid/mid-util.h>
 #include <distance/distance.h>
 #include <analyze/analyze.h>
+#include <analyze/skyline.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +34,11 @@ int main( int argc, char *argv[] )
     for (i = 0; i < 2; i++) {
         printf("%d %d %d\n", song_data.channels[0].notes[i].pitch, song_data.channels[0].notes[i].onset, song_data.channels[0].notes[i].offset);
     }
+
+    /*Test skyline*/
+    printf("\n");
+
+    skyline(song_data, mid);
 
     free_mid(mid);
     
