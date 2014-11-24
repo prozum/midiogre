@@ -1,3 +1,4 @@
+add_subdirectory(crittest)
 add_subdirectory(info)
 add_subdirectory(extract)
 add_subdirectory(poptest)
