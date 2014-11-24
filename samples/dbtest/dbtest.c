@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     unsigned int i,j;
 
     /* Open mid file */
-    file = fopen("/home/karlsmart/Dropbox/Dev/C/Midiogre/midiogre/samples/SQLiteTest/song.mid","rb" );
+    file = fopen(argv[1],"rb");
 
     /* Read content */
     mid = read_mid(file);
