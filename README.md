@@ -30,9 +30,8 @@ midiogre
 - The ogre for everyone
 - Now presenting the new eyeOgre
 - The way it's meant to be ogred
-- Once you go Ogre you never go back
-- Ogre is love, ogre is life
-- Ogres are not included.
+
+Ogres are not included.
 
 Dependencies
 --------------------
@@ -43,7 +42,7 @@ Dependencies
 
 Compile Instructions
 --------------------
-Midiogre uses the CMake build system.
+Midiogre uses CMake as build system.
 
 Here is a description of Midiogres CMake arguments:
 
@@ -55,7 +54,7 @@ CMake Argument  | Default Value | Meaning
 -DDOC           |       1       | Build Documentation
 
 ### Compile Example
-To install Midiogre to */home/user/midiogre* without samples you could do the following:
+So to install Midiogre to */home/user/midiogre* without samples you could do the following:
 
 ```bash
 git clone git@github.com:prozum/midiogre.git 
@@ -64,3 +63,53 @@ cmake ../midiogre -DMAIN=1 -DSAMPLES=0 \
 	-DCMAKE_INSTALL_PREFIX=/home/user/midiogre
 make install
 ```
+
+CodingStyle
+--------------------
+### Indentation: 
+4 spaces
+
+### Example
+```c
+/**
+ * this_is_a_func - a func example 
+ * @var_1: description of var_1
+ * @var_2: description of var_2
+ * @var_3: description of var_3
+ *
+ * This function is used as an example.
+ * More info about function...
+ */
+int this_is_a_func(int var_1, int var_2, int var_3)
+{
+    /* variable naming example */
+    int i,this_is_a_var,yet_another_var;
+
+    /* if example */
+    if (var_1 == SYMB_CONST) {
+        this_is_a_var = 0;
+    } else {
+        this_is_a_var = -1;
+    }
+    
+    /* for example */
+    for (i = 0; i < var_2; i++) {
+        call_func(i);
+    }
+
+    /* switch example */
+    switch (var_3) {
+        case SYMB_CONST_1:
+            yet_another_var = 0x10;
+            break;
+        case SYMB_CONST_2:
+            yet_another_var = 0x20;
+            break;
+        default:
+            yet_another_var = 0x01;
+    }
+
+    return 0;
+}
+```
+
