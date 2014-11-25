@@ -8,7 +8,7 @@ channel_t *channel_extract(mid_t *mid)
 {
     uint32_t total_events = 0;
     uint32_t i;
-    channel_t channels[16];
+    channel_t *channels = calloc(sizeof(channel_t), CHANNELS);
 
     for (i = 0; i < mid->tracks; i++) {
         total_events += mid->track[i].events;
@@ -34,9 +34,9 @@ channel_t *channel_extract(mid_t *mid)
 void note_extract(track_t track, channel_t *channels)
 {
     uint32_t time = 0;
-    uint32_t i, j;
+    uint32_t i;
 
-    for (i = 0, j = 0; i < track.events; i++) {
+    for (i = 0; i < track.events; i++) {
         time += track.event[i].delta;
 
         if (track.event[i].msg >= NOTE_ON_1 && track.event[i].msg <= NOTE_ON_16) {
@@ -45,7 +45,7 @@ void note_extract(track_t track, channel_t *channels)
 
             channels[tmp].notes[channel_length].pitch = track.event[i].para_1;
             channels[tmp].notes[channel_length].onset = time;
-            channels[tmp].notes[channel_length].offset = time + note_off_time(track, i, track.event[i].msg - 0x10, track.event[i].para_1, track.event[i].para_2);
+            channels[tmp].notes[channel_length].offset = time + note_off_time(track, i);
             channels[tmp].channel_length++;
         }
     }
@@ -91,3 +91,27 @@ channel_t *skyline_extract(channel_t *channels)
     }
 }
 */
+
+histogram_t *calc_histogram(channel_t *channels)
+{
+    uint8_t i;
+    uint32_t j;
+
+    histogram_t *histogram_set = malloc(sizeof(histogram_t) * CHANNELS);
+
+    for (i = 0; i < CHANNELS; i++) {
+        histogram_set[i].histogram_length = 0;
+        if (channels[0].channel_length) {
+            histogram_set[i].histogram = calloc(sizeof(uint8_t) * SEMITONES);
+        }
+    }
+
+    for (i = 0; i < CHANNELS; i++) {
+        for (j = 0; j < channels[i].channel_length) {
+            uint8_t pitch = channels[i].notes[j].pitch % SEMITONES;
+            histogram_set[i].histogram[pitch] += 1;
+        }
+    }
+}
+
+histogram_t *calc_norm_histogram(channel_t *channels) 
