@@ -1,3 +1,4 @@
+//#define __USE_MINGW_ANSI_STDIO
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,6 +6,11 @@
 
 #include <mid/mid.h>
 #include <mid/mid-util.h>
+
+#ifdef _WIN32
+#include <win/asprintf.h>
+#endif
+
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
    int i;
