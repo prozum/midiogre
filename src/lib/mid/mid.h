@@ -433,12 +433,12 @@ typedef enum
 
 typedef enum
 {
-    MIN_PIANO 					= 0x00,
-	MAX_PIANO					= 0x07,
-    MIN_CHROMATIC_PERCUSSION	= 0x08,
-	MAX_CHROMATIC_PERCUSSION	= 0x0F,
-    MIN_ORGAN					= 0x10,
-    MAX_ORGAN					= 0x17,
+    MIN_PIANO                   = 0x00,
+    MAX_PIANO                   = 0x07,
+    MIN_CHROMATIC_PERCUSSION    = 0x08,
+	MAX_CHROMATIC_PERCUSSION    = 0x0F,
+    MIN_ORGAN                   = 0x10,
+    MAX_ORGAN                   = 0x17,
     MIN_GUITAR                  = 0x18,
     MAX_GUITAR                  = 0x1F,
     MIN_BASS                    = 0x20,
