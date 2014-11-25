@@ -67,11 +67,29 @@ make install
 CodingStyle
 --------------------
 Indentation: 4 spaces
+
 Comments: Doxygen compatible
 
 ### Example
 ```c
 /** @example.c */
+
+/* include example 
+ * 
+ * 1. header file
+ * 2. project libs
+ * 3. standard libs
+ * 4. 3rd party libs
+ */
+#include "example.h"
+
+#include <projectlib/projectlib.h>
+#include <projectlib/projectlib-util.h>
+
+#include <stdio.h>
+#include <stdint.h>
+
+#include <3rdlib/3rdlib.h>
 
 /** this_is_a_enum - enum example
  *  
