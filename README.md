@@ -115,14 +115,18 @@ int this_is_a_func(int var_1, int var_2, int var_3)
 
     /* switch example */
     switch (var_3) {
-        case SYMB_CONST_1:
-            yet_another_var = 0x10;
+        case ELEMENT_0:
+        case ELEMENT_1:
+            yet_another_var = 666;
             break;
-        case SYMB_CONST_2:
-            yet_another_var = 0x20;
+        case ELEMENT_2:
+            yet_another_var = 616;
+            break;
+        case ELEMENT_3:
+            yet_another_var = 999;
             break;
         default:
-            yet_another_var = 0x01;
+            yet_another_var = 919;
     }
 
     return 0;
