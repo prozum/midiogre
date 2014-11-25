@@ -38,7 +38,7 @@ int main( int argc, char *argv[] )
     /*Test skyline*/
     printf("\n");
 
-    skyline(song_data, mid);
+    skyline(song_data);
 
     free_mid(mid);
     
