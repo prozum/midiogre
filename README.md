@@ -66,11 +66,25 @@ make install
 
 CodingStyle
 --------------------
-### Indentation: 
-4 spaces
+Indentation: 4 spaces
+Comments: Doxygen compatible
 
 ### Example
 ```c
+/** @example.c */
+
+/** this_is_a_enum - enum example
+ *  
+ *  Description of enum.
+ */
+enum this_is_a_enum
+{
+    ELEMENT_0       0x10, /**< Description of ELEMENT_0 */
+    ELEMENT_1       0x20, /**< Description of ELEMENT_1 */
+    ELEMENT_2       0x30, /**< Description of ELEMENT_2 */
+    ELEMENT_3       0x40, /**< Description of ELEMENT_3 */
+}
+
 /**
  * this_is_a_func - a func example 
  * @var_1: description of var_1
@@ -83,7 +97,9 @@ CodingStyle
 int this_is_a_func(int var_1, int var_2, int var_3)
 {
     /* variable naming example */
-    int i,this_is_a_var,yet_another_var;
+    int i;
+    int this_is_a_var;   /**< Description of this_is_a_var   */
+    int yet_another_var; /**< Description of yet_another_var */
 
     /* if example */
     if (var_1 == SYMB_CONST) {
