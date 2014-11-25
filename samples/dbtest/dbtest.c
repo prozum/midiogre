@@ -1,3 +1,4 @@
+//#define __USE_MINGW_ANSI_STDIO
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,6 +6,11 @@
 
 #include <mid/mid.h>
 #include <mid/mid-util.h>
+
+#ifdef _WIN32
+#include <win/asprintf.h>
+#endif
+
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName){
    int i;
@@ -71,6 +77,16 @@ int main(int argc, char* argv[])
           "PARA2        UNSIGNED INT,"   \
           "DELTA        UNSIGNED INT);";
  
+    /* Execute SQL statement */
+    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+
+    if( rc != SQLITE_OK ){
+    fprintf(stderr, "SQL error: %s\n", zErrMsg);
+    sqlite3_free(zErrMsg);
+    }else{
+       fprintf(stdout, "Table created successfully\n");
+    }
+
     for (i = 0; i < mid->tracks; i++){
         /* For each event in track */
         for (j = 0; j < mid->track[i].events; j++) {
@@ -89,15 +105,8 @@ int main(int argc, char* argv[])
         }
     }
  
-    /* Execute SQL statement */
-    rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
  
-    if( rc != SQLITE_OK ){
-    fprintf(stderr, "SQL error: %s\n", zErrMsg);
-    sqlite3_free(zErrMsg);
-    }else{
-       fprintf(stdout, "Table created successfully\n");
-    }
+
     sqlite3_close(db);
  
     return 0;
