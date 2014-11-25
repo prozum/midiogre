@@ -433,37 +433,21 @@ typedef enum
 
 typedef enum
 {
-    MIN_PIANO                   = 0x00,
     MAX_PIANO                   = 0x07,
-    MIN_CHROMATIC_PERCUSSION    = 0x08,
 	MAX_CHROMATIC_PERCUSSION    = 0x0F,
-    MIN_ORGAN                   = 0x10,
     MAX_ORGAN                   = 0x17,
-    MIN_GUITAR                  = 0x18,
     MAX_GUITAR                  = 0x1F,
-    MIN_BASS                    = 0x20,
     MAX_BASS                    = 0x27,
-    MIN_STRINGS                 = 0x28,
     MAX_STRINGS                 = 0x2F,
-    MIN_ENSEMBLE                = 0x30,
     MAX_ENSEMBLE                = 0x37,
-    MIN_BRASS                   = 0x38,
     MAX_BRASs                   = 0x3F,
-    MIN_REED                    = 0x40,
     MAX_REED                    = 0x47,
-    MIN_PIPE                    = 0x48,
     MAX_PIPE                    = 0x4F,
-    MIN_SYNTH_LEAD              = 0x50,
     MAX_SYNTH_LEAD              = 0x57,
-    MIN_SYNTH_PAD               = 0x58,
     MAX_SYNTH_PAD               = 0x5F,
-    MIN_SYNTH_EFFECT            = 0x60,
     MAX_SYNTH_EFFECT            = 0x67,
-    MIN_ETHNIC                  = 0x68,
     MAX_ETHNIC                  = 0x6F,
-    MIN_PERCUSSION              = 0x70,
     MAX_PERCUSSION              = 0x77,
-    MIN_SOUND_EFFECTS           = 0x78,
     MAX_SOUND_EFFECTS           = 0x7F
 } instr_class_t
 
