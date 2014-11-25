@@ -431,6 +431,26 @@ typedef enum
     GUNSHOT
 } instr_t;
 
+typedef enum {
+    PIANO,
+    CHROMATIC_PERCUSSION,
+    ORGAN,
+    GUITAR,
+    BASS,
+    STRINGS,
+    ENSEMBLE,
+    BRASS,
+    REED,
+    PIPE,
+    SYNTH_LEAD,
+    SYNTH_PAD,
+    SYNTH_EFFECTS,
+    ETHNIC,
+    PERCUSSIVE
+    SOUND_EFFECTS
+} instr_class_t
+
+
 typedef struct event_s
 {
     msg_t   msg;      /**< Event type                 */
