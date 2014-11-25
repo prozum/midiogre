@@ -33,6 +33,8 @@ channel_t *channel_extract(mid_t *mid);
 void note_extract(track_t track, channel_t *channels);
 
 /** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
-uint32_t note_off_time(track_t track, uint32_t event_position, uint8_t note_off);
+uint32_t note_off_time(track_t track, uint32_t event_position, uint8_t note_off, uint8_t pitch, uint8_t velocity);
+
+int compar_onset(const void *a, const void *b);
 
 #endif
