@@ -440,7 +440,7 @@ typedef enum
     BASS                    = 0x27,
     STRINGS                 = 0x2F,
     ENSEMBLE                = 0x37,
-    BRASs                   = 0x3F,
+    BRASS                   = 0x3F,
     REED                    = 0x47,
     PIPE                    = 0x4F,
     SYNTH_LEAD              = 0x57,
