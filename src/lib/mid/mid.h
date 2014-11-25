@@ -449,7 +449,7 @@ typedef enum
     ETHNIC                  = 0x6F,
     PERCUSSION              = 0x77,
     SOUND_EFFECTS           = 0x7F
-} instr_class_t
+} instr_class_t;
 
 
 typedef struct event_s
