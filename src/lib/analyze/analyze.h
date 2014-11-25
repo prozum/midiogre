@@ -23,7 +23,7 @@ typedef struct channel_s
 /** Contains song data */
 typedef struct song_data_s
 {
-    channel_t *channels;    /**< Contains the 16 channels */
+    channel_t channels[16];    /**< Contains the 16 channels */
 } song_data_t;
 
 /** Returns channels for a MIDI file */
@@ -33,7 +33,7 @@ channel_t *channel_extract(mid_t *mid);
 void note_extract(track_t track, channel_t *channels);
 
 /** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
-uint32_t note_off_time(track_t track, uint32_t event_position, uint8_t note_off, uint8_t pitch, uint8_t velocity);
+uint32_t note_off_time(track_t track, uint32_t event_position);
 
 int compar_onset(const void *a, const void *b);
 

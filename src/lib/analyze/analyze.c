@@ -8,12 +8,13 @@ channel_t *channel_extract(mid_t *mid)
 {
     uint32_t total_events = 0;
     uint32_t i;
-    channel_t *channels = calloc( sizeof( channel_t ), CHANNELS );
+    channel_t channels[16];
 
     for (i = 0; i < mid->tracks; i++) {
         total_events += mid->track[i].events;
     }
 
+    /* allocate enough memory for worst case scenario */
     for (i = 0; i < CHANNELS; i++) {
         channels[i].notes = malloc( sizeof( note_t ) * total_events );
         channels[i].channel_length = 0;
@@ -50,10 +51,14 @@ void note_extract(track_t track, channel_t *channels)
     }
 }
 
-uint32_t note_off_time(track_t track, uint32_t event_position, uint8_t note_off, uint8_t pitch, uint8_t velocity)
+uint32_t note_off_time(track_t track, uint32_t event_position)
 {
     uint32_t time = 0;
     uint32_t i;
+
+    uint8_t note_off = track.event[event_position].msg - 0x10;
+    uint8_t pitch = track.event[event_position].para_1;
+    uint8_t velocity = track.event[event_position].para_1;
 
     for (i = 1; i < (track.events - event_position - 1); i++) {
         uint8_t tmp = event_position + i;
@@ -74,3 +79,15 @@ int compar_onset(const void *a, const void *b)
 
     return note1->onset - note2->onset;
 }
+
+/*
+channel_t *skyline_extract(channel_t *channels)
+{
+    channel_t *skyline = calloc( sizeof( channel_t), CHANNELS );
+
+    for (i = 0; i < CHANNELS; i++) {
+        skyline[i].notes = malloc( sizeof( note_t ) * channels[i].channel_length );
+        skyline[i].channel_length = channels[i].channel_length
+    }
+}
+*/
