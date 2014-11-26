@@ -102,16 +102,20 @@ histogram_t *calc_histogram(channel_t *channels)
     for (i = 0; i < CHANNELS; i++) {
         histogram_set[i].histogram_length = 0;
         if (channels[0].channel_length) {
-            histogram_set[i].histogram = calloc(sizeof(uint8_t) * SEMITONES);
+            histogram_set[i].histogram = malloc(sizeof(uint8_t) * SEMITONES);
         }
     }
 
     for (i = 0; i < CHANNELS; i++) {
-        for (j = 0; j < channels[i].channel_length) {
+        for (j = 0; j < channels[i].channel_length; j++) {
             uint8_t pitch = channels[i].notes[j].pitch % SEMITONES;
             histogram_set[i].histogram[pitch] += 1;
         }
     }
+
+    return histogram_set;
 }
 
-histogram_t *calc_norm_histogram(channel_t *channels) 
+histogram_t *calc_norm_histogram(channel_t *channels)
+{
+} 

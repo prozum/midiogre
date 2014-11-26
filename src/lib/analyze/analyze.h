@@ -24,7 +24,7 @@ typedef struct channel_s
 typedef struct histrogram_s
 {
     uint8_t *histogram;
-    uint32_t histrogram_length;
+    uint32_t histogram_length;
 } histogram_t;
 
 /** Contains song data */
