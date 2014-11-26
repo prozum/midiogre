@@ -117,7 +117,12 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
     return normalized_histogram;
 }
 
-double calc_euclid_dist(double *normalized, double *channel)
+double calc_euclid_dist(double *normalized, double *channel, uint8_t counter)
 {
-    return sqrt( pow(normalized[0], 2) - pow(channel[0], 2)) + calc_euclid_dist(normalized + 1, channel + 1);
+    double tmp = sqrt( pow(normalized[0], 2) - pow(channel[0], 2)); 
+    if (counter > SEMITONES) {
+        return tmp + calc_euclid_dist(normalized + 1, channel + 1, counter + 1);
+    } else {
+        return tmp;
+    }
 }

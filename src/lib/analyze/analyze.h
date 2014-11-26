@@ -44,6 +44,6 @@ histogram_t *calc_channel_histogram(channel_t *channels);
 
 histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_t *channels);
 
-double calc_euclid_dist(double *normalized, double *channel);
+double calc_euclid_dist(double *normalized, double *channel, uint8_t counter);
 
 #endif
