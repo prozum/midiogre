@@ -10,7 +10,8 @@
 #include <win/asprintf.h>
 #endif
 
-static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+static int callback(void *NotUsed, int argc, char **argv, char **azColName)
+{
    int i;
    for(i=0; i<argc; i++){
       printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
@@ -116,7 +117,7 @@ int main(int argc, char* argv[])
                 }
             }
         }
-        //free(sql2);
+        /*free(sql2);*/
      
 
         sqlite3_close(db);
