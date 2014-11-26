@@ -56,6 +56,11 @@ int main(int argc, char* argv[])
 
     /* Open mid file */
     file = fopen(argv[1],"rb");
+    if( file == NULL ) {
+        perror(argv[1]);
+        return -1;
+    }
+
 
     /* Read content */
     mid = read_mid(file);
@@ -70,6 +75,7 @@ int main(int argc, char* argv[])
         fprintf(stdout, "Opened database successfully\n");
     }
     
+    /* Write database structure */
     if (rc!=1){
         /* Create SQL statement */
         sql = "CREATE TABLE midiFile("       \
@@ -81,10 +87,10 @@ int main(int argc, char* argv[])
         rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 
         if( rc != SQLITE_OK ){
-        fprintf(stderr, "SQL error: %s\n", zErrMsg);
-        sqlite3_free(zErrMsg);
+            fprintf(stderr, "SQL error: %s\n", zErrMsg);
+            sqlite3_free(zErrMsg);
         }else{
-           fprintf(stdout, "Table created successfully\n");
+            fprintf(stdout, "Table created successfully\n");
         }
 
         for (i = 0; i < mid->tracks; i++){
