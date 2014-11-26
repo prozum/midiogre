@@ -27,7 +27,7 @@ channel_t *channel_extract(track_t *track)
         start_time += track->event[i].delta;
 
         if (track->event[i].msg == NOTE_ON) {
-            channel = track->event[i].channel;
+            channel = track->event[i].chan;
             position = channels[channel].notes;
 
             channels[channel].note[position].pitch = track->event[i].para_1;
@@ -60,7 +60,7 @@ int64_t note_off_time(track_t *track, uint32_t position)
         event++;
         time += track->event[event].delta;
         msg = track->event[event].msg;
-        channel = track->event[event].channel;
+        channel = track->event[event].chan;
 
         if ((msg + channel) == note_off && track->event[event].para_1 == pitch) {
             return time;
