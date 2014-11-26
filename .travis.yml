@@ -26,8 +26,8 @@ script:
   - make -j 8
   - sudo make install
   - # TEST:
-  - /usr/local/bin/info /home/travis/build/prozum/midiogre/res/test.mid
-  - /usr/local/bin/extract /home/travis/build/prozum/midiogre/res/test.mid
+  - /usr/local/bin/info ~/build/prozum/midiogre/res/mid/test.mid
+  - /usr/local/bin/extract ~/build/prozum/midiogre/res/mid/test.mid
 
 env:
   global:

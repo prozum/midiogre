@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gtk/midiogre">
-    <file preprocess="xml-stripblanks">midiogre.ui</file>
+    <file preprocess="xml-stripblanks">ui/midiogre.ui</file>
   </gresource>
 </gresources>
