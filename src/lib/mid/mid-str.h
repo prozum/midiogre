@@ -134,7 +134,7 @@ static const char *instruments[] = {
     "Helicopter",
     "Applause",
     "Gunshot"
-}
+};
 
 void print_header(mid_t *mid);
 void print_tracks(mid_t *mid);
