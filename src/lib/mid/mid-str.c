@@ -1,4 +1,5 @@
-#include "mid-util.h"
+#include "mid-str.h"
+
 #include "mid.h"
 
 #include <stdio.h>
