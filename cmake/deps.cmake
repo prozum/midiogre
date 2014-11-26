@@ -5,6 +5,15 @@ if (NOT PKGCONFIG_FOUND)
         message(FATAL_ERROR  "Please install: pkgconfig")
 endif()
 
+# Localization support (Not used)
+if(LOCALE)
+    find_package(GetText)
+        gettext
+    if (NOT PKGCONFIG_FOUND)
+        message(FATAL_ERROR  "Please install: gettext")
+    endif()
+endif()
+
 if(SQL OR MAIN)
     pkg_check_modules_fullpath(SQLITE3 sqlite3)
     #pkg_check_modules(SQLITE3 sqlite3)

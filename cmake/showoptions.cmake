@@ -18,6 +18,12 @@ else()
     message("* Build with MinGW : No (default)")
 endif()
 
+if(LOCALE)
+    message("* Build with Locale : Yes (default)")
+else()
+    message("* Build with Locale : No (default)")
+endif()
+
 if(DOC)
     message("* Generate documentaion : Yes (default)")
 else()
