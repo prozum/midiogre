@@ -1,9 +1,9 @@
 #include <gio/gio.h>
 
 #if defined (__ELF__) && ( __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 6))
-# define SECTION __attribute__ ((section (".gresource.midiogre"), aligned (8)))
+#define SECTION __attribute__ ((section (".gresource.midiogre"), aligned (8)))
 #else
-# define SECTION
+#define SECTION
 #endif
 
 static const SECTION union { const guint8 data[3304]; const double alignment; void * const ptr;}  midiogre_resource_data = { {

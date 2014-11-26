@@ -64,10 +64,10 @@ mid_t *read_mid(FILE *file)
     mid_t *mid = malloc(sizeof(mid_t));
 
     /* Start at the beginning of midi_file */
-    fseek(file,0,SEEK_SET);
+    fseek(file, 0, SEEK_SET);
 
     /* Read signature */
-    tmp = ffread(file,0,4);
+    tmp = ffread(file, 0, 4);
 
     /* Check if signature is valid */
     if (tmp != HEADER_SIGNATURE) {
@@ -77,22 +77,22 @@ mid_t *read_mid(FILE *file)
     }
 
     /* Read length */
-    tmp = ffread(file,0,4);
+    tmp = ffread(file, 0, 4);
 
     /* Check if length is valid */
     if (tmp != HEADER_LENGTH) {
-        fprintf(stderr,"Header length is invalid\n");
+        fprintf(stderr, "Header length is invalid\n");
         free(mid);
         return NULL;
     }
 
     /* Read format */
-    tmp = ffread(file,0,2);
+    tmp = ffread(file, 0, 2);
     mid->format = tmp;
 
     /* Check if format has a valid value */
     if (mid->format > MULTI_TRACK_ASYNC) {
-        fprintf(stderr,"Midi format is invalid\n");
+        fprintf(stderr, "Midi format is invalid\n");
         free(mid);
         return NULL;
     }
@@ -102,13 +102,13 @@ mid_t *read_mid(FILE *file)
     mid->tracks = tmp;
 
     /* Read division */
-    tmp = ffread(file,0,2);
+    tmp = ffread(file, 0, 2);
     mid->division = tmp;
 
     /* Read tracks */
-    mid->track = read_tracks(file,mid->tracks);
+    mid->track = read_tracks(file, mid->tracks);
     if ( mid->track == NULL) {
-        fprintf(stderr,"Midi tracks are invalid\n");
+        fprintf(stderr, "Midi tracks are invalid\n");
         free(mid);
         return NULL;
     }
@@ -119,20 +119,19 @@ mid_t *read_mid(FILE *file)
 /** Read tracks */
 track_t *read_tracks(FILE *file, uint16_t num)
 {
-    uint32_t i,j;
+    uint32_t i, j;
     uint32_t tmp;
     uint8_t *data;
     
     track_t *tracks;
 
     /* Start at the first track */
-    if ( fseek(file,FIRST_TRACK_POS,SEEK_SET) != 0 )
-    {
+    if (fseek(file, FIRST_TRACK_POS,SEEK_SET) != 0 ) {
         fprintf(stderr,"fseek failed\n");
         return NULL;
     }
     
-    tracks = calloc(sizeof(track_t),num);
+    tracks = calloc(sizeof(track_t), num);
 
     /* For each track */
     for (i = 0; i < num; i++) {
@@ -140,13 +139,13 @@ track_t *read_tracks(FILE *file, uint16_t num)
         /* Check signature */
         tmp = ffread(file,0,4);
         if (tmp != TRACK_SIGNATURE) {
-            fprintf(stderr,"Track signature is invalid\n");
+            fprintf(stderr, "Track signature is invalid\n");
             free(tracks);
             return NULL;
         }
 
         /* Read length */
-        tmp = ffread(file,0,4);
+        tmp = ffread(file, 0, 4);
         tracks[i].len = tmp;
 
         /* Allocate memory for track data */
@@ -154,7 +153,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
 
         /* Read track data */
         for (j = 0; tracks[i].len > j; j++) {
-            tmp = ffread(file,0,1);
+            tmp = ffread(file, 0, 1);
             data[j] = tmp;
         }
 
@@ -174,27 +173,27 @@ track_t *read_tracks(FILE *file, uint16_t num)
 /* Read events */
 event_t *read_events(uint8_t *data, uint16_t num)
 {
-    uint32_t i,j,e;
+    uint32_t i, j, e;
     event_t *event;
     
     /* Start at first byte */
     i = 0;
 
     /* Allocate memory for events */
-    event = calloc(sizeof(event_t),num);
+    event = calloc(sizeof(event_t), num);
 
     /* Until end last event */
     for (e = 0; e < num; e++) {
         /* Read delta time */
         event[e].delta = 0;
-        while ( (event[e].delta += data[i++]) > 0x80 );
+        while ((event[e].delta += data[i++]) > 0x80 );
 
         /* Read event msg */
         event[e].msg = data[i++];
 
         /* Read event parameters */
-        if ( (CTRL_MODE_16 >= event[e].msg && event[e].msg >= NOTE_OFF_1) ||
-             (PITCH_BEND_16 >= event[e].msg && event[e].msg >= PITCH_BEND_1) ) {
+        if ((CTRL_MODE_16 >= event[e].msg && event[e].msg >= NOTE_OFF_1) ||
+           (PITCH_BEND_16 >= event[e].msg && event[e].msg >= PITCH_BEND_1) ) {
             /* Events with two parameters */
             event[e].para_1 = data[i++];
             event[e].para_2 = data[i++];
@@ -216,7 +215,7 @@ event_t *read_events(uint8_t *data, uint16_t num)
             event[e].mdata = calloc(sizeof(uint8_t), event[e].para_2 );
 
             /* Read meta event data */
-            for (j = 0; j < event[e].para_2; j++ ) {
+            for (j = 0; j < event[e].para_2; j++) {
                 event[e].mdata[j] = data[i++];
             }
 
@@ -231,7 +230,7 @@ event_t *read_events(uint8_t *data, uint16_t num)
 /* Count events in event data */
 uint32_t count_events(uint8_t *data, uint32_t len)
 {
-    uint32_t e,i=0;
+    uint32_t e, i=0;
 
     /* Until end of data */
     for (e = 0; i < len; e++) {
