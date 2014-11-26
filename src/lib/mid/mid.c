@@ -201,25 +201,26 @@ event_t *read_events(uint8_t *data, uint16_t num)
             event[e].msg = data[i++];
         }
         
-        /* Read event parameters */
+        /* Read message parameters */
         switch (event[e].msg) {
-            /* Events with two parameters */
+            /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
             case POLY_AFT:
             case CTRL_MODE:
             case PITCH_BEND:
+            case SONG_POS_PTR:
                 event[e].para_1 = data[i++];
                 event[e].para_2 = data[i++];
                 break;
             
-            /* Meta event with variable data length */
+            /* Meta message with */
             case META_MSG:
                 event[e].para_1 = data[i++]; /* Meta message */
                 event[e].para_2 = data[i++]; /* Meta length  */
 
-                /* Allocate memory for meta event data */
-                event[e].mdata = calloc(sizeof(uint8_t), event[e].para_2 );
+                /* Allocate memory for meta message data */
+                event[e].mdata = calloc(sizeof(uint8_t), event[e].para_2);
 
                 /* Read meta event data */
                 for (j = 0; j < event[e].para_2; j++) {
@@ -227,27 +228,37 @@ event_t *read_events(uint8_t *data, uint16_t num)
                 }
                 break;
 
-            /* System messages TODO! */
+            /* System exclusive message */
             case SYS_EXCLUSIVE:
-            case TIME_CODE:
-            case SONG_POS_PTR:
-            case SONG_SELECT:
+                event[e].para_1 = data[i++]; /* Manufacturer ID */
+
+                /* Count data length */
+                j = i;
+                while (data[j++] != END_SYSEX);
+                event[e].para_2 = j - i;    /* Data length */
+                
+                /* Read system exclusive message data */
+                for (j = 0; j < event[e].para_2; j++) {
+                    event[e].mdata[j] = data[i++];
+                }
+                break;
+                
+            /* Messages with zero parameters */
             case TUNE_REQ:
-            case END_SYSEX:
             case TIMING_CLOCK:
             case FUNC_START:
             case FUNC_CONTINUE:
             case FUNC_STOP:
             case ACTIVE_SENSING:
-                printf("?????");
-                free(event);
-                return NULL;
+            case END_SYSEX:
                 break;
             
-            /* Events with one parameter 
+            /* Messages with one parameter 
              * - All data bytes
              * - PRG_CHANGE
-             * - CHAN_AFT                */
+             * - CHAN_AFT
+             * - TIME_CODE
+             * - SONG_SELECT             */
             default:
                 event[e].para_1 = data[i++];
                 
@@ -259,7 +270,9 @@ event_t *read_events(uint8_t *data, uint16_t num)
 /** Count events in event data */
 uint32_t count_events(uint8_t *data, uint32_t len)
 {
-    uint32_t e, i=0;
+    uint32_t e,i,j;
+
+    i = 0;
 
     /* Until end of data */
     for (e = 0; i < len; e++) {
@@ -273,36 +286,38 @@ uint32_t count_events(uint8_t *data, uint32_t len)
             case POLY_AFT:
             case CTRL_MODE:
             case PITCH_BEND:
+            case SONG_POS_PTR:
                 i += 2;
                 break;
             
-            /* Meta event with variable data length */
+            /* Meta message */
             case META_MSG:
                 i++;          /* Skib to length */
                 i += data[i]; /* Skib length    */
                 i++;
                 break;
 
-            /* System messages TODO! */
+            /* System exclusive message */
             case SYS_EXCLUSIVE:
-            case TIME_CODE:
-            case SONG_POS_PTR:
-            case SONG_SELECT:
+                while (data[i++] != END_SYSEX);
+                break;
+                 
+            /* Messages with zero parameters */
             case TUNE_REQ:
-            case END_SYSEX:
             case TIMING_CLOCK:
             case FUNC_START:
             case FUNC_CONTINUE:
             case FUNC_STOP:
             case ACTIVE_SENSING:
-                printf("?????");
-                return 0;
+            case END_SYSEX:
                 break;
             
-            /* Events with one parameter 
+            /* Messages with one parameter 
              * - All data bytes
              * - PRG_CHANGE
-             * - CHAN_AFT                */
+             * - CHAN_AFT
+             * - TIME_CODE
+             * - SONG_SELECT             */
             default:
                 i++;
         }
