@@ -48,6 +48,8 @@ int64_t note_off_time(track_t track, uint32_t event_position);
 /** Compare function for qsort to sort by onset time */
 int compar_onset(const void *a, const void *b);
 
+histogram_t *calc_histogram_set(channel_t *channels);
 
+histogram_t *calc_histogram_norm(histogram_t *histogram_set);
 
 #endif
