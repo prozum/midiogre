@@ -99,23 +99,43 @@ histogram_t *calc_histogram(channel_t *channels)
 
     histogram_t *histogram_set = malloc(sizeof(histogram_t) * CHANNELS);
 
+    /* allocate memory for histogram_set elements */
     for (i = 0; i < CHANNELS; i++) {
         histogram_set[i].histogram_length = 0;
-        if (channels[0].channel_length) {
-            histogram_set[i].histogram = malloc(sizeof(uint8_t) * SEMITONES);
+        if (channels[i].channel_length) {
+            histogram_set[i].histogram_length = SEMITONES;
+            histogram_set[i].histogram = calloc(sizeof(uint8_t), SEMITONES);
         }
     }
 
+    /* calculating histogram elements */
     for (i = 0; i < CHANNELS; i++) {
-        for (j = 0; j < channels[i].channel_length; j++) {
-            uint8_t pitch = channels[i].notes[j].pitch % SEMITONES;
-            histogram_set[i].histogram[pitch] += 1;
+        if (channels[i].channel_length) {
+            for (j = 0; j < channels[i].channel_length; j++) {
+                uint8_t pitch = channels[i].notes[j].pitch % SEMITONES;
+                histogram_set[i].histogram[pitch] += 1;
+            }
         }
     }
 
     return histogram_set;
 }
 
-histogram_t *calc_norm_histogram(channel_t *channels)
+histogram_t *calc_norm_histogram(histogram_t *histogram_set)
 {
+    histogram_t *histogram_norm = malloc(sizeof(histogram_t));
+    uint8_t i;
+    uint32_t j;
+
+    histogram_norm->histogram_length = SEMITONES;
+    histogram_norm->histogram = calloc(sizeof(uint8_t), CHANNELS);
+
+    for (i = 0; i < CHANNELS; i++) {
+        for (j = 0; j < histogram_length) {
+            uint8_t elements = histogram_set[i].histogram[j];
+            histogram_norm->histogram_set[i] += elements;
+        }
+    }
+
+    return histogram_norm;
 } 
