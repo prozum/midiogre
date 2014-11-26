@@ -53,7 +53,8 @@ int main(int argc, char* argv[])
     
     int  rc;
     unsigned int i,j;
-    char *sql, *sql2*, error = 0;
+    char *sql, *sql2*
+    char error = 0;
     FILE *file;
 
     /* Open mid file */

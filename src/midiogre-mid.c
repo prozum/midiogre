@@ -1,7 +1,7 @@
 #include "midiogre-mid.h"
 
 #include <mid/mid.h>
-#include <mid/mid-util.h>
+#include <mid/mid-str.h>
 
 #include <stdlib.h>
 #include <stdint.h>
