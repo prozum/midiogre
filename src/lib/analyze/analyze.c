@@ -19,7 +19,7 @@ channel_t *channel_extract(mid_t *mid)
     printf("3\n");
     /* allocate enough memory for worst case scenario */
     for (i = 0; i < CHANNELS; i++) {
-        channels[i].notes = malloc( sizeof( note_t ) * total_events );
+        channels[i].notes = malloc(sizeof(note_t) * total_events);
         channels[i].channel_length = 0;
     }
     printf("4\n");
