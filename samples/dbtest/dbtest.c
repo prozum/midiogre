@@ -4,7 +4,7 @@
 #include <sqlite3.h>
 
 #include <mid/mid.h>
-#include <mid/mid-util.h>
+#include <mid/mid-str.h>
 
 #ifdef _WIN32
 #include <win/asprintf.h>
@@ -57,11 +57,10 @@ int main(int argc, char* argv[])
 
     /* Open mid file */
     file = fopen(argv[1],"rb");
-    if( file == NULL ) {
+    if(file == NULL) {
         perror(argv[1]);
         return -1;
     }
-
 
     /* Read content */
     mid = read_mid(file);
@@ -72,12 +71,12 @@ int main(int argc, char* argv[])
     if( rc ){
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         exit(0);
-    }else{
+    } else {
         fprintf(stdout, "Opened database successfully\n");
     }
     
     /* Write database structure */
-    if (rc!=1){
+    if (rc != 1){
         /* Create SQL statement */
         sql = "CREATE TABLE midiFile("       \
               "PARA1        UNSIGNED INT,"   \
@@ -87,13 +86,14 @@ int main(int argc, char* argv[])
         /* Execute SQL statement */
         rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 
-        if( rc != SQLITE_OK ){
+        if (rc != SQLITE_OK){
             fprintf(stderr, "SQL error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
-        }else{
+        } else {
             fprintf(stdout, "Table created successfully\n");
         }
 
+        /* For each track in mid */
         for (i = 0; i < mid->tracks; i++){
             /* For each event in track */
             for (j = 0; j < mid->track[i].events; j++) {
@@ -102,22 +102,25 @@ int main(int argc, char* argv[])
                 if (mid->track[i].event[j].msg >= NOTE_ON_1 &&
                     mid->track[i].event[j].msg <= NOTE_ON_16) {
      
-                    asprintf(&sql2,"INSERT INTO midiFile(PARA1,PARA2,DELTA) \
+                    asprintf(&sql2, "INSERT INTO midiFile(PARA1,PARA2,DELTA) \
                                     VALUES (%u, %u, %u);",mid->track[i].event[j].para_1, \
                                                           mid->track[i].event[j].para_2, \
                                                           mid->track[i].event[j].delta);
+                    
                     rc = sqlite3_exec(db, sql2, callback, 0, &zErrMsg);
-                    if( rc != SQLITE_OK ){
-                    fprintf(stderr, "SQL error: %s\n", zErrMsg);
-                    sqlite3_free(zErrMsg);
-                    }else{
-                    fprintf(stdout, "Data inserted successfully\n");
+                    
+                    if (rc != SQLITE_OK) {
+                        fprintf(stderr, "SQL error: %s\n", zErrMsg);
+                        sqlite3_free(zErrMsg);
+                    } else {
+                        fprintf(stdout, "Data inserted successfully\n");
                     }
+                    
+                    free(sql2)
                     
                 }
             }
         }
-        /*free(sql2);*/
      
 
         sqlite3_close(db);
