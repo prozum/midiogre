@@ -24,7 +24,7 @@ typedef struct channel_s
 typedef struct histrogram_s
 {
     uint8_t *histogram;
-    uint32_t histrogram_length;
+    uint32_t histogram_length;
 } histogram_t;
 
 /** Contains song data */
@@ -43,11 +43,13 @@ channel_t *channel_extract(mid_t *mid);
 void note_extract(track_t track, channel_t *channels);
 
 /** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
-uint32_t note_off_time(track_t track, uint32_t event_position);
+int64_t note_off_time(track_t track, uint32_t event_position);
 
 /** Compare function for qsort to sort by onset time */
 int compar_onset(const void *a, const void *b);
 
+histogram_t *calc_histogram_set(channel_t *channels);
 
+histogram_t *calc_histogram_norm(histogram_t *histogram_set);
 
 #endif
