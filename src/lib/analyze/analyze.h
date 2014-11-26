@@ -23,7 +23,7 @@ typedef struct channel_s
 
 typedef struct histrogram_s
 {
-    unsigned double *semitones;
+    double *semitones;
 } histogram_t;
 
 /** Contains song data */
@@ -44,6 +44,6 @@ histogram_t *calc_channel_histogram(channel_t *channels);
 
 histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_t *channels);
 
-unsigned double *calc_euclid_dist(histogram_t *channels_histogram, histogram_t *normalized_histogram);
+double calc_euclid_dist(double *normalized, double *channel);
 
 #endif

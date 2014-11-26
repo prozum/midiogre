@@ -80,7 +80,7 @@ histogram_t *calc_channel_histogram(channel_t *channels)
     channel_histogram = calloc(sizeof(histogram_t), CHANNELS);
 
     for (i = 0; i < CHANNELS; i++) {
-        channel_histogram[i].semitones = calloc(sizeof(unsigned double), SEMITONES);
+        channel_histogram[i].semitones = calloc(sizeof(double), SEMITONES);
     }
 
     for (i = 0; i < CHANNELS; i++) {
@@ -100,7 +100,7 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
     histogram_t *normalized_histogram;
 
     normalized_histogram = malloc(sizeof(histogram_t));
-    normalized_histogram->semitones = calloc(sizeof(unsigned double), SEMITONES);
+    normalized_histogram->semitones = calloc(sizeof(double), SEMITONES);
 
     for (i = 0; i < CHANNELS; i++) {
         if (channels[i].notes) {
@@ -117,7 +117,7 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
     return normalized_histogram;
 }
 
-unsigned double calc_euclid_dist(unsigned double *normalized, unsigned double *channel)
+double calc_euclid_dist(double *normalized, double *channel)
 {
     return sqrt( pow(normalized[0], 2) - pow(channel[0], 2)) + calc_euclid_dist(normalized + 1, channel + 1);
 }
