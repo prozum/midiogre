@@ -29,7 +29,7 @@ static void midiogre_app_window_class_init(MidiogreAppWindowClass *class)
 {
     /* Load ui file */
     gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS(class),
-                                                "/org/gtk/midiogre/midiogre.ui");
+                                                "/org/prozum/midiogre/ui/midiogre.ui");
 
     /* Pointer to stack */
     gtk_widget_class_bind_template_child_private(GTK_WIDGET_CLASS(class), MidiogreAppWindow, stack);

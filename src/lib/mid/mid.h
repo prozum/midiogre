@@ -119,118 +119,15 @@ typedef enum
     OMNI_MODE_ON        = 0x7d,
     MONO_MODE_ON        = 0x7e,
     POLY_MODE_ON        = 0x7f,
-    NOTE_OFF_1          = 0x80, /**< Sent when note is released */
-    NOTE_OFF_2          = 0x81,
-    NOTE_OFF_3          = 0x82,
-    NOTE_OFF_4          = 0x83,
-    NOTE_OFF_5          = 0x84,
-    NOTE_OFF_6          = 0x85,
-    NOTE_OFF_7          = 0x86,
-    NOTE_OFF_8          = 0x87,
-    NOTE_OFF_9          = 0x88,
-    NOTE_OFF_10         = 0x89,
-    NOTE_OFF_11         = 0x8a,
-    NOTE_OFF_12         = 0x8b,
-    NOTE_OFF_13         = 0x8c,
-    NOTE_OFF_14         = 0x8d,
-    NOTE_OFF_15         = 0x8e,
-    NOTE_OFF_16         = 0x8f,
-    NOTE_ON_1           = 0x90, /**< Sent when note is pressed */
-    NOTE_ON_2           = 0x91,
-    NOTE_ON_3           = 0x92,
-    NOTE_ON_4           = 0x93,
-    NOTE_ON_5           = 0x94,
-    NOTE_ON_6           = 0x95,
-    NOTE_ON_7           = 0x96,
-    NOTE_ON_8           = 0x97,
-    NOTE_ON_9           = 0x98,
-    NOTE_ON_10          = 0x99,
-    NOTE_ON_11          = 0x9a,
-    NOTE_ON_12          = 0x9b,
-    NOTE_ON_13          = 0x9c,
-    NOTE_ON_14          = 0x9d,
-    NOTE_ON_15          = 0x9e,
-    NOTE_ON_16          = 0x9f,
-    POLY_AFT_1          = 0xa0, /**< Key pressure value*/
-    POLY_AFT_2          = 0xa1,
-    POLY_AFT_3          = 0xa2,
-    POLY_AFT_4          = 0xa3,
-    POLY_AFT_5          = 0xa4,
-    POLY_AFT_6          = 0xa5,
-    POLY_AFT_7          = 0xa6,
-    POLY_AFT_8          = 0xa7,
-    POLY_AFT_9          = 0xa8,
-    POLY_AFT_10         = 0xa9,
-    POLY_AFT_11         = 0xaa,
-    POLY_AFT_12         = 0xab,
-    POLY_AFT_13         = 0xac,
-    POLY_AFT_14         = 0xad,
-    POLY_AFT_15         = 0xae,
-    POLY_AFT_16         = 0xaf,
-    CTRL_MODE_1         = 0xb0, /**< Sent when controller changes (pedals and levers etc.)*/
-    CTRL_MODE_2         = 0xb1,
-    CTRL_MODE_3         = 0xb2,
-    CTRL_MODE_4         = 0xb3,
-    CTRL_MODE_5         = 0xb4,
-    CTRL_MODE_6         = 0xb5,
-    CTRL_MODE_7         = 0xb6,
-    CTRL_MODE_8         = 0xb7,
-    CTRL_MODE_9         = 0xb8,
-    CTRL_MODE_10        = 0xb9,
-    CTRL_MODE_11        = 0xba,
-    CTRL_MODE_12        = 0xbb,
-    CTRL_MODE_13        = 0xbc,
-    CTRL_MODE_14        = 0xbd,
-    CTRL_MODE_15        = 0xbe,
-    CTRL_MODE_16        = 0xbf,
-    PRG_CHANGE_1        = 0xc0, /**< Sent when patch number changes*/
-    PRG_CHANGE_2        = 0xc1,
-    PRG_CHANGE_3        = 0xc2,
-    PRG_CHANGE_4        = 0xc3,
-    PRG_CHANGE_5        = 0xc4,
-    PRG_CHANGE_6        = 0xc5,
-    PRG_CHANGE_7        = 0xc6,
-    PRG_CHANGE_8        = 0xc7,
-    PRG_CHANGE_9        = 0xc8,
-    PRG_CHANGE_10       = 0xc9,
-    PRG_CHANGE_11       = 0xca,
-    PRG_CHANGE_12       = 0xcb,
-    PRG_CHANGE_13       = 0xcc,
-    PRG_CHANGE_14       = 0xcd,
-    PRG_CHANGE_15       = 0xce,
-    PRG_CHANGE_16       = 0xcf,
-    CHAN_AFT_1          = 0xd0, /**< Channel pressure. Different from Key pressure. Use to get single greatest pressure value of all keys*/
-    CHAN_AFT_2          = 0xd1,
-    CHAN_AFT_3          = 0xd2,
-    CHAN_AFT_4          = 0xd3,
-    CHAN_AFT_5          = 0xd4,
-    CHAN_AFT_6          = 0xd5,
-    CHAN_AFT_7          = 0xd6,
-    CHAN_AFT_8          = 0xd7,
-    CHAN_AFT_9          = 0xd8,
-    CHAN_AFT_10         = 0xd9,
-    CHAN_AFT_11         = 0xda,
-    CHAN_AFT_12         = 0xdb,
-    CHAN_AFT_13         = 0xdc,
-    CHAN_AFT_14         = 0xdd,
-    CHAN_AFT_15         = 0xde,
-    CHAN_AFT_16         = 0xdf,
-    PITCH_BEND_1        = 0xe0, /**< Sent to indicate pitch bend change(wheel or lever)*/
-    PITCH_BEND_2        = 0xe1,
-    PITCH_BEND_3        = 0xe2,
-    PITCH_BEND_4        = 0xe3,
-    PITCH_BEND_5        = 0xe4,
-    PITCH_BEND_6        = 0xe5,
-    PITCH_BEND_7        = 0xe6,
-    PITCH_BEND_8        = 0xe7,
-    PITCH_BEND_9        = 0xe8,
-    PITCH_BEND_10       = 0xe9,
-    PITCH_BEND_11       = 0xea,
-    PITCH_BEND_12       = 0xeb,
-    PITCH_BEND_13       = 0xec,
-    PITCH_BEND_14       = 0xed,
-    PITCH_BEND_15       = 0xee,
-    PITCH_BEND_16       = 0xef,
+    
+    NOTE_OFF            = 0x80, /**< Channel message: Sent when note is released */
+    NOTE_ON             = 0x90, /**< Channel message: Sent when note is pressed */
+    POLY_AFT            = 0xa0, /**< Channel message: Key pressure value*/
+    CTRL_MODE           = 0xb0, /**< Channel message: Sent when controller changes (pedals and levers etc.)*/
+    PRG_CHANGE          = 0xc0, /**< Channel message: Sent when patch number changes*/
+    CHAN_AFT            = 0xd0, /**< Channel message: Channel pressure. Different from Key pressure. Use to get single greatest pressure value of all keys*/
+    PITCH_BEND          = 0xe0, /**< Channel message: Sent to indicate pitch bend change(wheel or lever)*/
+    
     SYS_EXCLUSIVE       = 0xf0, /**< Messaging to midi hardware - start with 0xf0*/
     TIME_CODE           = 0xf1, /**< Time code*/
     SONG_POS_PTR        = 0xf2, /**< Song position pointer*/
@@ -454,7 +351,8 @@ typedef enum
 
 typedef struct event_s
 {
-    msg_t   msg;      /**< Event type                 */
+    msg_t   msg;      /**< Event message              */
+    uint8_t chan;     /**< Event channel              */
     uint8_t para_1;   /**< First parameter            */
     uint8_t para_2;   /**< Second parameter           */
     uint8_t delta;    /**< Delta time                 */
