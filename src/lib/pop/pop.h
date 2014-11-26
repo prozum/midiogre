@@ -17,6 +17,6 @@ unsigned int playCount(unsigned int plays);
 
 /** Calculates the score af the song.
 No matter how old the song is, it wont get any weight before it is viewed more than once, or once and has been around for a longer time*/
-double weigth(unsigned int startTime, int plays);
+double weight(unsigned int startTime, int plays);
 
 #endif
