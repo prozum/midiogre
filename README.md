@@ -120,8 +120,10 @@ int this_is_a_func(int var_1, int var_2, int var_3)
     int yet_another_var; /**< Description of yet_another_var */
 
     /* if example */
-    if (var_1 == SYMB_CONST) {
+    if (var_1 < ELEMENT_0) {
         this_is_a_var = 0;
+    } else if (var_1 > ELEMENT_4) {
+        this_is_a_var = -1;
     } else {
         this_is_a_var = -1;
     }
