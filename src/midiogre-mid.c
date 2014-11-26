@@ -11,12 +11,11 @@
 #include <glib.h>
 
 /** Import mid struct to tree view */
-void
-mid_import(GFile *mid_gfile, GtkWidget *notebook)
+void mid_import(GFile *mid_gfile, GtkWidget *notebook)
 {
-    uint32_t i,j,k;
+    uint32_t i, j, k;
     uint32_t len;
-    char tmp[3],*str[NUM_COLUMNS];
+    char tmp[3], *str[NUM_COLUMNS];
 
     FILE *mid_file;
     mid_t *mid;
@@ -30,7 +29,7 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
     GtkTreeViewColumn *column;
 
     /* Open mid file */
-    mid_file = fopen( g_file_get_path(mid_gfile),"rb" );
+    mid_file = fopen(g_file_get_path(mid_gfile),"rb");
 
     /* Read content */
     mid = read_mid(mid_file);
@@ -57,12 +56,12 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
             str[3] = g_strdup_printf("%x",mid->track[i].event[j].delta);
 
             /* If meta message */
-            if (mid->track[i].event[j].msg == META_MSG) {
+            if (mid->track[i].event[j].msg == META_MSG){
 
                 /* Find string length */
                 len = mid->track[i].event[j].para_2 * 3;
 
-                str[4] = (char *) g_malloc( (len + 1) * sizeof(char) );
+                str[4] = (char *)g_malloc((len + 1) * sizeof(char));
                 strcpy(str[4],"");
 
                 /* For each byte in meta data */
@@ -71,28 +70,28 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
                     /* Convert MData to hex */
                     if (mid->track[i].event[j].mdata[k] > 0xF) {
                         g_sprintf(&tmp,"%x ",mid->track[i].event[j].mdata[k]);
-                    } else {
+                    } else{
                         g_sprintf(&tmp,"0%x ",mid->track[i].event[j].mdata[k]);
                     }
                     strcat(str[4],tmp);
                 }
             /* Not meta message */
-            } else {
+            } else{
                 str[4] = g_strdup_printf("N/A");
             }
 
             /* Put strings in store */
-            gtk_list_store_append (store, &iter);
-            gtk_list_store_set (store, &iter,
-                                COLUMN_TYPE,   str[0],
-                                COLUMN_PARA_1, str[1],
-                                COLUMN_PARA_2, str[2],
-                                COLUMN_DELTA,  str[3],
-                                COLUMN_MDATA,  str[4],
-                                -1);
+            gtk_list_store_append(store, &iter);
+            gtk_list_store_set(store, &iter,
+                               COLUMN_TYPE,   str[0],
+                               COLUMN_PARA_1, str[1],
+                               COLUMN_PARA_2, str[2],
+                               COLUMN_DELTA,  str[3],
+                               COLUMN_MDATA,  str[4],
+                               -1);
 
             /* Deallocate strings */
-            for(k = 0; k < NUM_COLUMNS; k++) {
+            for (k = 0; k < NUM_COLUMNS; k++){
                 free(str[k]);
             }
         }
@@ -106,46 +105,51 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
         /* Type column */
         renderer = gtk_cell_renderer_text_new();
         column = gtk_tree_view_column_new_with_attributes("Type",
-                                                             renderer,
-                                                             "text",
-                                                             COLUMN_TYPE,
-                                                             NULL);
+                                                           renderer,
+                                                          "text",
+                                                           COLUMN_TYPE,
+                                                           NULL);
+
         gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* Para_1 column */
         renderer = gtk_cell_renderer_text_new();
         column = gtk_tree_view_column_new_with_attributes("Para 1",
-                                                             renderer,
-                                                             "text",
-                                                             COLUMN_PARA_1,
-                                                             NULL);
+                                                           renderer,
+                                                          "text",
+                                                           COLUMN_PARA_1,
+                                                            NULL);
+
         gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* Para_2 column */
         renderer = gtk_cell_renderer_text_new();
         column = gtk_tree_view_column_new_with_attributes("Para 2",
-                                                             renderer,
-                                                             "text",
-                                                             COLUMN_PARA_2,
-                                                             NULL);
+                                                           renderer,
+                                                          "text",
+                                                           COLUMN_PARA_2,
+                                                           NULL);
+
         gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* Delta column */
         renderer = gtk_cell_renderer_text_new();
         column = gtk_tree_view_column_new_with_attributes("Delta",
-                                                             renderer,
-                                                             "text",
-                                                             COLUMN_DELTA,
-                                                             NULL);
+                                                           renderer,
+                                                          "text",
+                                                           COLUMN_DELTA,
+                                                           NULL);
+
         gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* MData column */
         renderer = gtk_cell_renderer_text_new();
         column = gtk_tree_view_column_new_with_attributes("MData",
-                                                             renderer,
-                                                             "text",
-                                                             COLUMN_MDATA,
-                                                             NULL);
+                                                           renderer,
+                                                          "text",
+                                                           COLUMN_MDATA,
+                                                           NULL);
+
         gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
         /* Show tree view */
@@ -159,9 +163,9 @@ mid_import(GFile *mid_gfile, GtkWidget *notebook)
 
         gtk_container_add(GTK_CONTAINER(sw), treeview );
 
-        gtk_notebook_append_page (GTK_NOTEBOOK (notebook),
-                                        sw,
-                                        gtk_label_new (g_strdup_printf("Track %i",i+1)));
+        gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
+                                    sw,
+                                    gtk_label_new (g_strdup_printf("Track %i",i+1)));
     }
     free_mid(mid);
 }
