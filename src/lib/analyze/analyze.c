@@ -33,25 +33,30 @@ channel_t *channel_extract(mid_t *mid)
 
 void note_extract(track_t track, channel_t *channels)
 {
-    uint32_t time = 0;
+    uint32_t time_n_on = 0;
     uint32_t i;
 
     for (i = 0; i < track.events; i++) {
-        time += track.event[i].delta;
+        time_n_on += track.event[i].delta;
 
         if (track.event[i].msg >= NOTE_ON_1 && track.event[i].msg <= NOTE_ON_16) {
             uint8_t tmp = track.event[i].msg - NOTE_ON_1;
             uint32_t channel_length = channels[tmp].channel_length;
+            int64_t time_n_off = note_off_time(track, i);
+
+            if (time_n_off == -1) {
+                exit(-1);
+            }
 
             channels[tmp].notes[channel_length].pitch = track.event[i].para_1;
-            channels[tmp].notes[channel_length].onset = time;
-            channels[tmp].notes[channel_length].offset = time + note_off_time(track, i);
+            channels[tmp].notes[channel_length].onset = time_n_on;
+            channels[tmp].notes[channel_length].offset = time_n_on + time_n_off;
             channels[tmp].channel_length++;
         }
     }
 }
 
-uint32_t note_off_time(track_t track, uint32_t event_position)
+int64_t note_off_time(track_t track, uint32_t event_position)
 {
     uint32_t time = 0;
     uint32_t i;
@@ -70,6 +75,8 @@ uint32_t note_off_time(track_t track, uint32_t event_position)
             time += track.event[tmp].delta;
         }
     }
+
+    return -1;
 }
 
 int compar_onset(const void *a, const void *b)
@@ -123,17 +130,17 @@ histogram_t *calc_histogram(channel_t *channels)
 
 histogram_t *calc_norm_histogram(histogram_t *histogram_set)
 {
-    histogram_t *histogram_norm = malloc(sizeof(histogram_t));
     uint8_t i;
     uint32_t j;
 
+    histogram_t *histogram_norm = malloc(sizeof(histogram_t));
     histogram_norm->histogram_length = SEMITONES;
     histogram_norm->histogram = calloc(sizeof(uint8_t), CHANNELS);
 
     for (i = 0; i < CHANNELS; i++) {
-        for (j = 0; j < histogram_length) {
+        for (j = 0; j < histogram_set[i].histogram_length; j++) {
             uint8_t elements = histogram_set[i].histogram[j];
-            histogram_norm->histogram_set[i] += elements;
+            histogram_norm->histogram[j] += elements;
         }
     }
 
