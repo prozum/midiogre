@@ -43,7 +43,7 @@ channel_t *channel_extract(mid_t *mid);
 void note_extract(track_t track, channel_t *channels);
 
 /** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
-uint32_t note_off_time(track_t track, uint32_t event_position);
+int64_t note_off_time(track_t track, uint32_t event_position);
 
 /** Compare function for qsort to sort by onset time */
 int compar_onset(const void *a, const void *b);
