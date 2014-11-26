@@ -42,19 +42,19 @@ void note_extract(track_t track, channel_t *channels)
     for (i = 0; i < track.events; i++) {
         time_n_on += track.event[i].delta;
 
-        if (track.event[i].msg >= NOTE_ON_1 && track.event[i].msg <= NOTE_ON_16) {
-            uint8_t tmp = track.event[i].msg - NOTE_ON_1;
-            uint32_t channel_length = channels[tmp].channel_length;
+        if (track.event[i].msg == NOTE_ON) {
+            /*uint8_t tmp = track.event[i].msg - NOTE_ON_1; */
+            uint32_t channel_length = channels[track.event[i].chan].channel_length;
             int64_t time_n_off = note_off_time(track, i);
 
             if (time_n_off == -1) {
                 exit(-1);
             }
 
-            channels[tmp].notes[channel_length].pitch = track.event[i].para_1;
-            channels[tmp].notes[channel_length].onset = time_n_on;
-            channels[tmp].notes[channel_length].offset = time_n_on + time_n_off;
-            channels[tmp].channel_length++;
+            channels[track.event[i].chan].notes[channel_length].pitch = track.event[i].para_1;
+            channels[track.event[i].chan].notes[channel_length].onset = time_n_on;
+            channels[track.event[i].chan].notes[channel_length].offset = time_n_on + time_n_off;
+            channels[track.event[i].chan].channel_length++;
         }
     }
 }

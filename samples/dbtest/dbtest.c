@@ -53,8 +53,8 @@ int main(int argc, char* argv[])
     
     int  rc;
     unsigned int i,j;
-    char *sql, *sql2*
-    char error = 0;
+    char *sql, *sql2;
+    char *error = 0;
     FILE *file;
 
     /* Open mid file */
@@ -99,8 +99,7 @@ int main(int argc, char* argv[])
         for (j = 0; j < mid->track[i].events; j++) {
     
             /* If meta message */
-            if (mid->track[i].event[j].msg >= NOTE_ON_1 &&
-                mid->track[i].event[j].msg <= NOTE_ON_16) {
+            if (mid->track[i].event[j].msg == NOTE_ON) {
     
                 asprintf(&sql2, "INSERT INTO midiFile(PARA1,PARA2,DELTA) \
                                 VALUES (%u, %u, %u);",mid->track[i].event[j].para_1, \
@@ -116,8 +115,7 @@ int main(int argc, char* argv[])
                     fprintf(stdout, "Data inserted successfully\n");
                 }
                 
-                free(sql2)
-                
+                free(sql2);
             }
         }
     }

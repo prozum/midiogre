@@ -170,7 +170,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
     return tracks;
 }
 
-/* Read events */
+/** Read events */
 event_t *read_events(uint8_t *data, uint16_t num)
 {
     uint32_t i, j, e;
@@ -187,47 +187,76 @@ event_t *read_events(uint8_t *data, uint16_t num)
         /* Read delta time */
         event[e].delta = 0;
         while ((event[e].delta += data[i++]) > 0x80 );
-
-        /* Read event msg */
-        event[e].msg = data[i++];
-
-        /* Read event parameters */
-        if ((CTRL_MODE_16 >= event[e].msg && event[e].msg >= NOTE_OFF_1) ||
-           (PITCH_BEND_16 >= event[e].msg && event[e].msg >= PITCH_BEND_1) ) {
-            /* Events with two parameters */
-            event[e].para_1 = data[i++];
-            event[e].para_2 = data[i++];
-
-        } else if (CHAN_AFT_16 >= event[e].msg && event[e].msg >= PRG_CHANGE_1) {
-            /* Events with one parameters */
-            event[e].para_1 = data[i++];
-        } else if (ACTIVE_SENSING > event[e].msg && event[e].msg >= SYS_EXCLUSIVE) {
-            /* TODO */
-            printf("?????");
-            free(event);
-            return NULL;
-        } else if (event[e].msg == META_MSG) {
-            /* Meta events */
-            event[e].para_1 = data[i++]; /* Meta msg   */
-            event[e].para_2 = data[i++]; /* Meta length */
-
-            /* Allocate memory for meta event data */
-            event[e].mdata = calloc(sizeof(uint8_t), event[e].para_2 );
-
-            /* Read meta event data */
-            for (j = 0; j < event[e].para_2; j++) {
-                event[e].mdata[j] = data[i++];
-            }
-
+    
+        /* If channel message */
+        if (data[e] > NOTE_OFF &&
+            data[e] < SYS_EXCLUSIVE) {
+            
+            /* Read event channel */
+            event[e].chan = data[i] % 0x10;
+            
+            /* Read event msg */
+            event[e].msg = data[i++] - event[e].chan;
         } else {
-            /* Control Change Messages (Data Bytes) */
-            event[e].para_1 = data[i++];
+            event[e].msg = data[i++];
+        }
+        
+        /* Read event parameters */
+        switch (event[e].msg) {
+            /* Events with two parameters */
+            case NOTE_OFF:
+            case NOTE_ON:
+            case POLY_AFT:
+            case CTRL_MODE:
+            case PITCH_BEND:
+                event[e].para_1 = data[i++];
+                event[e].para_2 = data[i++];
+                break;
+            
+            /* Meta event with variable data length */
+            case META_MSG:
+                event[e].para_1 = data[i++]; /* Meta message */
+                event[e].para_2 = data[i++]; /* Meta length  */
+
+                /* Allocate memory for meta event data */
+                event[e].mdata = calloc(sizeof(uint8_t), event[e].para_2 );
+
+                /* Read meta event data */
+                for (j = 0; j < event[e].para_2; j++) {
+                    event[e].mdata[j] = data[i++];
+                }
+                break;
+
+            /* System messages TODO! */
+            case SYS_EXCLUSIVE:
+            case TIME_CODE:
+            case SONG_POS_PTR:
+            case SONG_SELECT:
+            case TUNE_REQ:
+            case END_SYSEX:
+            case TIMING_CLOCK:
+            case FUNC_START:
+            case FUNC_CONTINUE:
+            case FUNC_STOP:
+            case ACTIVE_SENSING:
+                printf("?????");
+                free(event);
+                return NULL;
+                break;
+            
+            /* Events with one parameter 
+             * - All data bytes
+             * - PRG_CHANGE
+             * - CHAN_AFT                */
+            default:
+                event[e].para_1 = data[i++];
+                
         }
     }
     return event;
 }
 
-/* Count events in event data */
+/** Count events in event data */
 uint32_t count_events(uint8_t *data, uint32_t len)
 {
     uint32_t e, i=0;
@@ -237,26 +266,47 @@ uint32_t count_events(uint8_t *data, uint32_t len)
         /* Skip delta time */
         while (data[i++] > 0x80);
 
-        /* Skip event data */
-        if ( (CTRL_MODE_16 >= data[i] && data[i] >= NOTE_OFF_1) ||
-             (PITCH_BEND_16 >= data[i] && data[i] >= PITCH_BEND_1) ) {
-            /* Events with 2 parameters */
-            i+=3;
-        } else if (CHAN_AFT_16 >= data[i] && data[i] >= PRG_CHANGE_1) {
-            /* Events with 1 parameter */
-            i+=2;
-        } else if (ACTIVE_SENSING > data[i] && data[i] >= SYS_EXCLUSIVE) {
-            /* TODO */
-            printf("?????");
-            return -1;
-        } else if (data[i] == META_MSG) {
-            i+=2;       /* Skib to length */
-            i+=data[i]; /* Skib length    */
-            i++;
-        } else {
-            /* Control Change Messages (Data Bytes) */
-            i+=2;
+        switch (data[i++]) {
+            /* Events with two parameters */
+            case NOTE_OFF:
+            case NOTE_ON:
+            case POLY_AFT:
+            case CTRL_MODE:
+            case PITCH_BEND:
+                i += 2;
+                break;
+            
+            /* Meta event with variable data length */
+            case META_MSG:
+                i++;          /* Skib to length */
+                i += data[i]; /* Skib length    */
+                i++;
+                break;
+
+            /* System messages TODO! */
+            case SYS_EXCLUSIVE:
+            case TIME_CODE:
+            case SONG_POS_PTR:
+            case SONG_SELECT:
+            case TUNE_REQ:
+            case END_SYSEX:
+            case TIMING_CLOCK:
+            case FUNC_START:
+            case FUNC_CONTINUE:
+            case FUNC_STOP:
+            case ACTIVE_SENSING:
+                printf("?????");
+                return 0;
+                break;
+            
+            /* Events with one parameter 
+             * - All data bytes
+             * - PRG_CHANGE
+             * - CHAN_AFT                */
+            default:
+                i++;
         }
+
     }
     return e;
 }

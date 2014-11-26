@@ -1,5 +1,5 @@
 #include <mid/mid.h>
-#include <mid/mid-util.h>
+#include <mid/mid-str.h>
 
 #include <stdio.h>
 #include <stdlib.h>
