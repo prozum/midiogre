@@ -8,7 +8,6 @@ endif()
 # Localization support (Not used)
 if(LOCALE)
     find_package(GetText)
-        gettext
     if (NOT PKGCONFIG_FOUND)
         message(FATAL_ERROR  "Please install: gettext")
     endif()
