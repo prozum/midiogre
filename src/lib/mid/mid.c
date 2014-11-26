@@ -11,7 +11,7 @@
  */
 uint32_t ffread(FILE *file, long int offset, size_t buf_size)
 {
-    uint32_t i;
+    uint32_t i,rv;
     uint8_t tmp;
 
     uint32_t result = 0;
@@ -25,17 +25,31 @@ uint32_t ffread(FILE *file, long int offset, size_t buf_size)
     /* Setup offset from current position */
     if ( fseek(file,offset,SEEK_CUR) != 0)
     {
-        fprintf(stderr,"fseek failed\n");
+        fprintf(stderr,"could not set pos\n");
         return 0;
     }
     
-    /* Read one byte at a time! (Endianness) */
+    /* First bytes */
     for(i = 1; buf_size > i; ++i) {
-        fread(&tmp,1,1,file);
+        rv = fread(&tmp, 1, 1, file);
+        
+        if (rv == 0) {
+            fprintf(stderr,"could not read\n");
+            return 0;
+        }
+ 
         result += tmp;
         result <<= 8;
     }
-    fread(&tmp,1,1,file);
+ 
+    /* Last byte */   
+    rv = fread(&tmp, 1, 1, file);
+    
+    if (rv == 0) {
+        fprintf(stderr,"could not read\n");
+        return 0;
+    }
+    
     result += tmp;
 
     return result;
