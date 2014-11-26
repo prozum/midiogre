@@ -3,151 +3,121 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
 
-channel_t *channel_extract(mid_t *mid)
+channel_t *channel_extract(track_t *track)
 {
-    printf("1\n");
-    uint32_t total_events = 0;
+    uint32_t events, position;
+    uint32_t start_time; int64_t d_time;
     uint32_t i;
-    channel_t *channels = calloc(sizeof(channel_t), CHANNELS);
+    uint8_t channel;
+    channel_t *channels;
 
-    printf("2\n");
+    events = track->events;
+    start_time = 0;
+    d_time = 0;
+    channels = calloc(sizeof(channel_t), CHANNELS);
 
-    for (i = 0; i < mid->tracks; i++) {
-        total_events += mid->track[i].events;
-    }
-    printf("3\n");
-    /* allocate enough memory for worst case scenario */
     for (i = 0; i < CHANNELS; i++) {
-        channels[i].notes = malloc(sizeof(note_t) * total_events);
-        channels[i].channel_length = 0;
+        channels[i].note = calloc(sizeof(note_t), events);
+        channels[i].notes = 0;
     }
-    printf("4\n");
-    for (i = 0; i < mid->tracks; i++) {
-        note_extract(mid->track[i], channels);
-    }
-    printf("5\n");
-    for (i = 0; i < mid->tracks; i++) {
-        qsort(channels[i].notes, channels[i].channel_length, sizeof(note_t), compar_onset);
-    }
-    printf("6\n");
-    return channels;
-}
 
-void note_extract(track_t track, channel_t *channels)
-{
-    uint32_t time_n_on = 0;
-    uint32_t i;
+    for (i = 0; i < events; i++) {
+        start_time += track->event[i].delta;
 
-    for (i = 0; i < track.events; i++) {
-        time_n_on += track.event[i].delta;
+        if (track->event[i].msg == NOTE_ON) {
+            channel = track->event[i].channel;
+            position = channels[channel].notes;
 
-        if (track.event[i].msg >= NOTE_ON_1 && track.event[i].msg <= NOTE_ON_16) {
-            uint8_t tmp = track.event[i].msg - NOTE_ON_1;
-            uint32_t channel_length = channels[tmp].channel_length;
-            int64_t time_n_off = note_off_time(track, i);
+            channels[channel].note[position].pitch = track->event[i].para_1;
+            channels[channel].note[position].onset = start_time;
+            d_time = note_off_time(track, position);
 
-            if (time_n_off == -1) {
+            if (d_time == -1) {
                 exit(-1);
             }
 
-            channels[tmp].notes[channel_length].pitch = track.event[i].para_1;
-            channels[tmp].notes[channel_length].onset = time_n_on;
-            channels[tmp].notes[channel_length].offset = time_n_on + time_n_off;
-            channels[tmp].channel_length++;
+            channels[channel].note[position].offset = start_time + d_time;
         }
     }
+
+    return channels;
 }
 
-int64_t note_off_time(track_t track, uint32_t event_position)
+int64_t note_off_time(track_t *track, uint32_t position)
 {
-    uint32_t time = 0;
-    uint32_t i;
+    uint32_t i, time, event;
+    uint32_t pitch, note_off;
+    uint8_t msg, channel;
 
-    uint8_t note_off = track.event[event_position].msg - 0x10;
-    uint8_t pitch = track.event[event_position].para_1;
-    uint8_t velocity = track.event[event_position].para_1;
-    uint8_t tmp;
+    time = 0;
+    event = position;
+    pitch = track->event[position].para_1;
+    note_off = track->event[position].channel + NOTE_ON - CHANNELS;
 
-    for (i = 1; i < (track.events - event_position - 1); i++) {
-        tmp = event_position + i;
+    for (i = 1; i < (track->events - position); i++) {
+        event++;
+        time += track->event[event].delta;
+        msg = track->event[event].msg;
+        channel = track->event[event].channel;
 
-        if (track.event[tmp].msg == note_off && track.event[tmp].para_1 == pitch && track.event[tmp].para_2 == velocity) {
-            time += track.event[tmp].delta;
-            printf("%d\n", time);
+        if ((msg + channel) == note_off && track->event[event].para_1 == pitch) {
             return time;
-        } else {
-            time += track.event[tmp].delta;
         }
     }
 
     return -1;
 }
 
-int compar_onset(const void *a, const void *b)
-{
-    const note_t *note1 = a;
-    const note_t *note2 = b;
 
-    return note1->onset - note2->onset;
-}
-
-/*
-channel_t *skyline_extract(channel_t *channels)
+histogram_t *calc_channel_histogram(channel_t *channels)
 {
-    channel_t *skyline = calloc( sizeof( channel_t), CHANNELS );
+    uint32_t i, j;
+    uint32_t semitone;
+    histogram_t *channel_histogram;
+
+    channel_histogram = calloc(sizeof(histogram_t), CHANNELS);
 
     for (i = 0; i < CHANNELS; i++) {
-        skyline[i].notes = malloc( sizeof( note_t ) * channels[i].channel_length );
-        skyline[i].channel_length = channels[i].channel_length
+        channel_histogram[i].semitones = calloc(sizeof(unsigned double), SEMITONES);
     }
-}
-*/
 
-histogram_t *calc_histogram_set(channel_t *channels)
-{
-    uint8_t i;
-    uint32_t j;
-
-    histogram_t *histogram_set = malloc(sizeof(histogram_t) * CHANNELS);
-
-    /* allocate memory for histogram_set elements */
     for (i = 0; i < CHANNELS; i++) {
-        histogram_set[i].histogram_length = 0;
-        if (channels[i].channel_length) {
-            histogram_set[i].histogram_length = SEMITONES;
-            histogram_set[i].histogram = calloc(sizeof(uint8_t), SEMITONES);
+        for (j = 0; j < channels[i].notes; j++) {
+            semitone = channels[i].note[j].pitch % SEMITONES;
+            channel_histogram[i].semitones[semitone]++;
         }
     }
 
-    /* calculating histogram elements */
-    for (i = 0; i < CHANNELS; i++) {
-        if (channels[i].channel_length) {
-            for (j = 0; j < channels[i].channel_length; j++) {
-                uint8_t pitch = channels[i].notes[j].pitch % SEMITONES;
-                histogram_set[i].histogram[pitch] += 1;
-            }
-        }
-    }
-
-    return histogram_set;
+    return channel_histogram;
 }
 
-histogram_t *calc_histogram_norm(histogram_t *histogram_set)
+histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_t *channels)
 {
-    uint8_t i;
-    uint32_t j;
+    uint32_t i, j;
+    uint8_t nonzero_channels;
+    histogram_t *normalized_histogram;
 
-    histogram_t *histogram_norm = malloc(sizeof(histogram_t));
-    histogram_norm->histogram_length = SEMITONES;
-    histogram_norm->histogram = calloc(sizeof(uint8_t), CHANNELS);
+    normalized_histogram = malloc(sizeof(histogram_t));
+    normalized_histogram->semitones = calloc(sizeof(unsigned double), SEMITONES);
 
     for (i = 0; i < CHANNELS; i++) {
-        for (j = 0; j < histogram_set[i].histogram_length; j++) {
-            uint8_t elements = histogram_set[i].histogram[j];
-            histogram_norm->histogram[j] += elements;
+        if (channels[i].notes) {
+            nonzero_channels++;
         }
     }
 
-    return histogram_norm;
-} 
+    for (i = 0; i < SEMITONES; i++) {
+        for (j = 0; j < CHANNELS; j++) {
+            normalized_histogram->semitones[i] = (channels_histogram[j].semitones[i] / nonzero_channels);
+        }
+    }
+
+    return normalized_histogram;
+}
+
+unsigned double calc_euclid_dist(unsigned double *normalized, unsigned double *channel)
+{
+    return sqrt( pow(normalized[0], 2) - pow(channel[0], 2)) + calc_euclid_dist(normalized + 1, channel + 1);
+}

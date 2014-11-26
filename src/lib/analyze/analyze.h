@@ -17,39 +17,33 @@ typedef struct note_s
 /** Contains information about notes on a given channel */
 typedef struct channel_s
 {
-    note_t *notes;
-    uint32_t channel_length;
+    note_t *note;
+    uint32_t notes;
 } channel_t;
 
 typedef struct histrogram_s
 {
-    uint8_t *histogram;
-    uint32_t histogram_length;
+    unsigned double *semitones;
 } histogram_t;
 
 /** Contains song data */
 typedef struct song_data_s
 {
-    channel_t *channels;    /** Contains the 16 channels */
-    histogram_t *histograms; /** Array of pitch class histograms for channels */
-    histogram_t *histogram_normalized; /** The normalized histogram for all the notes */
-    uint8_t nonzero_channels; /** Amount of channels that contains notes */
+    channel_t *channels;
+    histogram_t *channels_histogram;
+    histogram_t *normalized_histogram;
 } song_data_t;
 
 /** Returns channels for a MIDI file */
-channel_t *channel_extract(mid_t *mid);
-
-/** Extracts the notes for channels on a track */
-void note_extract(track_t track, channel_t *channels);
+channel_t *channel_extract(track_t *track);
 
 /** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
-int64_t note_off_time(track_t track, uint32_t event_position);
+int64_t note_off_time(track_t *track, uint32_t position);
 
-/** Compare function for qsort to sort by onset time */
-int compar_onset(const void *a, const void *b);
+histogram_t *calc_channel_histogram(channel_t *channels);
 
-histogram_t *calc_histogram_set(channel_t *channels);
+histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_t *channels);
 
-histogram_t *calc_histogram_norm(histogram_t *histogram_set);
+unsigned double *calc_euclid_dist(histogram_t *channels_histogram, histogram_t *normalized_histogram);
 
 #endif
