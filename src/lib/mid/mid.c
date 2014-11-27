@@ -189,8 +189,8 @@ event_t *read_events(uint8_t *data, uint16_t num)
         while ((event[e].delta += data[i++]) > 0x80 );
     
         /* If channel message */
-        if (data[e] > NOTE_OFF &&
-            data[e] < SYS_EXCLUSIVE) {
+        if (data[e] >= NOTE_OFF &&
+            data[e] <= PITCH_BEND) {
             
             /* Read event channel */
             event[e].chan = data[i] % 0x10;
@@ -279,7 +279,7 @@ uint32_t count_events(uint8_t *data, uint32_t len)
         /* Skip delta time */
         while (data[i++] > 0x80);
 
-        switch (data[i++]) {
+        switch (data[i] - data[i] % 0x10) {
             /* Events with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
