@@ -168,9 +168,8 @@ track_t *read_tracks(FILE *file, uint16_t tracks)
 /** Read events */
 event_t *read_events(uint8_t *data, uint16_t events)
 {
-    uint32_t b,i,ev,msg,test;
+    uint32_t i,b,ev;
     event_t *event;
-    //event_t event[events];
 
     /* Start at first byte */
     b = 0;
@@ -195,16 +194,12 @@ event_t *read_events(uint8_t *data, uint16_t events)
             
             /* Read event msg */
             event[ev].msg = data[b++] - event[ev].chan;
-            test=0;
         } else {
             event[ev].msg = data[b++];
-            test=1;
         }
 
-        msg = event[ev].msg;
-
         /* Read message parameters */
-        switch (msg) {
+        switch (event[ev].msg) {
             /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
