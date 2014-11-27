@@ -26,8 +26,8 @@ endif()
 
 if(GUI OR MAIN)
     # Find glib-2
-    #pkg_check_modules_fullpath(GLIB2 glib-2.0)
-    pkg_check_modules(GLIB2 glib-2.0)
+    pkg_check_modules_fullpath(GLIB2 glib-2.0)
+    #pkg_check_modules(GLIB2 glib-2.0)
     if (NOT GLIB2_FOUND)
         message(FATAL_ERROR  "Please install: glib2-devel")
     endif()
@@ -35,8 +35,8 @@ if(GUI OR MAIN)
     include_directories(${GLIB2_INCLUDE_DIR})
 
     # Find GTK3
-    #pkg_check_modules_fullpath(GTK3 gtk+-3.0>=3.10)
-    pkg_check_modules(GTK3 gtk+-3.0>=3.10)
+    pkg_check_modules_fullpath(GTK3 gtk+-3.0>=3.10)
+    #pkg_check_modules(GTK3 gtk+-3.0>=3.10)
     if (NOT GTK3_FOUND)
         message(FATAL_ERROR  "Please install: gtk3-devel")
     endif()
