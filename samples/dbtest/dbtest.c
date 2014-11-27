@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     
     sqlite3 *db;
     
-    int  rc;
+    int rc;
     unsigned int i,j;
     char *sql, *sql2;
     char *error = 0;
@@ -31,20 +31,16 @@ int main(int argc, char* argv[])
         perror(argv[1]);
         return -1;
     }
-
+    printf("%c, %d", db, rc);
     /* Read content */
     mid = read_mid(file);
     fclose(file);
 
     /* Open database */
     rc = sqlite3_open("test.db", &db);
-    if( rc ){
-        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-        return -1;
-    } else {
-        fprintf(stdout, "Opened database successfully\n");
-    }
-    
+
+	//database_open_error(rc, db);
+
     /* Write database structure */
     sql = "CREATE TABLE midiFile("       \
           "PARA1        UNSIGNED INT,"   \
