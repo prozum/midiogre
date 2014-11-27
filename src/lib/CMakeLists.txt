@@ -3,3 +3,5 @@ add_subdirectory(analyze)
 add_subdirectory(distance)
 add_subdirectory(pop)
 add_subdirectory(win)
+add_subdirectory(database)
+

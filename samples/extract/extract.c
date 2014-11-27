@@ -32,7 +32,7 @@ int main( int argc, char *argv[] )
     printf("\n");
 
     for (i = 0; i < 2; i++) {
-        printf("%d %d %d\n", song_data.channels[0].notes[i].pitch, song_data.channels[0].notes[i].onset, song_data.channels[0].notes[i].offset);
+        printf("%d %d %d\n", song_data.channels[0].note[i].pitch, song_data.channels[0].note[i].onset, song_data.channels[0].note[i].offset);
     }
 
     /*Test skyline*/
