@@ -6,6 +6,9 @@
 #include <mid/mid.h>
 #include <mid/mid-str.h>
 
+#include <mid/db.c>
+#include <mid/db.h>
+
 #ifdef _WIN32
 #include <win/asprintf.h>
 #endif
@@ -19,31 +22,6 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName)
    printf("\n");
    return 0;
 }
-/*
-int midiWrite(mid_t *mid){
-    unsigned int i, j;
-    char *sql2;
-
-    for (i = 0; i < mid->tracks; i++)
-    {
-         For each event in track */ /*
-        for (j = 0; j < mid->track[i].events; j++) {
-
-            *//* If meta message */ /*
-            if (mid->track[i].event[j].msg >= NOTE_ON_1 &&
-                mid->track[i].event[j].msg <= NOTE_ON_16) {
-
-                asprintf(&sql2,"INSERT INTO midiFile(PARA1,PARA2,DELTA) \
-                                VALUES (%u, %u, %u);",mid->track[i].event[j].para_1, \
-                                                      mid->track[i].event[j].para_2, \
-                                                      mid->track[i].event[j].delta);
-
-                }
-           }
-      }
-    return sql2;
-}
-*/
 
 int main(int argc, char* argv[])
 {

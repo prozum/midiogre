@@ -9,7 +9,9 @@ target_link_libraries(dbtest
 )
 if (WIN32)
 		target_link_libraries(dbtest
-						win)
+						win
+						database
+							)
 endif()
 
 
