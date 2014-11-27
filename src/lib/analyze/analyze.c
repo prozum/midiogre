@@ -54,7 +54,7 @@ int64_t note_off_time(track_t *track, uint32_t position)
     time = 0;
     event = position;
     pitch = track->event[position].para_1;
-    note_off = track->event[position].channel + NOTE_ON - CHANNELS;
+    note_off = track->event[position].chan + NOTE_ON - CHANNELS;
 
     for (i = 1; i < (track->events - position); i++) {
         event++;
