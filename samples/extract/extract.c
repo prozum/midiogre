@@ -27,7 +27,7 @@ int main( int argc, char *argv[] )
  
     /* Read mid */
 
-    song_data.channels = channel_extract(mid);
+    song_data.channels = channel_extract(mid->track);
 
     printf("\n");
 

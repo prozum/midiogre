@@ -1,7 +1,6 @@
 #ifndef __ANALYZE_H__
 #define __ANALYZE_H__
 
-#define CHANNELS 16
 #define SEMITONES 12
 
 #include <mid/mid.h>
