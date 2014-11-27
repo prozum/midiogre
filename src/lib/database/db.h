@@ -3,6 +3,9 @@
 
 #include <sqlite3.h>
 
+#ifdef _WIN32
+#include <win/asprintf.h>
+#endif
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName);
 

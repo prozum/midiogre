@@ -1,17 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <sqlite3.h>
-
 #include <mid/mid.h>
 #include <mid/mid-str.h>
 
 #include <database/db.c>
 #include <database/db.h>
-
-#ifdef _WIN32
-#include <win/asprintf.h>
-#endif
 
 int main(int argc, char* argv[])
 {
@@ -20,10 +14,8 @@ int main(int argc, char* argv[])
     
     int rc;
     unsigned int i,j;
-    char *sql, *sql2;
+    char *sql, *sql2, *sql3;
     char *error = 0;
-    char testfile = "/home/bo/bono-money4bono-1-helptheblacks";
-    char *s;
     FILE *file;
 
     /* Open mid file */
@@ -48,16 +40,17 @@ int main(int argc, char* argv[])
           "ARTIST                  CHAR,"   \
           "ALBUM                   CHAR,"   \
           "TRACKNUM        UNSIGNED INT,"   \
-          "TRACK                   CHAR);";
+          "TRACK                   CHAR,"   \
+          "PARA1       UNSIGNED INT,"   \
+          "PARA2                   UNSIGNED INT,"   \
+          "DELTA                   UNSIGNED INT,"   \
+          "INSTRUMENTS             UNSIGNED INT);";
     
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &error);
 
     /* Table error check */
     database_general_error(rc, error, 1);
-
-    s = strrchr(testfile, '/');
-    printf("%s",s);
 
     /* For each track in mid */
     for (i = 0; i < mid->tracks; i++) {
@@ -78,8 +71,16 @@ int main(int argc, char* argv[])
             }
         }
     }
+    /* Only checks the last command */
     database_general_error(rc, error, 2);
 
+    /* Create SQL statement */
+    /*
+    sql3 = "SELECT * from DELTA";
+    rc = sqlite3_exec(db, sql3, callback, (void*)data, &error);
+
+    database_general_error(rc, error, 3);
+	*/
     sqlite3_close(db);    
  
     return 0;
