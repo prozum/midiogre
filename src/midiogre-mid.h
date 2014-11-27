@@ -7,11 +7,12 @@
 
 enum
 {
-    COLUMN_TYPE,
+    COLUMN_MSG,
     COLUMN_PARA_1,
     COLUMN_PARA_2,
+    COLUMN_CHAN,
     COLUMN_DELTA,
-    COLUMN_MDATA,
+    COLUMN_DATA,
     NUM_COLUMNS
 };
 
