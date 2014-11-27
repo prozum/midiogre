@@ -173,7 +173,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
 /** Read events */
 event_t *read_events(uint8_t *data, uint16_t num)
 {
-    uint32_t i,j,ev;
+    uint32_t i,j,ev,msg,test;
     event_t *event;
     
     /* Start at first byte */
@@ -201,8 +201,10 @@ event_t *read_events(uint8_t *data, uint16_t num)
             event[ev].msg = data[i++];
         }
 
+        msg = event[ev].msg;
+
         /* Read message parameters */
-        switch (event[ev].msg) {
+        switch (msg) {
             /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
@@ -222,7 +224,7 @@ event_t *read_events(uint8_t *data, uint16_t num)
                 /* Allocate memory for meta message data */
                 event[ev].mdata = calloc(sizeof(uint8_t), event[ev].para_2);
 
-                /* Read meta event data */
+                /* Read meta message data */
                 for (j = 0; j < event[ev].para_2; j++) {
                     event[ev].mdata[j] = data[i++];
                 }
