@@ -16,7 +16,6 @@
 int main(int argc, char* argv[])
 {
     mid_t *mid;
-    
     sqlite3 *db;
     
     int rc;
@@ -33,7 +32,7 @@ int main(int argc, char* argv[])
         perror(argv[1]);
         return -1;
     }
-    printf("%c, %d", db, rc);
+
     /* Read content */
     mid = read_mid(file);
     fclose(file);
@@ -41,6 +40,7 @@ int main(int argc, char* argv[])
     /* Open database */
     rc = sqlite3_open("test.db", &db);
 
+    /* Database open error check */
 	database_open_error(rc, db);
 
     /* Write database structure */
@@ -53,12 +53,8 @@ int main(int argc, char* argv[])
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &error);
 
-    if (rc != SQLITE_OK){
-        fprintf(stderr, "SQL error: %s\n", error);
-        sqlite3_free(error);
-    } else {
-        fprintf(stdout, "Table created successfully\n");
-    }
+    /* Table error check */
+    database_general_error(rc, error, 1);
 
     s = strrchr(testfile, '/');
     printf("%s",s);
@@ -78,18 +74,12 @@ int main(int argc, char* argv[])
                 
                 rc = sqlite3_exec(db, sql2, callback, 0, &error);
                 
-                if (rc != SQLITE_OK) {
-                    fprintf(stderr, "SQL error: %s\n", error);
-                    sqlite3_free(error);
-                } else {
-                    fprintf(stdout, "Data inserted successfully\n");
-                }
-                
                 free(sql2);
             }
         }
     }
-    
+    database_general_error(rc, error, 2);
+
     sqlite3_close(db);    
  
     return 0;
