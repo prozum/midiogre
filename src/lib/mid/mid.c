@@ -296,7 +296,7 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
         b++;
 
         switch (msg) {
-            /* Events with two parameters */
+            /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
             case POLY_AFT:
@@ -359,12 +359,13 @@ void free_mid(mid_t *mid)
     /* For each track */
     for (i = 0; i < mid->tracks; i++ ) {
         
-        /* For events in track */
+        /* For message in track */
         for (j = 0; j < mid->track[i].events; j++) {
 
-            /* If meta event */
-            if (mid->track[i].event[j].msg == META_MSG) {
-                
+            /* If meta message or sysex */
+            if (mid->track[i].event[j].msg == META_MSG &&
+                mid->track[i].event[j].msg == SYSEX_START) {
+
                 /* Deallocate meta event data */
                 free(mid->track[i].event[j].data);
             }
