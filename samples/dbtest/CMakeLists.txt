@@ -4,12 +4,14 @@ add_executable(dbtest
 
 target_link_libraries(dbtest
 	mid
+	database
 	${SQLITE3_LIBRARIES}
 	
 )
 if (WIN32)
 		target_link_libraries(dbtest
-						win)
+						win
+							)
 endif()
 
 
