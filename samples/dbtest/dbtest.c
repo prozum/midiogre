@@ -13,7 +13,6 @@
 #include <win/asprintf.h>
 #endif
 
-
 int main(int argc, char* argv[])
 {
     mid_t *mid;
