@@ -173,7 +173,7 @@ track_t *read_tracks(FILE *file, uint16_t num)
 /** Read events */
 event_t *read_events(uint8_t *data, uint16_t num)
 {
-    uint32_t i, j, e;
+    uint32_t i,j,ev;
     event_t *event;
     
     /* Start at first byte */
@@ -183,26 +183,26 @@ event_t *read_events(uint8_t *data, uint16_t num)
     event = calloc(sizeof(event_t), num);
 
     /* Until end last event */
-    for (e = 0; e < num; e++) {
+    for (ev = 0; ev < num; ev++) {
         /* Read delta time */
-        event[e].delta = 0;
-        while ((event[e].delta += data[i++]) > 0x80 );
+        event[ev].delta = 0;
+        while ((event[ev].delta += data[i++]) > 0x80 );
     
         /* If channel message */
-        if (data[e] > NOTE_OFF &&
-            data[e] < SYS_EXCLUSIVE) {
+        if (data[i] >= NOTE_OFF &&
+            data[i] <= PITCH_BEND) {
             
             /* Read event channel */
-            event[e].chan = data[i] % 0x10;
+            event[ev].chan = data[i] % 0x10;
             
             /* Read event msg */
-            event[e].msg = data[i++] - event[e].chan;
+            event[ev].msg = data[i++] - event[ev].chan;
         } else {
-            event[e].msg = data[i++];
+            event[ev].msg = data[i++];
         }
-        
+
         /* Read message parameters */
-        switch (event[e].msg) {
+        switch (event[ev].msg) {
             /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
@@ -210,36 +210,36 @@ event_t *read_events(uint8_t *data, uint16_t num)
             case CTRL_MODE:
             case PITCH_BEND:
             case SONG_POS_PTR:
-                event[e].para_1 = data[i++];
-                event[e].para_2 = data[i++];
+                event[ev].para_1 = data[i++];
+                event[ev].para_2 = data[i++];
                 break;
             
             /* Meta message with */
             case META_MSG:
-                event[e].para_1 = data[i++]; /* Meta message */
-                event[e].para_2 = data[i++]; /* Meta length  */
+                event[ev].para_1 = data[i++]; /* Meta message */
+                event[ev].para_2 = data[i++]; /* Meta length  */
 
                 /* Allocate memory for meta message data */
-                event[e].mdata = calloc(sizeof(uint8_t), event[e].para_2);
+                event[ev].mdata = calloc(sizeof(uint8_t), event[ev].para_2);
 
                 /* Read meta event data */
-                for (j = 0; j < event[e].para_2; j++) {
-                    event[e].mdata[j] = data[i++];
+                for (j = 0; j < event[ev].para_2; j++) {
+                    event[ev].mdata[j] = data[i++];
                 }
                 break;
 
             /* System exclusive message */
             case SYS_EXCLUSIVE:
-                event[e].para_1 = data[i++]; /* Manufacturer ID */
+                event[ev].para_1 = data[i++]; /* Manufacturer ID */
 
                 /* Count data length */
                 j = i;
                 while (data[j++] != END_SYSEX);
-                event[e].para_2 = j - i;    /* Data length */
+                event[ev].para_2 = j - i;    /* Data length */
                 
                 /* Read system exclusive message data */
-                for (j = 0; j < event[e].para_2; j++) {
-                    event[e].mdata[j] = data[i++];
+                for (j = 0; j < event[ev].para_2; j++) {
+                    event[ev].mdata[j] = data[i++];
                 }
                 break;
                 
@@ -260,7 +260,7 @@ event_t *read_events(uint8_t *data, uint16_t num)
              * - TIME_CODE
              * - SONG_SELECT             */
             default:
-                event[e].para_1 = data[i++];
+                event[ev].para_1 = data[i++];
                 
         }
     }
@@ -270,16 +270,28 @@ event_t *read_events(uint8_t *data, uint16_t num)
 /** Count events in event data */
 uint32_t count_events(uint8_t *data, uint32_t len)
 {
-    uint32_t e,i,j;
+    uint32_t i,ev,msg;
 
     i = 0;
 
     /* Until end of data */
-    for (e = 0; i < len; e++) {
+    for (ev = 0; i < len; ev++) {
         /* Skip delta time */
         while (data[i++] > 0x80);
 
-        switch (data[i++]) {
+        /* If channel message */
+        if (data[i] >= NOTE_OFF &&
+            data[i] <= PITCH_BEND) {
+
+            msg = data[i] - (data[i] % 0x10);
+        } else {
+            msg = data[i];
+        }
+
+        /* Skib message byte */
+        i++;
+
+        switch (msg) {
             /* Events with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
@@ -323,7 +335,7 @@ uint32_t count_events(uint8_t *data, uint32_t len)
         }
 
     }
-    return e;
+    return ev;
 }
 
 void write_mid(FILE *midi_file, mid_t mid);
