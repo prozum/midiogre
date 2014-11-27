@@ -94,6 +94,41 @@ channel_t skyline(song_data_t song_data){
                 }
                 if(skyline_dynamic[i].note[j].pitch < skyline_dynamic[i].note[k].pitch) {
                     /* Split */
+
+                    channel_t *lmt = (channel_t *)malloc(sizeof(channel_t) * CHANNELS);
+
+                    for (e = 0; e < CHANNELS; e++) {
+                        if(e != i) {
+                            lmt[e].notes = skyline_dynamic[e].notes;
+                        } else {
+                            lmt[e].notes = skyline_dynamic[e].notes + 1;
+                        }
+                    }
+
+                    for (e = 0; e < CHANNELS; e++) {
+                        if ( e != i) {
+                            for (s = 0; s < lmt[e].notes; s++){
+                                lmt[e].note[s].pitch = skyline_dynamic[e].note[s].pitch;
+                                lmt[e].note[s].onset = skyline_dynamic[e].note[s].onset;
+                                lmt[e].note[s].offset = skyline_dynamic[e].note[s].offset;
+                            }
+                        }
+                        if (e == i) {
+                            for (s = 0; s < j; s++){
+                                lmt[e].note[s].pitch = skyline_dynamic[e].note[s].pitch;
+                                lmt[e].note[s].onset = skyline_dynamic[e].note[s].onset;
+                                lmt[e].note[s].offset = skyline_dynamic[e].note[s].offset;
+                            }
+
+
+                        }
+                    }
+
+                    free(skyline_dynamic);
+
+                    channel_t *skyline_dynamic = (channel_t *)malloc(sizeof(channel_t) * CHANNELS);
+
+
                 }
             }
         }

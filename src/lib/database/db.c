@@ -2,16 +2,15 @@
 #include <stdlib.h>
 #include "db.h"
 
-#include <sqlite3.h>
 
-static int callback(void *NotUsed, int argc, char **argv, char **azColName)
+static int callback(void *data, int argc, char **argv, char **azColName)
 {
-   int i;
-   for(i=0; i<argc; i++){
-      printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-   }
-   printf("\n");
-   return 0;
+    int i;
+    for(i=0; i<argc; i++){
+    printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    }
+    printf("\n");
+    return 0;
 }
 
 int database_open_error (int rc, sqlite3 *db){
@@ -20,6 +19,23 @@ int database_open_error (int rc, sqlite3 *db){
         return -1;
     } else {
         fprintf(stdout, "Opened database successfully\n");
+        return 0;
     }
-    return 0;
+}
+
+int database_general_error (int rc, char *error, int type){
+    if (rc != SQLITE_OK){
+        fprintf(stderr, "SQL error: %s\n", error);
+        sqlite3_free(error);
+        return -1;
+    } else {
+    	if (type==1){
+        	fprintf(stdout, "Table created successfully\n");
+    	} else if (type==2){
+    	    fprintf(stdout, "Data inserted successfully\n");
+    	} else {
+    		fprintf(stdout, "Data selected successfully\n");
+    	}
+        return 0;
+    }
 }

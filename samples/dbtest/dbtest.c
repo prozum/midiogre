@@ -1,30 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <sqlite3.h>
-
 #include <mid/mid.h>
 #include <mid/mid-str.h>
 
 #include <database/db.c>
 #include <database/db.h>
 
-#ifdef _WIN32
-#include <win/asprintf.h>
-#endif
-
 int main(int argc, char* argv[])
 {
     mid_t *mid;
-    
     sqlite3 *db;
     
     int rc;
     unsigned int i,j;
-    char *sql, *sql2;
+    char *sql, *sql2, *sql3;
     char *error = 0;
-    char testfile = "/home/bo/bono-money4bono-1-helptheblacks";
-    char *s;
     FILE *file;
 
     /* Open mid file */
@@ -33,7 +24,7 @@ int main(int argc, char* argv[])
         perror(argv[1]);
         return -1;
     }
-    printf("%c, %d", db, rc);
+
     /* Read content */
     mid = read_mid(file);
     fclose(file);
@@ -41,6 +32,7 @@ int main(int argc, char* argv[])
     /* Open database */
     rc = sqlite3_open("test.db", &db);
 
+    /* Database open error check */
 	database_open_error(rc, db);
 
     /* Write database structure */
@@ -48,20 +40,17 @@ int main(int argc, char* argv[])
           "ARTIST                  CHAR,"   \
           "ALBUM                   CHAR,"   \
           "TRACKNUM        UNSIGNED INT,"   \
-          "TRACK                   CHAR);";
+          "TRACK                   CHAR,"   \
+          "PARA1       UNSIGNED INT,"   \
+          "PARA2                   UNSIGNED INT,"   \
+          "DELTA                   UNSIGNED INT,"   \
+          "INSTRUMENTS             UNSIGNED INT);";
     
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &error);
 
-    if (rc != SQLITE_OK){
-        fprintf(stderr, "SQL error: %s\n", error);
-        sqlite3_free(error);
-    } else {
-        fprintf(stdout, "Table created successfully\n");
-    }
-
-    s = strrchr(testfile, '/');
-    printf("%s",s);
+    /* Table error check */
+    database_general_error(rc, error, 1);
 
     /* For each track in mid */
     for (i = 0; i < mid->tracks; i++) {
@@ -78,18 +67,20 @@ int main(int argc, char* argv[])
                 
                 rc = sqlite3_exec(db, sql2, callback, 0, &error);
                 
-                if (rc != SQLITE_OK) {
-                    fprintf(stderr, "SQL error: %s\n", error);
-                    sqlite3_free(error);
-                } else {
-                    fprintf(stdout, "Data inserted successfully\n");
-                }
-                
                 free(sql2);
             }
         }
     }
-    
+    /* Only checks the last command */
+    database_general_error(rc, error, 2);
+
+    /* Create SQL statement */
+    /*
+    sql3 = "SELECT * from DELTA";
+    rc = sqlite3_exec(db, sql3, callback, (void*)data, &error);
+
+    database_general_error(rc, error, 3);
+	*/
     sqlite3_close(db);    
  
     return 0;
