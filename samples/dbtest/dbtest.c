@@ -23,6 +23,8 @@ int main(int argc, char* argv[])
     unsigned int i,j;
     char *sql, *sql2;
     char *error = 0;
+    char testfile = "/home/bo/bono-money4bono-1-helptheblacks";
+    char *s;
     FILE *file;
 
     /* Open mid file */
@@ -42,10 +44,11 @@ int main(int argc, char* argv[])
 	//database_open_error(rc, db);
 
     /* Write database structure */
-    sql = "CREATE TABLE midiFile("       \
-          "PARA1        UNSIGNED INT,"   \
-          "PARA2        UNSIGNED INT,"   \
-          "DELTA        UNSIGNED INT);";
+    sql = "CREATE TABLE midiFile("          \
+          "ARTIST                  CHAR,"   \
+          "ALBUM                   CHAR,"   \
+          "TRACKNUM        UNSIGNED INT,"   \
+          "TRACK                   CHAR);";
     
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &error);
@@ -56,6 +59,8 @@ int main(int argc, char* argv[])
     } else {
         fprintf(stdout, "Table created successfully\n");
     }
+
+    s = strrchr(testfile, '/');
 
     /* For each track in mid */
     for (i = 0; i < mid->tracks; i++) {
