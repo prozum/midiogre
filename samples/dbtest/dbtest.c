@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     /* Open database */
     rc = sqlite3_open("test.db", &db);
 
-	//database_open_error(rc, db);
+	database_open_error(rc, db);
 
     /* Write database structure */
     sql = "CREATE TABLE midiFile("       \
