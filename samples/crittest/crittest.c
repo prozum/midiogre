@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <mid/mid.h>
-#include <mid/mid-util.h>
+#include <mid/mid-str.h>
 
 int main(int argc, char* argv[])
 {
@@ -25,8 +25,7 @@ int main(int argc, char* argv[])
         for (j = 0; j < mid->track[i].events; j++) {
 
             /* If program change */
-            if (mid->track[i].event[j].msg >= PRG_CHANGE_1 &&
-                mid->track[i].event[j].msg <= PRG_CHANGE_16) {
+            if (mid->track[i].event[j].msg == PRG_CHANGE) {
 
                 if (mid->track[i].event[j].para_1 <= PIANO) {
                     printf("piano - 1\n");

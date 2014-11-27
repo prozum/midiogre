@@ -61,6 +61,7 @@ int main(int argc, char* argv[])
     }
 
     s = strrchr(testfile, '/');
+    printf("%s",s);
 
     /* For each track in mid */
     for (i = 0; i < mid->tracks; i++) {
