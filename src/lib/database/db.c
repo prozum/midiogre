@@ -2,10 +2,6 @@
 #include <stdlib.h>
 #include "db.h"
 
-#ifdef _WIN32
-#include <win/asprintf.h>
-#endif
-
 #include <sqlite3.h>
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName)
