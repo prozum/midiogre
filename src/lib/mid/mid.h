@@ -16,6 +16,8 @@
 
 #define FIRST_TRACK_POS  14
 
+#define CHANNELS		 16
+
 /**
  * MIDI format
  */
@@ -128,14 +130,14 @@ typedef enum
     CHAN_AFT            = 0xd0, /**< Channel message: Channel pressure. Different from Key pressure. Use to get single greatest pressure value of all keys*/
     PITCH_BEND          = 0xe0, /**< Channel message: Sent to indicate pitch bend change(wheel or lever)*/
     
-    SYS_EXCLUSIVE       = 0xf0, /**< Messaging to midi hardware - start with 0xf0*/
+    SYSEX_START         = 0xf0, /**< Messaging to midi hardware - start with 0xf0*/
     TIME_CODE           = 0xf1, /**< Time code*/
     SONG_POS_PTR        = 0xf2, /**< Song position pointer*/
     SONG_SELECT         = 0xf3, /**< Song Select*/
     FUNC_UNDEF_1        = 0xf4, /**< Function undefined 1*/
     FUNC_UNDEF_2        = 0xf5, /**< Function undefined 2*/
     TUNE_REQ            = 0xf6, /**< Tune requirement*/
-    END_SYSEX           = 0xf7, /**< Messaging to midi hardware - End with 0xf7*/
+    SYSEX_END           = 0xf7, /**< Messaging to midi hardware - End with 0xf7*/
     TIMING_CLOCK        = 0xf8, /**< Timing clock*/
     FUNC_UNDEF_3        = 0xf9, /**< Function undefined 3*/
     FUNC_START          = 0xfa, /**< Function start*/
@@ -356,12 +358,12 @@ typedef struct event_s
     uint8_t para_1;   /**< First parameter            */
     uint8_t para_2;   /**< Second parameter           */
     uint8_t delta;    /**< Delta time                 */
-    uint8_t *mdata;   /**< Pointer to meta event data */
+    uint8_t *data;    /**< Pointer to meta event data */
 } event_t;
 
 typedef struct track_s
 {
-    uint32_t len;    /**< Track length in bytes     */
+    uint32_t bytes;  /**< Track length in bytes     */
     uint32_t events; /**< Number of events in track */
     event_t *event;  /**< Pointer to events         */
 } track_t;

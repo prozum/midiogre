@@ -117,13 +117,12 @@ mid_t *read_mid(FILE *file)
 }
 
 /** Read tracks */
-track_t *read_tracks(FILE *file, uint16_t num)
+track_t *read_tracks(FILE *file, uint16_t tracks)
 {
     uint32_t i, j;
-    uint32_t tmp;
     uint8_t *data;
     
-    track_t *tracks;
+    track_t *track;
 
     /* Start at the first track */
     if (fseek(file, FIRST_TRACK_POS,SEEK_SET) != 0 ) {
@@ -131,74 +130,75 @@ track_t *read_tracks(FILE *file, uint16_t num)
         return NULL;
     }
     
-    tracks = calloc(sizeof(track_t), num);
+    track = calloc(sizeof(track_t), tracks);
 
     /* For each track */
-    for (i = 0; i < num; i++) {
+    for (i = 0; i < tracks; i++) {
         
         /* Check signature */
-        tmp = ffread(file,0,4);
-        if (tmp != TRACK_SIGNATURE) {
+        if (ffread(file, 0, 4) != TRACK_SIGNATURE) {
             fprintf(stderr, "Track signature is invalid\n");
-            free(tracks);
+            free(track);
             return NULL;
         }
 
-        /* Read length */
-        tmp = ffread(file, 0, 4);
-        tracks[i].len = tmp;
+        /* Read number of bytes */
+        track[i].bytes = ffread(file, 0, 4);
 
         /* Allocate memory for track data */
-        data = malloc(sizeof(uint8_t) * tracks[i].len);
+        data = calloc(sizeof(uint8_t), track[i].bytes);
 
         /* Read track data */
-        for (j = 0; tracks[i].len > j; j++) {
-            tmp = ffread(file, 0, 1);
-            data[j] = tmp;
+        for (j = 0; j < track[i].bytes; j++) {
+            data[j] = ffread(file, 0, 1);
         }
 
         /* Count events */
-        tracks[i].events = count_events(data, tracks[i].len);
+        track[i].events = count_events(data, track[i].bytes);
 
         /* Read events */
-        tracks[i].event = read_events(data,tracks[i].events);
+        track[i].event = read_events(data,track[i].events);
 
         /* Deallocate memory for track data */
         free(data);
-
     }
-    return tracks;
+    return track;
 }
 
 /** Read events */
-event_t *read_events(uint8_t *data, uint16_t num)
+event_t *read_events(uint8_t *data, uint16_t events)
 {
-    uint32_t i,j,ev,msg,test;
+    uint32_t b,i,ev,msg,test;
     event_t *event;
-    
+    //event_t event[events];
+
     /* Start at first byte */
-    i = 0;
+    b = 0;
 
     /* Allocate memory for events */
-    event = calloc(sizeof(event_t), num);
+    event = calloc(sizeof(event_t), events);
 
     /* Until end last event */
-    for (ev = 0; ev < num; ev++) {
+    for (ev = 0; ev < events; ev++) {
         /* Read delta time */
-        event[ev].delta = 0;
-        while ((event[ev].delta += data[i++]) > 0x80 );
+        do {
+            event[ev].delta += data[b++];
+        } while (data[b] > 0x80);
+
     
         /* If channel message */
-        if (data[i] >= NOTE_OFF &&
-            data[i] <= PITCH_BEND) {
+        if (data[b] >= NOTE_OFF &&
+            data[b] <= PITCH_BEND) {
             
             /* Read event channel */
-            event[ev].chan = data[i] % 0x10;
+            event[ev].chan = data[b] % CHANNELS;
             
             /* Read event msg */
-            event[ev].msg = data[i++] - event[ev].chan;
+            event[ev].msg = data[b++] - event[ev].chan;
+            test=0;
         } else {
-            event[ev].msg = data[i++];
+            event[ev].msg = data[b++];
+            test=1;
         }
 
         msg = event[ev].msg;
@@ -212,36 +212,36 @@ event_t *read_events(uint8_t *data, uint16_t num)
             case CTRL_MODE:
             case PITCH_BEND:
             case SONG_POS_PTR:
-                event[ev].para_1 = data[i++];
-                event[ev].para_2 = data[i++];
+                event[ev].para_1 = data[b++];
+                event[ev].para_2 = data[b++];
                 break;
             
             /* Meta message with */
             case META_MSG:
-                event[ev].para_1 = data[i++]; /* Meta message */
-                event[ev].para_2 = data[i++]; /* Meta length  */
+                event[ev].para_1 = data[b++]; /* Meta message */
+                event[ev].para_2 = data[b++]; /* Meta length  */
 
                 /* Allocate memory for meta message data */
-                event[ev].mdata = calloc(sizeof(uint8_t), event[ev].para_2);
+                event[ev].data = calloc(sizeof(uint8_t), event[ev].para_2);
 
                 /* Read meta message data */
-                for (j = 0; j < event[ev].para_2; j++) {
-                    event[ev].mdata[j] = data[i++];
+                for (i = 0; i < event[ev].para_2; i++) {
+                    event[ev].data[i] = data[b++];
                 }
                 break;
 
-            /* System exclusive message */
-            case SYS_EXCLUSIVE:
-                event[ev].para_1 = data[i++]; /* Manufacturer ID */
+            /* System exclusive start message */
+            case SYSEX_START:
+                event[ev].para_1 = data[b++]; /* Manufacturer ID */
 
                 /* Count data length */
-                j = i;
-                while (data[j++] != END_SYSEX);
-                event[ev].para_2 = j - i;    /* Data length */
+                i = b;
+                while (data[i++] != SYSEX_END);
+                event[ev].para_2 = i - b;    /* Data length */
                 
                 /* Read system exclusive message data */
-                for (j = 0; j < event[ev].para_2; j++) {
-                    event[ev].mdata[j] = data[i++];
+                for (i = 0; i < event[ev].para_2; i++) {
+                    event[ev].data[i] = data[b++];
                 }
                 break;
                 
@@ -252,17 +252,24 @@ event_t *read_events(uint8_t *data, uint16_t num)
             case FUNC_CONTINUE:
             case FUNC_STOP:
             case ACTIVE_SENSING:
-            case END_SYSEX:
                 break;
-            
-            /* Messages with one parameter 
+
+            /* Messages which should not be called alone or at all */
+            case SYSEX_END:
+            case FUNC_UNDEF_1:
+            case FUNC_UNDEF_2:
+            case FUNC_UNDEF_3:
+            case FUNC_UNDEF_4:
+                return NULL;
+
+            /* Messages with one parameter
              * - All data bytes
              * - PRG_CHANGE
              * - CHAN_AFT
              * - TIME_CODE
              * - SONG_SELECT             */
             default:
-                event[ev].para_1 = data[i++];
+                event[ev].para_1 = data[b++];
                 
         }
     }
@@ -270,28 +277,28 @@ event_t *read_events(uint8_t *data, uint16_t num)
 }
 
 /** Count events in event data */
-uint32_t count_events(uint8_t *data, uint32_t len)
+uint32_t count_events(uint8_t *data, uint32_t bytes)
 {
-    uint32_t i,ev,msg;
+    uint32_t b,ev,msg;
 
-    i = 0;
+    b = 0;
 
     /* Until end of data */
-    for (ev = 0; i < len; ev++) {
+    for (ev = 0; b < bytes; ev++) {
         /* Skip delta time */
-        while (data[i++] > 0x80);
+        while (data[b++] > 0x80);
 
         /* If channel message */
-        if (data[i] >= NOTE_OFF &&
-            data[i] <= PITCH_BEND) {
+        if (data[b] >= NOTE_OFF &&
+            data[b] <= PITCH_BEND) {
 
-            msg = data[i] - (data[i] % 0x10);
+            msg = data[b] - (data[b] % CHANNELS);
         } else {
-            msg = data[i];
+            msg = data[b];
         }
 
         /* Skib message byte */
-        i++;
+        b++;
 
         switch (msg) {
             /* Events with two parameters */
@@ -301,19 +308,19 @@ uint32_t count_events(uint8_t *data, uint32_t len)
             case CTRL_MODE:
             case PITCH_BEND:
             case SONG_POS_PTR:
-                i += 2;
+                b += 2;
                 break;
             
             /* Meta message */
             case META_MSG:
-                i++;          /* Skib to length */
-                i += data[i]; /* Skib length    */
-                i++;
+                b++;          /* Skib to length */
+                b += data[b]; /* Skib length    */
+                b++;
                 break;
 
             /* System exclusive message */
-            case SYS_EXCLUSIVE:
-                while (data[i++] != END_SYSEX);
+            case SYSEX_START:
+                while (data[b++] != SYSEX_END);
                 break;
                  
             /* Messages with zero parameters */
@@ -323,17 +330,24 @@ uint32_t count_events(uint8_t *data, uint32_t len)
             case FUNC_CONTINUE:
             case FUNC_STOP:
             case ACTIVE_SENSING:
-            case END_SYSEX:
                 break;
-            
-            /* Messages with one parameter 
+
+            /* Messages which should not be called alone or at all */
+            case SYSEX_END:
+            case FUNC_UNDEF_1:
+            case FUNC_UNDEF_2:
+            case FUNC_UNDEF_3:
+            case FUNC_UNDEF_4:
+                return 0;
+
+            /* Messages with one parameter
              * - All data bytes
              * - PRG_CHANGE
              * - CHAN_AFT
              * - TIME_CODE
              * - SONG_SELECT             */
             default:
-                i++;
+                b++;
         }
 
     }
@@ -357,7 +371,7 @@ void free_mid(mid_t *mid)
             if (mid->track[i].event[j].msg == META_MSG) {
                 
                 /* Deallocate meta event data */
-                free(mid->track[i].event[j].mdata);
+                free(mid->track[i].event[j].data);
             }
         }
         /* Deallocate track events */

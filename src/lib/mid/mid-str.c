@@ -19,7 +19,7 @@ void print_tracks(mid_t *mid)
     printf("\n<###TRACK INFO###>\n");
     for (i = 0; i < mid->tracks; i++) {
         printf("Track: \t%u\n",i+1);
-        printf("Track len: \t%u\n",mid->track[i].len);
+        printf("Track bytes: \t%u\n",mid->track[i].bytes);
         printf("Track events: \t%u\n",mid->track[i].events);
     }
 }
@@ -39,7 +39,7 @@ void print_event(mid_t *mid, unsigned int t, unsigned int e)
     if (mid->track[t].event[e].msg == SYS_RESET) {
         printf("MData: ");
         for (i = 0; i < mid->track[t].event[e].para_2; i++ ) {
-            printf("%x ",mid->track[t].event[e].mdata[i]);
+            printf("%x ",mid->track[t].event[e].data[i]);
         }
     }
     printf("\n");
