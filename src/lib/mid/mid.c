@@ -358,7 +358,7 @@ track_t *merge_tracks(mid_t *mid) {
 
         /* TODO */
         case MULTI_TRACK_SYNC:
-            retun NULL;
+            return NULL;
 
         /* TODO */
         case MULTI_TRACK_ASYNC:
