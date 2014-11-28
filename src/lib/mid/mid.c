@@ -366,7 +366,7 @@ track_t *merge_tracks(mid_t *mid) {
     }
 }
 
-void write_mid(FILE *midi_file, mid_t mid);
+void write_mid(FILE *midi_file, mid_t *mid);
 
 /** Deallocate data in mid_t */
 void free_mid(mid_t *mid)
