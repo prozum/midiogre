@@ -349,6 +349,23 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
     return ev;
 }
 
+/** Merge tracks from mid to single track */
+track_t *merge_tracks(mid_t *mid) {
+
+    switch(mid->format) {
+        case SINGLE_TRACK:
+            return mid->track;
+
+        /* TODO */
+        case MULTI_TRACK_SYNC:
+            retun NULL;
+
+        /* TODO */
+        case MULTI_TRACK_ASYNC:
+            return NULL;
+    }
+}
+
 void write_mid(FILE *midi_file, mid_t mid);
 
 /** Deallocate data in mid_t */

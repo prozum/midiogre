@@ -384,7 +384,10 @@ mid_t *read_mid(FILE *file);
 track_t *read_tracks(FILE *file, uint16_t num);
 event_t *read_events(uint8_t *data, uint16_t num);
 
-void write_mid(FILE *file, mid_t mid);
+track_t *merge_tracks(mid_t *mid);
+
+void write_mid(FILE *file, mid_t *mid);
+
 void free_mid(mid_t *mid);
 
 #endif
