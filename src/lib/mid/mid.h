@@ -17,6 +17,7 @@
 #define FIRST_TRACK_POS  14
 
 #define CHANNELS		 16
+#define INSTR_CLASSES    16
 
 /**
  * MIDI format
@@ -355,8 +356,8 @@ typedef struct event_s
 {
     msg_t   msg;      /**< Event message              */
     uint8_t chan;     /**< Event channel              */
-    uint8_t para_1;   /**< First parameter            */
-    uint8_t para_2;   /**< Second parameter           */
+    uint8_t byte_1;   /**< First data byte            */
+    uint8_t byte_2;   /**< Second data byte           */
     uint8_t delta;    /**< Delta time                 */
     uint8_t *data;    /**< Pointer to meta event data */
 } event_t;

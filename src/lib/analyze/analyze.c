@@ -30,7 +30,7 @@ channel_t *channel_extract(track_t *track)
             channel = track->event[i].chan;
             position = channels[channel].notes;
 
-            channels[channel].note[position].pitch = track->event[i].para_1;
+            channels[channel].note[position].pitch = track->event[i].byte_1;
             channels[channel].note[position].onset = start_time;
             d_time = note_off_time(track, position);
 
@@ -53,7 +53,7 @@ int64_t note_off_time(track_t *track, uint32_t position)
 
     time = 0;
     event = position;
-    pitch = track->event[position].para_1;
+    pitch = track->event[position].byte_1;
     note_off = track->event[position].chan + NOTE_ON - CHANNELS;
 
     for (i = 1; i < (track->events - position); i++) {
@@ -62,7 +62,7 @@ int64_t note_off_time(track_t *track, uint32_t position)
         msg = track->event[event].msg;
         channel = track->event[event].chan;
 
-        if ((msg + channel) == note_off && track->event[event].para_1 == pitch) {
+        if ((msg + channel) == note_off && track->event[event].byte_1 == pitch) {
             return time;
         }
     }

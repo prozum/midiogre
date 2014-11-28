@@ -8,8 +8,8 @@
 enum
 {
     COLUMN_MSG,
-    COLUMN_PARA_1,
-    COLUMN_PARA_2,
+    COLUMN_BYTE_1,
+    COLUMN_BYTE_2,
     COLUMN_CHAN,
     COLUMN_DELTA,
     COLUMN_DATA,

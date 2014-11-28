@@ -207,39 +207,39 @@ event_t *read_events(uint8_t *data, uint16_t events)
             case CTRL_MODE:
             case PITCH_BEND:
             case SONG_POS_PTR:
-                event[ev].para_1 = data[b++];
-                event[ev].para_2 = data[b++];
+                event[ev].byte_1 = data[b++];
+                event[ev].byte_2 = data[b++];
                 break;
             
             /* Meta message with */
             case META_MSG:
-                event[ev].para_1 = data[b++]; /* Meta message */
-                event[ev].para_2 = data[b++]; /* Meta length  */
+                event[ev].byte_1 = data[b++]; /* Meta message */
+                event[ev].byte_2 = data[b++]; /* Meta length  */
 
                 /* Allocate memory for meta message data */
-                event[ev].data = calloc(sizeof(uint8_t), event[ev].para_2);
+                event[ev].data = calloc(sizeof(uint8_t), event[ev].byte_2);
 
                 /* Read meta message data */
-                for (i = 0; i < event[ev].para_2; i++) {
+                for (i = 0; i < event[ev].byte_2; i++) {
                     event[ev].data[i] = data[b++];
                 }
                 break;
 
             /* System exclusive start message */
             case SYSEX_START:
-                event[ev].para_1 = data[b++]; /* Manufacturer ID */
+                event[ev].byte_1 = data[b++]; /* Manufacturer ID */
 
                 /* Count data length */
                 i = b;
                 while (data[i++] != SYSEX_END);
-                event[ev].para_2 = i - b;    /* Data length */
+                event[ev].byte_2 = i - b;    /* Data length */
                 
                 /* Read system exclusive message data */
-                for (i = 0; i < event[ev].para_2; i++) {
+                for (i = 0; i < event[ev].byte_2; i++) {
                     event[ev].data[i] = data[b++];
                 }
                 break;
-                
+
             /* Messages with zero parameters */
             case TUNE_REQ:
             case TIMING_CLOCK:
@@ -264,7 +264,7 @@ event_t *read_events(uint8_t *data, uint16_t events)
              * - TIME_CODE
              * - SONG_SELECT             */
             default:
-                event[ev].para_1 = data[b++];
+                event[ev].byte_1 = data[b++];
                 
         }
     }

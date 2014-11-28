@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
           "ALBUM                   CHAR,"   \
           "TRACKNUM        UNSIGNED INT,"   \
           "TRACK                   CHAR,"   \
-          "PARA1       UNSIGNED INT,"   \
-          "PARA2                   UNSIGNED INT,"   \
+          "BYTE1       UNSIGNED INT,"   \
+          "BYTE2                   UNSIGNED INT,"   \
           "DELTA                   UNSIGNED INT,"   \
           "INSTRUMENTS             UNSIGNED INT);";
     
@@ -60,9 +60,9 @@ int main(int argc, char* argv[])
             /* If meta message */
             if (mid->track[i].event[j].msg == NOTE_ON) {
     
-                asprintf(&sql2, "INSERT INTO midiFile(PARA1,PARA2,DELTA) \
-                                VALUES (%u, %u, %u);",mid->track[i].event[j].para_1, \
-                                                      mid->track[i].event[j].para_2, \
+                asprintf(&sql2, "INSERT INTO midiFile(BYTE1,BYTE2,DELTA) \
+                                VALUES (%u, %u, %u);",mid->track[i].event[j].byte_1, \
+                                                      mid->track[i].event[j].byte_2, \
                                                       mid->track[i].event[j].delta);
                 
                 rc = sqlite3_exec(db, sql2, callback, 0, &error);
