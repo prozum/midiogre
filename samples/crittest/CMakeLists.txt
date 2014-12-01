@@ -3,6 +3,7 @@ add_executable(crittest
 )
 
 target_link_libraries(crittest
+	ext
 	mid
 )
 

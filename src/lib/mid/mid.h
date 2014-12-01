@@ -19,6 +19,9 @@
 #define CHANNELS         16
 #define INSTR_CLASSES    16
 
+/** Default tempo: 500,000 */
+#define SET_TEMPO_DEFAULT 0x07a120
+
 /**
  * MIDI format
  */
@@ -160,18 +163,18 @@ typedef enum
 {
     SEQ_NUMBER          = 0x00, /**< 16-bit value specifying the sequence number, is optional, should occur at time = 0, and prior to any MIDI events */
     TEXT_EVENT          = 0x01, /**< This event is optional, and is used to include comments and other user information */
-    COPYRIGHT_NOTICE    = 0x02, /**< contains a copyright message comprising the characters '(C)' along with the year and owner of the copyright, optional */
+    COPYRIGHT_NOTICE    = 0x02, /**< Contains a copyright message comprising the characters '(C)' along with the year and owner of the copyright, optional */
     TRACK_NAME          = 0x03, /**< If it occurs in the first track of a format 0 or 1 MIDI file, then it gives the Sequence Name, otherwise gives Track Name */
     INSTRUMENT_NAME     = 0x04, /**< Optional event to provide textual clue regarding instrumentation. Recommended to be at the start of track */
     LYRIC_TEXT          = 0x05, /**< Lyric of song. Placed appropriately throughout track */
     MARKER_TEXT         = 0x06, /**< Used to mark points in a song such as verses */
-    CUE_POINT           = 0x07, /**< optional event is used to describe something that happens within a film, video or stage production at that point in the musical score. Eg 'Car crashes', 'Door opens', etc. */
-    MIDI_CPA            = 0x20, /**< optional event is used to associate any subsequent SysEx and Meta events with a particular MIDI channel, and will remain in effect until the next MIDI Channel Prefix Meta event or the next MIDI event. */
-    END_OF_TRACK        = 0x2F, /**< mandatory event must be the last event in each MTrk chunk, and that should be the only occurrence per track. */
-    TEMPO_SETTING       = 0x51, /**< 24-bit value specifying the tempo as the number of microseconds per quarter note, Specifying tempos as time per beat. */
-    SMPTE_OFFSET        = 0x54, /**< optional event, if present, should occur at the start of a track, at time = 0, and prior to any MIDI events. It is used to specify the SMPTE time at which the track is to start */
+    CUE_POINT           = 0x07, /**< Optional event is used to describe something that happens within a film, video or stage production at that point in the musical score. Eg 'Car crashes', 'Door opens', etc. */
+    MIDI_CPA            = 0x20, /**< Optional event is used to associate any subsequent SysEx and Meta events with a particular MIDI channel, and will remain in effect until the next MIDI Channel Prefix Meta event or the next MIDI event. */
+    END_OF_TRACK        = 0x2F, /**< Mandatory event must be the last event in each MTrk chunk, and that should be the only occurrence per track. */
+    SET_TEMPO           = 0x51, /**< 24-bit value specifying the tempo as the number of microseconds per quarter note, Specifying tempos as time per beat. */
+    SMPTE_OFFSET        = 0x54, /**< Optional event, if present, should occur at the start of a track, at time = 0, and prior to any MIDI events. It is used to specify the SMPTE time at which the track is to start */
     TIME_SIG            = 0x58, /**< There should generally be a Time Signature Meta event at the beginning of a track (at time = 0), otherwise a default 4/4 time signature will be assumed */
-    KEY_SIG             = 0x59, /**< specifies key signatures */
+    KEY_SIG             = 0x59, /**< Specifies key signatures */
     SEQ_SPECIFIC_EVENT  = 0x7f  /**< The first 1 or 3 bytes of data is a manufacturer's ID code */
 } meta_t;
 
