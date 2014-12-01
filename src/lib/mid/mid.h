@@ -16,7 +16,7 @@
 
 #define FIRST_TRACK_POS  14
 
-#define CHANNELS		 16
+#define CHANNELS         16
 #define INSTR_CLASSES    16
 
 /**
@@ -307,7 +307,7 @@ typedef enum
     FX_8_SCI_FI,
     SITAR,
     BANJO,
-    SHAMISEN, /**< Japser banjo */
+    SHAMISEN,
     KOTO,
     KALIMBA,
     BAG_PIPE,
@@ -334,7 +334,7 @@ typedef enum
 typedef enum
 {
     PIANO                   = 0x07,
-	CHROMATIC_PERCUSSION    = 0x0F,
+    CHROMATIC_PERCUSSION    = 0x0F,
     ORGAN                   = 0x17,
     GUITAR                  = 0x1F,
     BASS                    = 0x27,
@@ -359,7 +359,7 @@ typedef struct event_s
     uint8_t byte_1;   /**< First data byte            */
     uint8_t byte_2;   /**< Second data byte           */
     uint8_t delta;    /**< Delta time                 */
-    uint8_t *data;    /**< Pointer to meta event data */
+    uint8_t *data;    /**< Pointer to sysex/meta event data */
 } event_t;
 
 typedef struct track_s
