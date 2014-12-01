@@ -179,10 +179,11 @@ event_t *read_events(uint8_t *data, uint16_t events)
 
     /* Until end last event */
     for (ev = 0; ev < events; ev++) {
+        printf("%i",data[b]);
         /* Read delta time */
         do {
-            event[ev].delta += data[b++];
-        } while (data[b] > 0x80);
+            event[ev].delta += data[b];
+        } while (data[b++] > 0x80);
 
     
         /* If channel message */

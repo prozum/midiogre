@@ -121,11 +121,11 @@ int this_is_a_func(int var_1, int var_2, int var_3)
 
     /* if example */
     if (var_1 < ELEMENT_0) {
-        this_is_a_var = 0;
+        this_is_a_var = -1;
     } else if (var_1 > ELEMENT_4) {
-        this_is_a_var = -1;
+        this_is_a_var = 1;
     } else {
-        this_is_a_var = -1;
+        this_is_a_var = 0;
     }
     
     /* for example */
