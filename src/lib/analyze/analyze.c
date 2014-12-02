@@ -8,7 +8,7 @@
 channel_t *channel_extract(track_t *track)
 {
     uint32_t events, position;
-    uint32_t start_time;;
+    uint32_t start_time;
     uint32_t i;
     uint8_t channel;
     channel_t *channels;
@@ -122,7 +122,7 @@ double *calc_euclid_dist_set(song_data_t *song_data)
     for (i = 0; i < CHANNELS; i++) {
         if (song_data->channels[i].notes) {
             dist = calc_euclid_dist(song_data->normalized_histogram, &(song_data->channels[i]), 0);
-            dist_arr[arr_len]
+            dist_arr[arr_len];
             arr_len++;
         }
     }

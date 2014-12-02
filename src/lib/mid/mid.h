@@ -15,9 +15,8 @@
 #define TRACK_SIGNATURE  0x4D54726b
 
 #define FIRST_TRACK_POS  14
-
 #define CHANNELS         16
-#define INSTR_CLASSES    16
+#define INSTR_PER_CLASS 8
 
 /** Default tempo: 500,000 */
 #define SET_TEMPO_DEFAULT 0x07a120
@@ -380,7 +379,7 @@ typedef struct mid_s
     track_t *track;     /**< Pointer to tracks */
 } mid_t;
 
-uint32_t ffread(FILE *file, long int offset ,size_t buf_size);
+size_t ffread(FILE *file, size_t buf_size);
 
 uint32_t count_events(uint8_t *data, uint32_t len);
 

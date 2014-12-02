@@ -9,57 +9,31 @@
  * - Reads one byte at the time. 
  * - Adds offset
  */
-uint32_t ffread(FILE *file, long int offset, size_t buf_size)
+size_t ffread(FILE *file, size_t buf_size)
 {
-    uint32_t i,rv;
-    uint8_t tmp;
-
-    uint32_t result = 0;
+    size_t i,result = 0;
 
     /* Check buf_size */
-    if (buf_size > 4) {
+    if (buf_size > sizeof(size_t) || buf_size == 0) {
         fprintf(stderr,"Buffer size invalid\n");
         return 0;
     }
     
-    /* Setup offset from current position */
-    if ( fseek(file,offset,SEEK_CUR) != 0)
-    {
-        fprintf(stderr,"could not set pos\n");
-        return 0;
-    }
-    
-    /* First bytes */
-    for(i = 1; buf_size > i; ++i) {
-        rv = fread(&tmp, 1, 1, file);
+    for(i = 1; i <= buf_size; i++) {
+        result += fgetc(file);
         
-        if (rv == 0) {
-            fprintf(stderr,"could not read\n");
-            return 0;
+        if (i != buf_size) {
+            result <<= 8;
         }
- 
-        result += tmp;
-        result <<= 8;
     }
  
-    /* Last byte */   
-    rv = fread(&tmp, 1, 1, file);
-    
-    if (rv == 0) {
-        fprintf(stderr,"could not read\n");
-        return 0;
-    }
-    
-    result += tmp;
-
     return result;
 }
 
 /** Read mid file */
 mid_t *read_mid(FILE *file)
 {
-    uint32_t tmp;
-
+    size_t tmp;
     /* Allocate memory for header data */
     mid_t *mid = malloc(sizeof(mid_t));
 
@@ -67,28 +41,21 @@ mid_t *read_mid(FILE *file)
     fseek(file, 0, SEEK_SET);
 
     /* Read signature */
-    tmp = ffread(file, 0, 4);
-
-    /* Check if signature is valid */
-    if (tmp != HEADER_SIGNATURE) {
+    if ( (tmp = ffread(file, 4)) != HEADER_SIGNATURE) {
         fprintf(stderr,"Header signature is invalid\n");
         free(mid);
         return NULL;
     }
 
     /* Read length */
-    tmp = ffread(file, 0, 4);
-
-    /* Check if length is valid */
-    if (tmp != HEADER_LENGTH) {
+    if (ffread(file, 4) != HEADER_LENGTH) {
         fprintf(stderr, "Header length is invalid\n");
         free(mid);
         return NULL;
     }
 
     /* Read format */
-    tmp = ffread(file, 0, 2);
-    mid->format = tmp;
+    mid->format = ffread(file, 2);
 
     /* Check if format has a valid value */
     if (mid->format > MULTI_TRACK_ASYNC) {
@@ -98,16 +65,13 @@ mid_t *read_mid(FILE *file)
     }
 
     /* Read number of tracks */
-    tmp = ffread(file,0,2);
-    mid->tracks = tmp;
+    mid->tracks = ffread(file, 2);
 
     /* Read division */
-    tmp = ffread(file, 0, 2);
-    mid->division = tmp;
+    mid->division = ffread(file, 2);
 
     /* Read tracks */
-    mid->track = read_tracks(file, mid->tracks);
-    if ( mid->track == NULL) {
+    if ((mid->track = read_tracks(file, mid->tracks)) == NULL) {
         fprintf(stderr, "Midi tracks are invalid\n");
         free(mid);
         return NULL;
@@ -136,28 +100,28 @@ track_t *read_tracks(FILE *file, uint16_t tracks)
     for (i = 0; i < tracks; i++) {
         
         /* Check signature */
-        if (ffread(file, 0, 4) != TRACK_SIGNATURE) {
+        if (ffread(file, 4) != TRACK_SIGNATURE) {
             fprintf(stderr, "Track signature is invalid\n");
             free(track);
             return NULL;
         }
 
         /* Read number of bytes */
-        track[i].bytes = ffread(file, 0, 4);
+        track[i].bytes = ffread(file, 4);
 
         /* Allocate memory for track data */
         data = calloc(sizeof(uint8_t), track[i].bytes);
 
         /* Read track data */
         for (j = 0; j < track[i].bytes; j++) {
-            data[j] = ffread(file, 0, 1);
+            data[j] = ffread(file, 1);
         }
 
         /* Count events */
         track[i].events = count_events(data, track[i].bytes);
 
         /* Read events */
-        track[i].event = read_events(data,track[i].events);
+        track[i].event = read_events(data, track[i].events);
 
         /* Deallocate memory for track data */
         free(data);
@@ -364,6 +328,7 @@ track_t *merge_tracks(mid_t *mid) {
         case MULTI_TRACK_ASYNC:
             return NULL;
     }
+    return NULL;
 }
 
 void write_mid(FILE *midi_file, mid_t *mid);
