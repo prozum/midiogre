@@ -17,6 +17,7 @@ int main(int argc, char* argv[])
     char *sql, *sql2, *sql3;
     char *error = 0;
     FILE *file;
+    const char* data = "Callback function called";
 
     /* Open mid file */
     file = fopen(argv[1],"rb");
@@ -75,12 +76,12 @@ int main(int argc, char* argv[])
     database_general_error(rc, error, 2);
 
     /* Create SQL statement */
-    /*
-    sql3 = "SELECT * from DELTA";
+    
+    sql3 = "SELECT * from midiFile";
     rc = sqlite3_exec(db, sql3, callback, (void*)data, &error);
 
     database_general_error(rc, error, 3);
-	*/
+	
     sqlite3_close(db);    
  
     return 0;

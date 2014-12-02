@@ -33,9 +33,12 @@ int database_general_error (int rc, char *error, int type){
         	fprintf(stdout, "Table created successfully\n");
     	} else if (type==2){
     	    fprintf(stdout, "Data inserted successfully\n");
-    	} else {
+    	} else if (type==3) {
     		fprintf(stdout, "Data selected successfully\n");
-    	}
+    	} else {
+            fprintf(stdout, "The operation completed successfully, no idea which though\n");
+        }
+
         return 0;
     }
 }
