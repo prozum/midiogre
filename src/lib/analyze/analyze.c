@@ -8,14 +8,13 @@
 channel_t *channel_extract(track_t *track)
 {
     uint32_t events, position;
-    uint32_t start_time; int64_t d_time;
+    uint32_t start_time;;
     uint32_t i;
     uint8_t channel;
     channel_t *channels;
 
     events = track->events;
     start_time = 0;
-    d_time = 0;
     channels = calloc(sizeof(channel_t), CHANNELS);
 
     for (i = 0; i < CHANNELS; i++) {
@@ -32,20 +31,14 @@ channel_t *channel_extract(track_t *track)
 
             channels[channel].note[position].pitch = track->event[i].byte_1;
             channels[channel].note[position].onset = start_time;
-            d_time = note_off_time(track, position);
-
-            if (d_time == -1) {
-                exit(-1);
-            }
-
-            channels[channel].note[position].offset = start_time + d_time;
+            channels[channel].note[position].offset = start_time + note_off_time(track, position);
         }
     }
 
     return channels;
 }
 
-int64_t note_off_time(track_t *track, uint32_t position)
+uint32_t note_off_time(track_t *track, uint32_t position)
 {
     uint32_t i, time, event;
     uint32_t pitch, note_off;
@@ -67,7 +60,7 @@ int64_t note_off_time(track_t *track, uint32_t position)
         }
     }
 
-    return -1;
+    return time;
 }
 
 
@@ -115,6 +108,24 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
     }
 
     return normalized_histogram;
+}
+
+double *calc_euclid_dist_set(song_data_t *song_data)
+{
+    double *dist_arr;
+    double dist;
+    uint8_t arr_len, i;
+
+    dist_arr = malloc(sizeof(double) * CHANNELS);
+    arr_len = 0;
+
+    for (i = 0; i < CHANNELS; i++) {
+        if (song_data->channels[i].notes) {
+            dist = calc_euclid_dist(song_data->normalized_histogram, &(song_data->channels[i]), 0);
+            dist_arr[arr_len]
+            arr_len++;
+        }
+    }
 }
 
 double calc_euclid_dist(double *normalized, double *channel, uint8_t counter)

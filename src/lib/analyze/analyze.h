@@ -2,6 +2,7 @@
 #define __ANALYZE_H__
 
 #define SEMITONES 12
+#define CHANNELS 16
 
 #include <mid/mid.h>
 
@@ -37,11 +38,13 @@ typedef struct song_data_s
 channel_t *channel_extract(track_t *track);
 
 /** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
-int64_t note_off_time(track_t *track, uint32_t position);
+uint32_t note_off_time(track_t *track, uint32_t position);
 
 histogram_t *calc_channel_histogram(channel_t *channels);
 
 histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_t *channels);
+
+double *calc_euclid_dist_set(song_data_t *song_data);
 
 double calc_euclid_dist(double *normalized, double *channel, uint8_t counter);
 
