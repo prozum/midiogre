@@ -33,7 +33,6 @@ size_t ffread(FILE *file, size_t buf_size)
 /** Read mid file */
 mid_t *read_mid(FILE *file)
 {
-    size_t tmp;
     /* Allocate memory for header data */
     mid_t *mid = malloc(sizeof(mid_t));
 
@@ -41,7 +40,7 @@ mid_t *read_mid(FILE *file)
     fseek(file, 0, SEEK_SET);
 
     /* Read signature */
-    if ( (tmp = ffread(file, 4)) != HEADER_SIGNATURE) {
+    if (ffread(file, 4) != HEADER_SIGNATURE) {
         fprintf(stderr,"Header signature is invalid\n");
         free(mid);
         return NULL;
