@@ -1,5 +1,5 @@
 add_executable(exttest
-	crittest.c
+	exttest.c
 )
 
 target_link_libraries(exttest
