@@ -81,6 +81,21 @@ int main(int argc, char* argv[])
     rc = sqlite3_exec(db, sql3, callback, (void*)data, &error);
 
     database_general_error(rc, error, 3);
+
+    char parse_filename(FILE *file) {
+        char artist[32], album[32], track[32];
+        int tracknum;
+        char file1[20]="a - b - 3 - d";
+        file = strrchr(file, '/');
+
+        printf("%s\n", file);
+
+        sscanf(file, "%s-%s-%i-%s", artist,album,&tracknum,track);
+
+        printf("%s\n\n", artist);
+        return 0;
+    }
+    parse_filename(file);
 	
     sqlite3_close(db);    
  
