@@ -86,3 +86,31 @@ int main(int argc, char* argv[])
  
     return 0;
 }
+
+/*
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <sqlite3.h>
+
+int main(void)
+{
+    char fileTest[] = "/home/bo/bono-money4bono-1-helptheblacks.mid";
+    char *s;
+    char artist[32], album[32], track[32];
+    int tracknum;
+
+    s = strrchr(fileTest, '/');
+    s++;
+
+    printf("%s\n", s);
+
+    sscanf(s, "%s %s %i %s",artist,album,&tracknum,track);
+
+    printf("%s\n\n",artist);
+
+    return 0;
+}
+
+*/
