@@ -15,9 +15,9 @@ int extract_instr_classes(mid_t *mid)
             if (mid->track[i].event[j].msg == PRG_CHANGE) {
     
                 /* Find instrument class */
-                instr_class = mid->track[i].event[j].byte_1 - (mid->track[i].event[j].byte_1 % INSTR_CLASSES);
-    
-                switch (instr_class) {
+                instr_class = mid->track[i].event[j].byte_1 / INSTR_PER_CLASS; 
+                
+		switch (instr_class) {
                     case PIANO:
                         bitmap |= 0x1;
                         break;
