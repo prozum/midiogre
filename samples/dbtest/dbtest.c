@@ -84,13 +84,12 @@ int main(int argc, char* argv[])
 
     char parse_filename(FILE *file) {
         char artist[32], album[32], track[32];
-        int tracknum;
+        int tracknum, file_pnt;
         char file1[20]="a - b - 3 - d";
-        file = strrchr(file, '/');
 
-        printf("%s\n", file);
+        //file_pnt = strrchr(file, '/');
 
-        sscanf(file, "%s-%s-%i-%s", artist,album,&tracknum,track);
+        sscanf(file1, "%s - %s - %i - %s",artist,album,&tracknum,track);
 
         printf("%s\n\n", artist);
         return 0;
