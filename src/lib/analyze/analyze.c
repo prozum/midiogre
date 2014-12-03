@@ -5,6 +5,35 @@
 #include <stdlib.h>
 #include <math.h>
 
+void extract_finger_prn(track_t *track)
+{
+    song_data_t *song;
+    double *dist_set;
+    uint8_t dist_set_len;
+
+    int i;
+
+    dist_set = NULL;
+
+    song = malloc(sizeof(song_data_t));
+    song->channels = channel_extract(track);
+/*
+    for (i = 0; i < CHANNELS; i++) {
+        printf("%d\n", song->channels[i].notes);
+    }
+*/
+    song->channels_histogram = calc_channel_histogram(song->channels);
+    song->normalized_histogram = calc_normalized_histogram(song->channels_histogram, song->channels);
+/*
+    for (i = 0; i < 12; i++) {
+        printf("%lf", song->normalized_histogram->semitones[i]);
+    }
+*/
+    dist_set_len = calc_euclid_dist_set(song, dist_set);
+
+    printf("%lf %lf\n", dist_set[0], dist_set[1]);
+}
+
 channel_t *channel_extract(track_t *track)
 {
     uint32_t events, position;
@@ -32,6 +61,7 @@ channel_t *channel_extract(track_t *track)
             channels[channel].note[position].pitch = track->event[i].byte_1;
             channels[channel].note[position].onset = start_time;
             channels[channel].note[position].offset = start_time + note_off_time(track, position);
+            channels[channel].notes++;
         }
     }
 
@@ -48,6 +78,8 @@ uint32_t note_off_time(track_t *track, uint32_t position)
     event = position;
     pitch = track->event[position].byte_1;
     note_off = track->event[position].chan + NOTE_ON - CHANNELS;
+
+    
 
     for (i = 1; i < (track->events - position); i++) {
         event++;
@@ -103,29 +135,35 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
 
     for (i = 0; i < SEMITONES; i++) {
         for (j = 0; j < CHANNELS; j++) {
-            normalized_histogram->semitones[i] = (channels_histogram[j].semitones[i] / nonzero_channels);
+            normalized_histogram->semitones[i] += channels_histogram[j].semitones[i];
         }
+    }
+
+    for (i = 0; i < SEMITONES; i++) {
+        normalized_histogram->semitones[i] /= nonzero_channels;
+        printf("%lf ", normalized_histogram->semitones[i]);
     }
 
     return normalized_histogram;
 }
 
-double *calc_euclid_dist_set(song_data_t *song_data)
+uint8_t calc_euclid_dist_set(song_data_t *song_data, double *dist_arr)
 {
-    double *dist_arr;
-    double dist;
     uint8_t arr_len, i;
+    double dist;
 
     dist_arr = malloc(sizeof(double) * CHANNELS);
     arr_len = 0;
 
     for (i = 0; i < CHANNELS; i++) {
         if (song_data->channels[i].notes) {
-            dist = calc_euclid_dist(song_data->normalized_histogram, &(song_data->channels[i]), 0);
-            dist_arr[arr_len];
+            dist = calc_euclid_dist(song_data->normalized_histogram->semitones, song_data->channels_histogram[i].semitones, 0);
+            dist_arr[arr_len] = dist;
             arr_len++;
         }
     }
+
+    return arr_len;
 }
 
 double calc_euclid_dist(double *normalized, double *channel, uint8_t counter)

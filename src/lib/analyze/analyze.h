@@ -6,6 +6,8 @@
 
 #include <mid/mid.h>
 
+typedef uint8_t* finger_prn_t;
+
 /** Contains the information of a single note */
 typedef struct note_s
 {
@@ -44,8 +46,10 @@ histogram_t *calc_channel_histogram(channel_t *channels);
 
 histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_t *channels);
 
-double *calc_euclid_dist_set(song_data_t *song_data);
+uint8_t calc_euclid_dist_set(song_data_t *song_data, double *dist_arr);
 
 double calc_euclid_dist(double *normalized, double *channel, uint8_t counter);
+
+void extract_finger_prn(track_t *track);
 
 #endif
