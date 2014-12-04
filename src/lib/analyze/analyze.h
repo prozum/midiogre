@@ -48,7 +48,7 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
 
 uint8_t calc_euclid_dist_set(song_data_t *song_data, double *dist_arr);
 
-double calc_euclid_dist(double *normalized, double *channel, uint8_t counter);
+double calc_euclid_dist(double *normalized, double *channel);
 
 void extract_finger_prn(track_t *track);
 

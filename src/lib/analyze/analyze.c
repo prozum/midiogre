@@ -30,8 +30,6 @@ void extract_finger_prn(track_t *track)
     }
 */
     dist_set_len = calc_euclid_dist_set(song, dist_set);
-
-    printf("%lf %lf\n", dist_set[0], dist_set[1]);
 }
 
 channel_t *channel_extract(track_t *track)
@@ -106,9 +104,7 @@ histogram_t *calc_channel_histogram(channel_t *channels)
 
     for (i = 0; i < CHANNELS; i++) {
         channel_histogram[i].semitones = calloc(sizeof(double), SEMITONES);
-    }
 
-    for (i = 0; i < CHANNELS; i++) {
         for (j = 0; j < channels[i].notes; j++) {
             semitone = channels[i].note[j].pitch % SEMITONES;
             channel_histogram[i].semitones[semitone]++;
@@ -137,11 +133,8 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
         for (j = 0; j < CHANNELS; j++) {
             normalized_histogram->semitones[i] += channels_histogram[j].semitones[i];
         }
-    }
 
-    for (i = 0; i < SEMITONES; i++) {
         normalized_histogram->semitones[i] /= nonzero_channels;
-        printf("%lf ", normalized_histogram->semitones[i]);
     }
 
     return normalized_histogram;
@@ -149,15 +142,24 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
 
 uint8_t calc_euclid_dist_set(song_data_t *song_data, double *dist_arr)
 {
-    uint8_t arr_len, i;
+    uint8_t arr_len, i, j;
     double dist;
+
+    double *normalized, *channel;
 
     dist_arr = malloc(sizeof(double) * CHANNELS);
     arr_len = 0;
 
     for (i = 0; i < CHANNELS; i++) {
         if (song_data->channels[i].notes) {
-            dist = calc_euclid_dist(song_data->normalized_histogram->semitones, song_data->channels_histogram[i].semitones, 0);
+            normalized = song_data->normalized_histogram->semitones;
+            channel = song_data->channels_histogram[i].semitones;
+
+            for (j = 0; j < SEMITONES; j++) {
+                //printf("%lf %lf\n", normalized[j], channel[j]);
+            }
+
+            dist = calc_euclid_dist(normalized, channel);
             dist_arr[arr_len] = dist;
             arr_len++;
         }
@@ -166,12 +168,19 @@ uint8_t calc_euclid_dist_set(song_data_t *song_data, double *dist_arr)
     return arr_len;
 }
 
-double calc_euclid_dist(double *normalized, double *channel, uint8_t counter)
+double calc_euclid_dist(double *normalized, double *channel)
 {
-    double tmp = sqrt( pow(normalized[0], 2) - pow(channel[0], 2)); 
-    if (counter > SEMITONES) {
-        return tmp + calc_euclid_dist(normalized + 1, channel + 1, counter + 1);
-    } else {
-        return tmp;
+    uint8_t i;
+    double dist;
+
+    dist = 0;
+
+    for (i = 0; i < SEMITONES; i++) {
+        printf("%lf %lf\n", pow(normalized[i], 2), pow(channel[i], 2));
+        dist += sqrt( pow(normalized[i] - channel[i], 2));
     }
+
+    printf("%lf\n", dist);
+
+    return dist;
 }
