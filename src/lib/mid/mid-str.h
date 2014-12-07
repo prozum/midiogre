@@ -5,7 +5,7 @@
 
 #include "mid.h"
 
-static const char *instruments[] = {
+const char *instruments[] = {
     "Acoustic grand piano",
     "Bright acoustic piano",
     "Electric grand piano",
