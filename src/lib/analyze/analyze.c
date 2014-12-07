@@ -10,6 +10,7 @@ f_prn_t *finger_prn_gen(track_t *track)
 {
     song_data_t *song;
     uint32_t i, j;
+    f_prn_t *f_prn_arr;
 
     song = malloc(sizeof(song_data_t));
     song->channels = channel_extract(track);
@@ -40,7 +41,12 @@ f_prn_t *finger_prn_gen(track_t *track)
         }
     }
 
-    return finger_prn_pick(song);
+    f_prn_arr = malloc(sizeof(f_prn_t) * 3);
+    f_prn_arr->f_prn = malloc(sizeof(uint8_t) * 7);
+    memcpy((void *)f_prn_arr, (void *)finger_prn_pick(song), sizeof(f_prn_t) * FINGER_PRNS);
+    free(song);
+
+    return f_prn_arr;
 }
 
 void extract_finger_prn(channel_t *chan)
@@ -334,6 +340,7 @@ int dist_compar_chan(const void *a, const void *b)
 uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
 {
     uint8_t *dist;
+    uint8_t ret_dist;
     uint8_t i;
 
     dist = malloc(sizeof(uint8_t) * FINGER_PRNS);
@@ -357,7 +364,10 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
         }
     }
 
-    return dist[0];
+    ret_dist = dist[0];
+    free(dist);
+
+    return ret_dist;
 }
 
 uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2)
