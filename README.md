@@ -114,12 +114,12 @@ enum this_is_a_enum
  */
 int this_is_a_func(int var_1, int var_2, int var_3)
 {
-    /* variable naming example */
+    /* Variable naming example */
     int i;
     int this_is_a_var;   /**< Description of this_is_a_var   */
     int yet_another_var; /**< Description of yet_another_var */
 
-    /* if example */
+    /* If example */
     if (var_1 < ELEMENT_0) {
         this_is_a_var = -1;
     } else if (var_1 > ELEMENT_4) {
@@ -128,12 +128,12 @@ int this_is_a_func(int var_1, int var_2, int var_3)
         this_is_a_var = 0;
     }
     
-    /* for example */
+    /* For example */
     for (i = 0; i < var_2; i++) {
         call_func(i);
     }
 
-    /* switch example */
+    /* Switch example */
     switch (var_3) {
         case ELEMENT_0:
         case ELEMENT_1:
