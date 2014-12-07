@@ -9,13 +9,15 @@
 
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 
 /** Import mid struct to tree view */
 void mid_import(GFile *mid_gfile, GtkWidget *notebook)
 {
     uint32_t i, j, k;
     uint32_t len;
-    char tmp[3], *data_str[NUM_COLUMNS];
+    char tmp[3];
+    char *data_str[NUM_COLUMNS];
 
     FILE *mid_file;
     mid_t *mid;
@@ -80,9 +82,9 @@ void mid_import(GFile *mid_gfile, GtkWidget *notebook)
 
                     /* Convert Data to hex */
                     if (mid->track[i].event[j].data[k] > 0xF) {
-                        g_sprintf(&tmp,"%x ",mid->track[i].event[j].data[k]);
+                        g_sprintf(tmp,"%x ",mid->track[i].event[j].data[k]);
                     } else {
-                        g_sprintf(&tmp,"0%x ",mid->track[i].event[j].data[k]);
+                        g_sprintf(tmp,"0%x ",mid->track[i].event[j].data[k]);
                     }
                     strcat(data_str[COLUMN_DATA],tmp);
                 }

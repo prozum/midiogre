@@ -1,7 +1,6 @@
 #include <mid/mid.h>
 #include <mid/mid-str.h>
 #include <analyze/analyze.h>
-#include <analyze/skyline.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +12,6 @@ int main( int argc, char *argv[] )
     FILE *mid_file;
     mid_t *mid;
     f_prn_t *finger_prints;
-    int i;
 
     /* Open file */
     mid_file = fopen(argv[1], "rb");

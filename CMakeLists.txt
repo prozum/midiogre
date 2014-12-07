@@ -16,7 +16,7 @@ include(cmake/deps.cmake)
 
 if(DEBUG)
     set(CMAKE_BUILD_TYPE Debug)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wextra -Wno-unused-parameter")
 else()
     set(CMAKE_BUILD_TYPE Release)
 endif()

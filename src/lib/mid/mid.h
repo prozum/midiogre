@@ -1,7 +1,7 @@
+/** @file mid.h */
+
 #ifndef __MID_H__
 #define __MID_H__
-
-/** @file mid.h */
 
 #include <stdint.h>
 #include <stdio.h>
