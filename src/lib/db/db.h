@@ -7,7 +7,7 @@
 #include <win/asprintf.h>
 #endif
 
-static int callback(void *NotUsed, int argc, char **argv, char **azColName);
+int callback(void *NotUsed, int argc, char **argv, char **azColName);
 
 int database_open_error (int rc, sqlite3 *db);
 

@@ -4,8 +4,7 @@
 #include <mid/mid.h>
 #include <mid/mid-str.h>
 
-#include <database/db.c>
-#include <database/db.h>
+#include <db/db.h>
 
 int main(int argc, char* argv[])
 {

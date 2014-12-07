@@ -1,6 +1,5 @@
 #include <mid/mid.h>
 #include <mid/mid-str.h>
-//#include <distance/distance.h>
 #include <analyze/analyze.h>
 #include <analyze/skyline.h>
 

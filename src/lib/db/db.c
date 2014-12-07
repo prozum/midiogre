@@ -1,9 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "db.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 
-static int callback(void *data, int argc, char **argv, char **azColName)
+int callback(void *data, int argc, char **argv, char **azColName)
 {
     int i;
     for(i=0; i<argc; i++){
