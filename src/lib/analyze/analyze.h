@@ -100,4 +100,10 @@ int dist_compar_chan(const void *a, const void *b);
 /** Qsort compare function that sorts a f_prn_t array by euclidean lengths */
 int dist_compar_f_prn(const void *a, const void *b);
 
+/** Returns the Levensthein distance for two set of fingerprints */
+uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2);
+
+/** Returns the Levenshtein distance for two fingerprints */
+uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2);
+
 #endif

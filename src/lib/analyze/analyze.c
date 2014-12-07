@@ -329,7 +329,48 @@ int dist_compar_chan(const void *a, const void *b)
     return 0;
 }
 
-uint8_t lev_dist(f_prn_t *f_prn1, f_prn_t *f_prn2)
+uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
 {
-    uint8_t 
+    uint8_t *dist;
+    uint8_t i;
+
+    dist = malloc(sizeof(uint8_t) * FINGER_PRNS);
+
+    dist[0] = lev_dist(f_prn1[0].f_prn, f_prn2[0].f_prn) +
+              lev_dist(f_prn1[1].f_prn, f_prn2[1].f_prn) +
+              lev_dist(f_prn1[2].f_prn, f_prn2[2].f_prn);
+
+    dist[1] = lev_dist(f_prn1[2].f_prn, f_prn2[0].f_prn) +
+              lev_dist(f_prn1[0].f_prn, f_prn2[1].f_prn) +
+              lev_dist(f_prn1[1].f_prn, f_prn2[2].f_prn);
+
+    dist[2] = lev_dist(f_prn1[1].f_prn, f_prn2[0].f_prn) +
+              lev_dist(f_prn1[2].f_prn, f_prn2[1].f_prn) +
+              lev_dist(f_prn1[0].f_prn, f_prn2[2].f_prn);
+
+
+    for (i = 1; i < FINGER_PRNS; i++) {
+        if (dist[0] > dist[i]) {
+            dist[0] = dist[i];
+        }
+    }
+
+    return dist[0];
+}
+
+uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2)
+{
+    uint8_t dist, i;
+
+    dist = 0;
+
+    for (i = 0; i < FINGER_PRN_LEN; i++) {
+        if (f_prn1[i] > f_prn2[i] || f_prn1[i] < f_prn2[i]) {
+            dist++;
+        }
+    }
+
+    printf("%d\n", dist);
+
+    return dist;
 }
