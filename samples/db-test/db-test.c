@@ -6,6 +6,9 @@
 
 #include <db/db.h>
 
+char parse_filename(FILE *file);
+
+
 int main(int argc, char* argv[])
 {
     mid_t *mid;
@@ -81,22 +84,25 @@ int main(int argc, char* argv[])
 
     database_general_error(rc, error, 3);
 
-    char parse_filename(FILE *file) {
-        char artist[32], album[32], track[32];
-        int tracknum, file_pnt;
-        char file1[20]="a - b - 3 - d";
 
-        //file_pnt = strrchr(file, '/');
-
-        sscanf(file1, "%s - %s - %i - %s",artist,album,&tracknum,track);
-
-        printf("%s\n\n", artist);
-        return 0;
-    }
     parse_filename(file);
 	
     sqlite3_close(db);    
  
+    return 0;
+}    
+
+char parse_filename(FILE *file) 
+{
+    char artist[32], album[32], track[32];
+    int tracknum, file_pnt;
+    char file1[20]="a - b - 3 - d";
+
+    //file_pnt = strrchr(file, '/');
+
+    sscanf(file1, "%s - %s - %i - %s",artist,album,&tracknum,track);
+
+    printf("%s\n\n", artist);
     return 0;
 }
 
