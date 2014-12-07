@@ -12,6 +12,7 @@ f_prn_t *finger_prn_gen(track_t *track)
 
     song = malloc(sizeof(song_data_t));
     song->channels = channel_extract(track);
+    skyline(song);
 
     for (i = 0; i < CHANNELS; i++) {
         song->channels[i].chan_histogram = calc_chan_histogram(&(song->channels[i]));
@@ -370,7 +371,61 @@ uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2)
         }
     }
 
-    printf("%d\n", dist);
-
     return dist;
+}
+
+void skyline(song_data_t *song)
+{
+    uint8_t i;
+    uint32_t j;
+    uint32_t elim;
+    note_t *tmp_note;
+
+    for (i = 0; i < CHANNELS; i++) {
+        elim = 0;
+
+        for (j = 0; j < song->channels[i].notes; j++) {
+            tmp_note = song->channels[i].note;
+
+            if (tmp_note[j].onset == tmp_note[j+1].onset) {
+                if (tmp_note[j].pitch > tmp_note[j+1].pitch) {
+                    tmp_note[j+1].onset = tmp_note[j].offset;
+
+                } else if (tmp_note[j].pitch < tmp_note[j+1].pitch) {
+                    tmp_note[j].onset = tmp_note[j+1].offset;
+                }
+
+            } else if (tmp_note[j].offset > tmp_note[j+1].onset) {
+                if (tmp_note[j].pitch > tmp_note[j+1].pitch) {
+                    tmp_note[j+1].onset = tmp_note[j].offset;
+
+                } else if (tmp_note[j].pitch < tmp_note[j+1].pitch) {
+                    tmp_note[j].offset = tmp_note[j+1].onset;
+                }
+
+            } else if (tmp_note[j].offset > tmp_note[j+1].offset) {
+                /* 2^8 - 1 = 255, the highest possible number in 8 bits */
+                tmp_note[j+1].pitch = pow(2, 8) - 1;
+                elim++;
+                j++;
+            }
+        }
+
+        qsort((void *)song->channels[i].note, song->channels[i].notes, sizeof(note_t), skyline_compar);
+        song->channels[i].notes -= elim;
+    }
+}
+
+int skyline_compar(const void *a, const void *b)
+{
+    const note_t *note1 = a;
+    const note_t *note2 = b;
+
+    if (note1->pitch == 255) {
+        return 1;
+    } else if (note2->pitch == 255) {
+        return -1;
+    } 
+
+    return note1->onset - note2->onset;
 }

@@ -106,4 +106,10 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2);
 /** Returns the Levenshtein distance for two fingerprints */
 uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2);
 
+/** Skyline algorithm */
+void skyline(song_data_t *song);
+
+/** Quicksort algorithm to sort the eliminated notes out after the Skyline algorithm */
+int skyline_compar(const void *a, const void *b);
+
 #endif
