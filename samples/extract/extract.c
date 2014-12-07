@@ -1,6 +1,6 @@
 #include <mid/mid.h>
 #include <mid/mid-str.h>
-#include <distance/distance.h>
+//#include <distance/distance.h>
 #include <analyze/analyze.h>
 #include <analyze/skyline.h>
 
@@ -13,8 +13,9 @@ int main( int argc, char *argv[] )
 {
     FILE *mid_file;
     mid_t *mid;
-    song_data_t song_data;
     int i;
+
+    song_data_t *song_data = malloc(sizeof(song_data_t));
 
     /* Open file */
     mid_file = fopen(argv[1], "rb");
@@ -23,27 +24,26 @@ int main( int argc, char *argv[] )
         return -1;
     }
 
-    mid = read_mid(mid_file);
- 
     /* Read mid */
+    mid = read_mid(mid_file);
 
-    song_data.channels = channel_extract(mid->track);
+    /* Extract channels */
+    song_data->channels = channel_extract(mid->track);
 
-    printf("\n");
+    putchar('\n');
 
     for (i = 0; i < 2; i++) {
-        printf("%d %d %d\n", song_data.channels[0].note[i].pitch, song_data.channels[0].note[i].onset, song_data.channels[0].note[i].offset);
+        printf("%d %d %d\n", song_data->channels[0].note[i].pitch, song_data->channels[0].note[i].onset, song_data->channels[0].note[i].offset);
     }
+    putchar('\n');
 
     /*Test skyline*/
-    printf("\n");
-
     skyline(song_data);
-
-    free_mid(mid);
     
-    /* Close mid_file */
+    /* Cleanup */
+    free_mid(mid);
     fclose(mid_file);
-    printf("\n");
+
+    putchar('\n');
     return 0;
 }
