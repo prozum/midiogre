@@ -218,7 +218,8 @@ event_t *read_events(uint8_t *data, uint16_t events)
             case FUNC_UNDEF_2:
             case FUNC_UNDEF_3:
             case FUNC_UNDEF_4:
-                return NULL;
+                free(event);
+		return NULL;
 
             /* Messages with one parameter
              * - All data bytes
