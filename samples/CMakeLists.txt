@@ -1,10 +1,11 @@
-add_subdirectory(exttest)
+add_subdirectory(ext-test)
+add_subdirectory(analyze-test)
+add_subdirectory(pop-test)
+
 add_subdirectory(info)
-add_subdirectory(extract)
-add_subdirectory(poptest)
 
 if(SQL)
-    add_subdirectory(dbtest)
+    add_subdirectory(db-test)
 endif()
 
 if(GUI)

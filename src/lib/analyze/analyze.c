@@ -1,4 +1,5 @@
 #include "analyze.h"
+
 #include <mid/mid.h>
 #include <stdint.h>
 #include <string.h>
