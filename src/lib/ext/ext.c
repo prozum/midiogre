@@ -4,7 +4,8 @@
 
 int extract_instr_classes(mid_t *mid)
 {
-    unsigned int i,j,instr_class,bitmap;
+    unsigned int i,j,instr_class;
+    unsigned int bitmap = 0;
     
     for (i = 0; i < mid->tracks; i++) {
     
