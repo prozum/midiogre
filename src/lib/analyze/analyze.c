@@ -5,31 +5,176 @@
 #include <stdlib.h>
 #include <math.h>
 
-void extract_finger_prn(track_t *track)
+f_prn_t *finger_prn_gen(track_t *track)
 {
     song_data_t *song;
-    double *dist_set;
-    uint8_t dist_set_len;
-
-    int i;
-
-    dist_set = NULL;
+    uint32_t i, j;
 
     song = malloc(sizeof(song_data_t));
     song->channels = channel_extract(track);
-/*
+
     for (i = 0; i < CHANNELS; i++) {
-        printf("%d\n", song->channels[i].notes);
+        song->channels[i].chan_histogram = calc_chan_histogram(&(song->channels[i]));
     }
-*/
-    song->channels_histogram = calc_channel_histogram(song->channels);
-    song->normalized_histogram = calc_normalized_histogram(song->channels_histogram, song->channels);
-/*
-    for (i = 0; i < 12; i++) {
-        printf("%lf", song->normalized_histogram->semitones[i]);
+
+    song->norm_histogram = calc_norm_histogram(song->channels);
+    calc_euclid_dist_set(song);
+    qsort(song->channels, CHANNELS, sizeof(channel_t), dist_compar_chan);
+
+    for (i = 0; i < CHANNELS; i++) {
+        if (song->channels[i].notes) {
+            extract_finger_prn(&(song->channels[i]));
+        }
+
+        for (j = 0; j < song->channels[i].f_prns; j++) {
+            song->channels[i].f_prn_arr[j].f_prn_histogram = calc_f_prn_histogram(song->channels[i].f_prn_arr[j].f_prn);
+        }
+
+        song->channels[i].norm_f_prn_histogram = calc_f_prn_norm(&(song->channels[i]));
+        calc_f_prn_dist_set(&(song->channels[i]));
+
+        if (song->channels[i].f_prns) {
+            qsort(song->channels[i].f_prn_arr, song->channels[i].f_prns, sizeof(f_prn_t), dist_compar_f_prn);
+        }
     }
-*/
-    dist_set_len = calc_euclid_dist_set(song, dist_set);
+
+    return finger_prn_pick(song);
+}
+
+void extract_finger_prn(channel_t *chan)
+{
+    uint8_t freq_tone;
+    uint32_t i, j;
+    uint8_t k;
+
+    freq_tone = 0;
+
+    for (i = 0; i < SEMITONES; i++) {
+        if (chan->chan_histogram->semitones[freq_tone] < chan->chan_histogram->semitones[i]) {
+            freq_tone = i;
+        }
+    }
+
+    chan->f_prn_arr = malloc(sizeof(f_prn_t) * chan->chan_histogram->semitones[freq_tone]);
+    chan->f_prns = 0;
+
+    for (j = 0; j < chan->chan_histogram->semitones[freq_tone]; j++) {
+        chan->f_prn_arr[j].f_prn = calloc(sizeof(uint8_t), FINGER_PRN_LEN);
+    }
+
+    for (i = 0; i < chan->notes; i++) {
+        if (chan->note[i].pitch % SEMITONES == freq_tone && i >= 3 && i <= chan->notes - 3) {
+            for (j = i - 3, k = 0; j <= i + 3; j++) {
+                chan->f_prn_arr[chan->f_prns].f_prn[k] = chan->note[j].pitch % SEMITONES;
+                k++;
+            }
+
+            chan->f_prns++;
+        }
+    }
+}
+
+int dist_compar_f_prn(const void *a, const void *b)
+{
+    const f_prn_t *f_prn1 = a;
+    const f_prn_t *f_prn2 = b;
+
+    if (f_prn1->euclid_dist > f_prn2->euclid_dist) {
+        return -1;
+    } else if (f_prn1->euclid_dist < f_prn2->euclid_dist) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+f_prn_t *finger_prn_pick(song_data_t *song)
+{
+    uint8_t i;
+    uint8_t f_prns;
+    f_prn_t *f_prn_arr;
+
+    f_prn_arr = malloc(sizeof(f_prn_t) * FINGER_PRNS);
+    f_prn_arr->f_prn = malloc(sizeof(uint8_t) * FINGER_PRN_LEN);
+
+    f_prns = 0;
+    i = 0;
+
+    while (f_prns < 3) {
+        if (song->channels[i].f_prns) {
+            f_prn_arr[f_prns].f_prn = song->channels[i].f_prn_arr[f_prns].f_prn;
+            song->channels[i].f_prn_arr++;
+            f_prns++;
+        } else if (i == 3) {
+            i = 0;
+        } else {
+            i++;
+        }
+    }
+
+    return f_prn_arr;
+}
+
+histogram_t *calc_f_prn_histogram(uint8_t *f_prn)
+{
+    uint8_t i;
+    histogram_t *f_prn_histogram;
+
+    f_prn_histogram = malloc(sizeof(histogram_t));
+    f_prn_histogram->semitones = calloc(sizeof(double), SEMITONES);
+
+    for (i = 0; i < FINGER_PRN_LEN; i++) {
+        f_prn_histogram->semitones[f_prn[i]]++;
+    }
+
+    return f_prn_histogram;
+}
+
+histogram_t *calc_f_prn_norm(channel_t *chan)
+{
+    uint8_t i;
+    uint32_t j;
+    histogram_t *f_prn_norm;
+
+    f_prn_norm = malloc(sizeof(histogram_t));
+    f_prn_norm->semitones = calloc(sizeof(double), SEMITONES);
+
+    for (i = 0; i < SEMITONES; i++) {
+        for (j = 0; j < chan->f_prns; j++) {
+            f_prn_norm->semitones[i] += chan->f_prn_arr[j].f_prn[i];
+        }
+
+        f_prn_norm->semitones[i] /= chan->f_prns;
+    }
+
+    return f_prn_norm;
+}
+
+void calc_f_prn_dist_set(channel_t *chan)
+{
+    uint32_t i;
+    double *f_prn, *normalized;
+
+    for (i = 0; i < chan->f_prns; i++) {
+        normalized = chan->norm_f_prn_histogram->semitones;
+        f_prn = chan->f_prn_arr[i].f_prn_histogram->semitones;
+
+        chan->f_prn_arr[i].euclid_dist = calc_f_prn_dist(normalized, f_prn);
+    }
+}
+
+double calc_f_prn_dist(double *normalized, double *f_prn)
+{
+    double dist;
+    uint8_t i;
+
+    dist = 0;
+
+    for (i = 0; i < SEMITONES; i++) {
+        dist += sqrt(pow(normalized[i] - f_prn[i], 2));
+    }
+
+    return dist;
 }
 
 channel_t *channel_extract(track_t *track)
@@ -77,8 +222,6 @@ uint32_t note_off_time(track_t *track, uint32_t position)
     pitch = track->event[position].byte_1;
     note_off = track->event[position].chan + NOTE_ON - CHANNELS;
 
-    
-
     for (i = 1; i < (track->events - position); i++) {
         event++;
         time += track->event[event].delta;
@@ -94,34 +237,31 @@ uint32_t note_off_time(track_t *track, uint32_t position)
 }
 
 
-histogram_t *calc_channel_histogram(channel_t *channels)
+histogram_t *calc_chan_histogram(channel_t *chan)
 {
-    uint32_t i, j;
+    uint32_t i;
     uint32_t semitone;
-    histogram_t *channel_histogram;
+    histogram_t *chan_histogram;
 
-    channel_histogram = calloc(sizeof(histogram_t), CHANNELS);
+    chan_histogram = malloc(sizeof(histogram_t));
+    chan_histogram->semitones = calloc(sizeof(double), SEMITONES);
 
-    for (i = 0; i < CHANNELS; i++) {
-        channel_histogram[i].semitones = calloc(sizeof(double), SEMITONES);
-
-        for (j = 0; j < channels[i].notes; j++) {
-            semitone = channels[i].note[j].pitch % SEMITONES;
-            channel_histogram[i].semitones[semitone]++;
-        }
+    for (i = 0; i < chan->notes; i++) {
+        semitone = chan->note[i].pitch % SEMITONES;
+        chan_histogram->semitones[semitone]++;
     }
 
-    return channel_histogram;
+    return chan_histogram;
 }
 
-histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_t *channels)
+histogram_t *calc_norm_histogram(channel_t *channels)
 {
     uint32_t i, j;
     uint8_t nonzero_channels;
-    histogram_t *normalized_histogram;
+    histogram_t *norm_histogram;
 
-    normalized_histogram = malloc(sizeof(histogram_t));
-    normalized_histogram->semitones = calloc(sizeof(double), SEMITONES);
+    norm_histogram = malloc(sizeof(histogram_t));
+    norm_histogram->semitones = calloc(sizeof(double), SEMITONES);
 
     for (i = 0; i < CHANNELS; i++) {
         if (channels[i].notes) {
@@ -131,41 +271,30 @@ histogram_t *calc_normalized_histogram(histogram_t *channels_histogram, channel_
 
     for (i = 0; i < SEMITONES; i++) {
         for (j = 0; j < CHANNELS; j++) {
-            normalized_histogram->semitones[i] += channels_histogram[j].semitones[i];
+            norm_histogram->semitones[i] += channels[j].chan_histogram->semitones[i];
         }
 
-        normalized_histogram->semitones[i] /= nonzero_channels;
+        norm_histogram->semitones[i] /= nonzero_channels;
     }
 
-    return normalized_histogram;
+    return norm_histogram;
 }
 
-uint8_t calc_euclid_dist_set(song_data_t *song_data, double *dist_arr)
+void calc_euclid_dist_set(song_data_t *song_data)
 {
-    uint8_t arr_len, i, j;
+    uint8_t i;
     double dist;
-
     double *normalized, *channel;
-
-    dist_arr = malloc(sizeof(double) * CHANNELS);
-    arr_len = 0;
 
     for (i = 0; i < CHANNELS; i++) {
         if (song_data->channels[i].notes) {
-            normalized = song_data->normalized_histogram->semitones;
-            channel = song_data->channels_histogram[i].semitones;
-
-            for (j = 0; j < SEMITONES; j++) {
-                //printf("%lf %lf\n", normalized[j], channel[j]);
-            }
+            normalized = song_data->norm_histogram->semitones;
+            channel = song_data->channels[i].chan_histogram->semitones;
 
             dist = calc_euclid_dist(normalized, channel);
-            dist_arr[arr_len] = dist;
-            arr_len++;
+            song_data->channels[i].euclid_dist = dist;
         }
     }
-
-    return arr_len;
 }
 
 double calc_euclid_dist(double *normalized, double *channel)
@@ -176,11 +305,31 @@ double calc_euclid_dist(double *normalized, double *channel)
     dist = 0;
 
     for (i = 0; i < SEMITONES; i++) {
-        printf("%lf %lf\n", pow(normalized[i], 2), pow(channel[i], 2));
         dist += sqrt( pow(normalized[i] - channel[i], 2));
     }
 
-    printf("%lf\n", dist);
-
     return dist;
+}
+
+int dist_compar_chan(const void *a, const void *b)
+{
+    const channel_t *channel1 = a;
+    const channel_t *channel2 = b;
+
+    if (channel1->notes && channel2->notes) {
+        return channel1->euclid_dist - channel2->euclid_dist;
+    } else if (channel1->notes && !channel2->notes) {
+        return -1;
+    } else if (!channel1->notes && channel2->notes) {
+        return 1;
+    } else {
+        return 0;
+    }
+
+    return 0;
+}
+
+uint8_t lev_dist(f_prn_t *f_prn1, f_prn_t *f_prn2)
+{
+    uint8_t 
 }
