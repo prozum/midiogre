@@ -14,13 +14,16 @@
 /** Import mid struct to tree view */
 int mid_import(GFile *mid_gfile, GtkWidget *notebook)
 {
-    uint32_t i, j, k;
+    uint32_t i;
     uint32_t len;
     char tmp[3];
     char *data_str[NUM_COLUMNS];
 
     FILE *mid_file;
     mid_t *mid;
+    track_t *track;
+    event_t *event;
+    int byte;
 
     GtkWidget *treeview,*sw;
     GtkTreeModel *model;
@@ -41,8 +44,7 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
     fclose(mid_file);
 
     /* For each track */
-    for (i = 0; i < mid->tracks; i++)
-    {
+    while ((track = list_next(mid->tracks)) != NULL) {
         /* Setup column data types */
         store = gtk_list_store_new (NUM_COLUMNS,
                                       G_TYPE_STRING,
@@ -53,46 +55,44 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
                                       G_TYPE_STRING);
 
         /* For each event in track */
-        for (j = 0; j < mid->track[i].events; j++) {
+        while ((event = list_next(track->events)) != NULL) {
 
             /* Convert data to hex */
-            data_str[COLUMN_MSG] = g_strdup_printf("%x",mid->track[i].event[j].msg);
-            data_str[COLUMN_BYTE_1] = g_strdup_printf("%x",mid->track[i].event[j].byte_1);
-            data_str[COLUMN_BYTE_2] = g_strdup_printf("%x",mid->track[i].event[j].byte_2);
-            data_str[COLUMN_DELTA] = g_strdup_printf("%x",mid->track[i].event[j].delta);
+            data_str[COLUMN_MSG] = g_strdup_printf("%x", event->msg);
+            data_str[COLUMN_BYTE_1] = g_strdup_printf("%x", event->byte_1);
+            data_str[COLUMN_BYTE_2] = g_strdup_printf("%x",event->byte_2);
+            data_str[COLUMN_DELTA] = g_strdup_printf("%x",event->delta);
 
             /* If channel message */
-            if (mid->track[i].event[j].msg >= NOTE_OFF &&
-                mid->track[i].event[j].msg <= PITCH_BEND) {
+            if (event->msg >= NOTE_OFF &&
+                event->msg <= PITCH_BEND) {
 
-                data_str[COLUMN_CHAN] = g_strdup_printf("%x",mid->track[i].event[j].chan);
+                data_str[COLUMN_CHAN] = g_strdup_printf("%i",event->chan);
             } else {
                 data_str[COLUMN_CHAN] = g_strdup_printf("N/A");
             }
 
 
             /* If meta message */
-            if (mid->track[i].event[j].msg == META_MSG) {
+            if (event->msg == META_MSG) {
 
                 /* Find string length */
-                len = mid->track[i].event[j].byte_2 * 3;
+                len = event->byte_2 * 3;
 
                 data_str[COLUMN_DATA] = (char *)g_malloc((len + 1) * sizeof(char));
                 strcpy(data_str[COLUMN_DATA],"");
 
                 /* For each byte in meta data */
-                for (k = 0; k < mid->track[i].event[j].byte_2; k++) {
+                while ((byte = list_get(event->data)) != EOL) {
 
                     /* Convert Data to hex */
-                    if (mid->track[i].event[j].data[k] > 0xF) {
-                        g_sprintf(tmp,"%x ",mid->track[i].event[j].data[k]);
-                    } else {
-                        g_sprintf(tmp,"0%x ",mid->track[i].event[j].data[k]);
-                    }
-                    strcat(data_str[COLUMN_DATA],tmp);
+                    g_sprintf(tmp,"%02x ", byte);
+
+                    /* Combine */
+                    strcat(data_str[COLUMN_DATA], tmp);
                 }
             /* Not meta message */
-            } else{
+            } else {
                 data_str[COLUMN_DATA] = g_strdup_printf("N/A");
             }
 
@@ -108,8 +108,8 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
                                -1);
 
             /* Deallocate strings */
-            for (k = 0; k < NUM_COLUMNS; k++){
-                free(data_str[k]);
+            for (i = 0; i < NUM_COLUMNS; i++){
+                free(data_str[i]);
             }
         }
 
@@ -192,7 +192,7 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
 
         gtk_notebook_append_page(GTK_NOTEBOOK(notebook),
                                  sw,
-                                 gtk_label_new(g_strdup_printf("Track %i",i+1)));
+                                 gtk_label_new(g_strdup_printf("Track %lu", mid->tracks->i)));
     }
 
     free_mid(mid);
