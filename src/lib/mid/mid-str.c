@@ -135,7 +135,6 @@ const char *instruments[] = {
     "Gunshot"
 };
 
-
 void print_header(mid_t *mid)
 {
     printf("\n<###HEAD INFO###>\n");

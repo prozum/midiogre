@@ -1,7 +1,13 @@
 #include "db.h"
 
+#ifdef _WIN32
+#include <win/asprintf.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <sqlite3.h>
 
 int callback(void *data, int argc, char **argv, char **azColName)
 {
@@ -28,7 +34,7 @@ int database_general_error (int rc, char *error, int type){
         fprintf(stderr, "SQL error: %s\n", error);
         sqlite3_free(error);
         return -1;
-    } else {
+    } else {    
     	if (type==1){
         	fprintf(stdout, "Table created successfully\n");
     	} else if (type==2){
@@ -42,16 +48,16 @@ int database_general_error (int rc, char *error, int type){
         return 0;
     }
 }
-char parse_filename (FILE *file) 
+char parse_filename (char *file_name) 
 {
     char artist[32], album[32], track[32];
     int tracknum, file_pnt;
-    char file1[20]="a - b - 3 - d";
+    char file1[20]="a-b-3-d";
 
     //file_pnt = strrchr(file1ile, '/');
 
-    sscanf(file, "%s - %s - %i - %s",artist,album,&tracknum,track);
+    sscanf(file_name, "%s-%s-%i-%s",artist,album,&tracknum,track);
 
     printf("%s\n\n", artist);
-    return 0;
+    printf("%s\n\n", file_name);
 }

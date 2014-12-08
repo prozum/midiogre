@@ -265,7 +265,7 @@ histogram_t *calc_chan_histogram(channel_t *chan)
 histogram_t *calc_norm_histogram(channel_t *channels)
 {
     uint32_t i, j;
-    uint8_t nonzero_channels;
+    uint8_t nonzero_channels = 0;
     histogram_t *norm_histogram;
 
     norm_histogram = malloc(sizeof(histogram_t));

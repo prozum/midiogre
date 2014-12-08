@@ -14,8 +14,7 @@ int main( int argc, char *argv[] )
     f_prn_t *finger_prints;
 
     /* Open file */
-    mid_file = fopen(argv[1], "rb");
-    if( mid_file == NULL ) {
+    if((mid_file = fopen(argv[1], "rb")) == NULL ) {
         perror(argv[1]);
         return -1;
     }
