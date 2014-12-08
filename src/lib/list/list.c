@@ -118,6 +118,8 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
             tmp = list->end;
 
             list->cur = tmp + list->size * offset;
+
+            return 0;
         }
 
         break;
