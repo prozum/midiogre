@@ -1,3 +1,8 @@
+/** @list.h Contains functions used to manipulate lists */
+
+#ifndef _LIST_H_
+#define _LIST_H_
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -37,10 +42,14 @@ size_t list_get_fixed(list_t *list, size_t buf_size);
 
 void *list_index(list_t *list, size_t index);
 
-list_t *list_copy(list_t *src);
+list_t *list_copy(list_t *list);
+
+list_t *list_slicing(list_t *list, size_t s, size_t e);
 
 list_t *list_sort(list_t *list, int(cmp)(const void *, const void *));
 
 list_t *list_dump_file(FILE *file);
 
 void list_free(list_t *list);
+
+#endif

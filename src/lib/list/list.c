@@ -244,18 +244,36 @@ void *list_index(list_t *list, size_t index)
     }
 }
 
-list_t *list_copy(list_t *src)
+list_t *list_copy(list_t *list)
 {
-    list_t *dest;
+    list_t *copy_list;
 
     /* Create list */
-    dest = list_create(src->n, src->size);
+    copy_list = list_create(list->n, list->size);
 
     /* Copy data */
-    memcpy(dest->ptr, src->ptr, src->n * src->size);
+    memcpy(copy_list->ptr, list->ptr, list->n * list->size);
 
-    return dest;
+    return copy_list;
 }
+
+list_t *list_slicing(list_t *list, size_t s, size_t e)
+{
+    /* Temp pointer for pointer arithmetic,
+     * since arithmetic on void pointers are undefined */
+    char *tmp;
+
+    list_t *sliced_list;
+
+    sliced_list = list_create(e - s, list->size);
+
+    tmp = list->ptr;
+
+    memcpy(sliced_list->ptr, tmp + list->size * s, list->n * list->size);
+
+    return list;
+}
+
 
 list_t *list_sort(list_t *list, int(cmp)(const void *, const void *))
 {
