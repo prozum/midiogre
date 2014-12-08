@@ -1,7 +1,13 @@
 #include "db.h"
 
+#ifdef _WIN32
+#include <win/asprintf.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <sqlite3.h>
 
 int callback(void *data, int argc, char **argv, char **azColName)
 {

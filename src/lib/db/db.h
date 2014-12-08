@@ -3,10 +3,6 @@
 
 #include <sqlite3.h>
 
-#ifdef _WIN32
-#include <win/asprintf.h>
-#endif
-
 int callback(void *NotUsed, int argc, char **argv, char **azColName);
 
 int database_open_error (int rc, sqlite3 *db);

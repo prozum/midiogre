@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef _WIN32
+#include <win/asprintf.h>
+#endif
+
 #include <mid/mid.h>
 #include <mid/mid-str.h>
 
@@ -13,7 +17,7 @@ int main(int argc, char* argv[])
     
     int rc;
     unsigned int i,j;
-    char *sql, *sql2, *sql3;
+    char *sql, *sql2;
     char *error = 0;
     FILE *file;
     char *file_name;
