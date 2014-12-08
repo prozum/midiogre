@@ -1,23 +1,23 @@
 #include <stdlib.h>
 
 typedef enum {
-	LIST_FORWARD,
-	LIST_BACK
+    LIST_FORWARD,
+    LIST_BACK
 } list_direct_t;
 
 typedef enum {
-	LIST_BEG,
-	LIST_CUR,
-	LIST_END
+    LIST_BEG,
+    LIST_CUR,
+    LIST_END
 } list_whence_t;
 
 typedef struct {
-	void  *ptr;
-	void  *cur;
-	void  *end;
-	size_t i;
-	size_t n;
-	size_t size;
+    void  *ptr;
+    void  *cur;
+    void  *end;
+    size_t i;
+    size_t n;
+    size_t size;
 } list_t;
 
 list_t *list_create(size_t n, size_t size);

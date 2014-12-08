@@ -5,70 +5,70 @@
 
 list_t *list_create(size_t n, size_t size)
 {
-	list_t *list;
+    list_t *list;
 
-	/* Temp pointer for pointer arithmetic,
-	 * since arithmetic on void pointers are undefined */
-	char *tmp;
+    /* Temp pointer for pointer arithmetic,
+     * since arithmetic on void pointers are undefined */
+    char *tmp;
 
-	/* Return NULL if size is invalid or malloc fails */
-	if (size == 0 || (list = malloc(sizeof(list_t))) == NULL) {
+    /* Return NULL if size is invalid or malloc fails */
+    if (size == 0 || (list = malloc(sizeof(list_t))) == NULL) {
 
-		return NULL;
-	};
+        return NULL;
+    };
 
-	/* Allocate memory if list contains items */
-	if (n > 0) {
+    /* Allocate memory if list contains items */
+    if (n > 0) {
 
-		list->ptr = calloc(n, size);
+        list->ptr = calloc(n, size);
 
-		/* Assign to current & temp pointer */
-		list->cur = tmp = list->ptr;
+        /* Assign to current & temp pointer */
+        list->cur = tmp = list->ptr;
 
-		/* Pointer to last item */
-		list->end = tmp + (n - 1) * size;
-	
-	} else {
+        /* Pointer to last item */
+        list->end = tmp + (n - 1) * size;
 
-		list->ptr = NULL;
-		list->cur = NULL;
-		list->end = NULL;
-	}
+    } else {
 
-	list->i = 0;
-	list->n = n;
-	list->size = size;
+        list->ptr = NULL;
+        list->cur = NULL;
+        list->end = NULL;
+    }
 
-	return list;
+    list->i = 0;
+    list->n = n;
+    list->size = size;
+
+    return list;
 }
 
 int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t whence)
 {
-	/* Temp pointer for pointer arithmetic,
-	 * since arithmetic on void pointers are undefined */
-	char *tmp;
-	
-	switch (whence) {
+    /* Temp pointer for pointer arithmetic,
+     * since arithmetic on void pointers are undefined */
+    char *tmp;
 
-	/* First item */
-	case LIST_BEG:
-		
-		if (direct == LIST_FORWARD && list->n > offset) {
+    switch (whence) {
 
-			list->i = offset;
-			
-			tmp = list->ptr;
+    /* First item */
+    case LIST_BEG:
 
-			list->cur = tmp + list->size * offset;
+        if (direct == LIST_FORWARD && list->n > offset) {
 
-			return 0;
+            list->i = offset;
 
-		}
+            tmp = list->ptr;
 
-		break;
+            list->cur = tmp + list->size * offset;
 
-	/* Current item */
-	case LIST_CUR:
+            return 0;
+
+        }
+
+        break;
+
+    /* Current item */
+    case LIST_CUR:
 
         if (direct == LIST_FORWARD &&
             list->n > list->i + offset) {
@@ -95,144 +95,144 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
         }
 
         if (list->i + offset > 0 &&
-		    list->i + offset < list->n) {
+            list->i + offset < list->n) {
 
-			list->i += offset;
+            list->i += offset;
 
-			tmp = list->ptr;
+            tmp = list->ptr;
 
-			list->cur = tmp + list->size * offset;
-			
-			return 0;
-		} 
+            list->cur = tmp + list->size * offset;
 
-		break;
+            return 0;
+        }
 
-	/* Last item */
-	case LIST_END:
-		
-		if (direct == LIST_BACK && list->n >offset) {
-	
-			list->i = list->n - 1 - offset;
+        break;
 
-			tmp = list->end;
+    /* Last item */
+    case LIST_END:
 
-			list->cur = tmp + list->size * offset;
-		}
-		
-		break;
-	}
-	
-	return -1;
+        if (direct == LIST_BACK && list->n >offset) {
+
+            list->i = list->n - 1 - offset;
+
+            tmp = list->end;
+
+            list->cur = tmp + list->size * offset;
+        }
+
+        break;
+    }
+
+    return -1;
 }
 
 void list_append(list_t *list, void *item)
 {
-	/* Temp pointer for pointer arithmetic,
-	 * since arithmetic on void pointers are undefined */
-	char *tmp;
+    /* Temp pointer for pointer arithmetic,
+     * since arithmetic on void pointers are undefined */
+    char *tmp;
 
-	/* One more item */
-	list->n++;
+    /* One more item */
+    list->n++;
 
-	/* Reallocate pointer & assign to temp */
-	list->ptr = tmp = realloc(list->ptr, list->n * list->size);
+    /* Reallocate pointer & assign to temp */
+    list->ptr = tmp = realloc(list->ptr, list->n * list->size);
 
-	/* Point to item i */
-	list->cur = tmp + list->i * list->size;
+    /* Point to item i */
+    list->cur = tmp + list->i * list->size;
 
-	/* Point to last item */
-	list->end = tmp + (list->n - 1) * list->size;
+    /* Point to last item */
+    list->end = tmp + (list->n - 1) * list->size;
 
-	/* Copy item to end of list */
-	memcpy(list->end, item, list->size);
+    /* Copy item to end of list */
+    memcpy(list->end, item, list->size);
 }
 
 void *list_next(list_t *list)
 {
-	/* Temp pointer for pointer arithmetic,
-	 * since arithmetic on void pointers are undefined */
-	char *tmp;
+    /* Temp pointer for pointer arithmetic,
+     * since arithmetic on void pointers are undefined */
+    char *tmp;
 
-	/* If last item */
-	if (list->cur == list->end) {
+    /* If last item */
+    if (list->cur == list->end) {
 
-		list->i++;
-		list->cur = NULL;
-		return list->end;
+        list->i++;
+        list->cur = NULL;
+        return list->end;
 
-	/* If list is exceeded */
-	} else if (list->cur == NULL) {
+    /* If list is exceeded */
+    } else if (list->cur == NULL) {
 
-		return NULL;
+        return NULL;
 
-	/* If normal */
-	} else {
+    /* If normal */
+    } else {
 
-		/* Step index */
-		list->i++;
+        /* Step index */
+        list->i++;
 
-		/* Set temp pointer to current item */
-		tmp = list->cur;
+        /* Set temp pointer to current item */
+        tmp = list->cur;
 
-		/* Set current pointer to next item */
-		list->cur = tmp + list->size;
+        /* Set current pointer to next item */
+        list->cur = tmp + list->size;
 
-		return tmp;
-	}
+        return tmp;
+    }
 }
 
 void *list_index(list_t *list, size_t index)
 {
-	/* Temp pointer for pointer arithmetic,
-	 * since arithmetic on void pointers are undefined */
-	char *tmp;
+    /* Temp pointer for pointer arithmetic,
+     * since arithmetic on void pointers are undefined */
+    char *tmp;
 
-	/* If index value is valid */
-	if (index <= list->n - 1) {
+    /* If index value is valid */
+    if (index <= list->n - 1) {
 
-		tmp = list->ptr;
+        tmp = list->ptr;
 
-		return tmp + list->size * index;
+        return tmp + list->size * index;
 
-	} else {
+    } else {
 
-		return NULL;
-	}
+        return NULL;
+    }
 }
 
 list_t *list_copy(list_t *src)
 {
-	list_t *dest;
+    list_t *dest;
 
-	/* Create list */
-	dest = list_create(src->n, src->size);
+    /* Create list */
+    dest = list_create(src->n, src->size);
 
-	/* Copy data */
-	memcpy(dest->ptr, src->ptr, src->n * src->size);
+    /* Copy data */
+    memcpy(dest->ptr, src->ptr, src->n * src->size);
 
-	return dest;
+    return dest;
 }
 
 list_t *list_sort(list_t *list, int(cmp)(const void *, const void *))
 {
-	list_t *sorted_list;
+    list_t *sorted_list;
 
-	/* Copy list */
-	sorted_list = list_copy(list);
+    /* Copy list */
+    sorted_list = list_copy(list);
 
-	/* Sort list */
-	qsort(sorted_list->ptr, sorted_list->n, sorted_list->size, *cmp);
+    /* Sort list */
+    qsort(sorted_list->ptr, sorted_list->n, sorted_list->size, *cmp);
 
-	return sorted_list;
+    return sorted_list;
 }
 
 
 void list_free(list_t *list)
 {
-	/* Free items */
-	free(list->ptr);
+    /* Free items */
+    free(list->ptr);
 
-	/* Free list */
-	free(list);
+    /* Free list */
+    free(list);
 }
