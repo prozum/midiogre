@@ -12,11 +12,9 @@ int main( int argc, char *argv[] )
     FILE *mid_file;
     mid_t *mid;
     f_prn_t *finger_prints;
-    int i;
 
     /* Open file */
-    mid_file = fopen(argv[1], "rb");
-    if( mid_file == NULL ) {
+    if((mid_file = fopen(argv[1], "rb")) == NULL ) {
         perror(argv[1]);
         return -1;
     }
