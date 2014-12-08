@@ -1,7 +1,9 @@
+/** @file mid.h */
+
 #ifndef __MID_H__
 #define __MID_H__
 
-/** @file mid.h */
+#include <list/list.h>
 
 #include <stdint.h>
 #include <stdio.h>
@@ -361,22 +363,20 @@ typedef struct event_s
     uint8_t byte_1;   /**< First data byte            */
     uint8_t byte_2;   /**< Second data byte           */
     uint8_t delta;    /**< Delta time                 */
-    uint8_t *data;    /**< Pointer to sysex/meta event data */
+    list_t *data;     /**< List for sysex/meta data   */
 } event_t;
 
 typedef struct track_s
 {
     uint32_t bytes;  /**< Track length in bytes     */
-    uint32_t events; /**< Number of events in track */
-    event_t *event;  /**< Pointer to events         */
+    list_t *events;  /**< Events list               */
 } track_t;
 
 typedef struct mid_s
 {
     fmt_t format;       /**< Midi format       */
     uint16_t division;  /**< Time division     */
-    uint16_t tracks;    /**< Number of tracks  */
-    track_t *track;     /**< Pointer to tracks */
+    list_t *tracks;     /**< Tracks list       */
 } mid_t;
 
 size_t ffread(FILE *file, size_t buf_size);
@@ -384,10 +384,10 @@ size_t ffread(FILE *file, size_t buf_size);
 uint32_t count_events(uint8_t *data, uint32_t len);
 
 mid_t *read_mid(FILE *file);
-track_t *read_tracks(FILE *file, uint16_t num);
-event_t *read_events(uint8_t *data, uint16_t num);
+int read_tracks(list_t *data, list_t *tracks);
+int read_events(list_t *data, list_t *events);
 
-track_t *merge_tracks(mid_t *mid);
+list_t *merge_tracks(mid_t *mid);
 
 void write_mid(FILE *file, mid_t *mid);
 

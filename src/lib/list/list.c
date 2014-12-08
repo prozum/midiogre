@@ -223,6 +223,7 @@ size_t list_get_fixed(list_t *list, size_t buf_size)
         }
     }
 
+
     return result;
 }
 

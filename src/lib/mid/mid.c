@@ -1,5 +1,7 @@
 #include "mid.h"
 
+#include <list/list.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -30,47 +32,51 @@ size_t ffread(FILE *file, size_t buf_size)
     return result;
 }
 
-/** Read mid file */
+/** Read mid file
+ * TODO:
+ *  - Remove list_get_fixed hack
+ *  - Use goto to cleanup
+ */
 mid_t *read_mid(FILE *file)
 {
+    mid_t *mid;
+    list_t *data;
+
     /* Allocate memory for header data */
-    mid_t *mid = malloc(sizeof(mid_t));
+    mid = malloc(sizeof(mid_t));
 
-    /* Start at the beginning of midi_file */
-    fseek(file, 0, SEEK_SET);
+    /* Dump mid file data */
+    data = list_dump_file(file);
 
-    /* Read signature */
-    if (ffread(file, 4) != HEADER_SIGNATURE) {
+    /* Check signature */
+    if (list_get_fixed(data, 4) != HEADER_SIGNATURE) {
         fprintf(stderr,"Header signature is invalid\n");
         free(mid);
         return NULL;
     }
 
-    /* Read length */
-    if (ffread(file, 4) != HEADER_LENGTH) {
+    /* Check length */
+    if (list_get_fixed(data, 4) != HEADER_LENGTH) {
         fprintf(stderr, "Header length is invalid\n");
         free(mid);
         return NULL;
     }
 
-    /* Read format */
-    mid->format = ffread(file, 2);
-
-    /* Check if format has a valid value */
-    if (mid->format > MULTI_TRACK_ASYNC) {
+    /* Get format */
+    if ((mid->format = list_get_fixed(data, 2)) > MULTI_TRACK_ASYNC) {
         fprintf(stderr, "Midi format is invalid\n");
         free(mid);
         return NULL;
     }
 
-    /* Read number of tracks */
-    mid->tracks = ffread(file, 2);
+    /* Get number of tracks and create tracks list */
+    mid->tracks = list_create(list_get_fixed(data, 2), sizeof(track_t));
 
-    /* Read division */
-    mid->division = ffread(file, 2);
+    /* Get division */
+    mid->division = list_get_fixed(data, 2);
 
-    /* Read tracks */
-    if ((mid->track = read_tracks(file, mid->tracks)) == NULL) {
+    /* Get tracks */
+    if (read_tracks(data, mid->tracks) != 0) {
         fprintf(stderr, "Midi tracks are invalid\n");
         free(mid);
         return NULL;
@@ -80,89 +86,78 @@ mid_t *read_mid(FILE *file)
 }
 
 /** Read tracks */
-track_t *read_tracks(FILE *file, uint16_t tracks)
+int read_tracks(list_t *data, list_t *tracks)
 {
-    uint32_t i, j;
-    uint8_t *data;
-    
     track_t *track;
 
-    /* Start at the first track */
-    if (fseek(file, FIRST_TRACK_POS,SEEK_SET) != 0 ) {
-        fprintf(stderr,"fseek failed\n");
-        return NULL;
-    }
-    
-    track = calloc(sizeof(track_t), tracks);
-
-    /* For each track */
-    for (i = 0; i < tracks; i++) {
+    while ((track = list_next(tracks)) != NULL) {
         
         /* Check signature */
-        if (ffread(file, 4) != TRACK_SIGNATURE) {
+        if (list_get_fixed(data, 4) != TRACK_SIGNATURE) {
             fprintf(stderr, "Track signature is invalid\n");
-            free(track);
-            return NULL;
+            list_free(tracks);
+            return -1;
         }
 
         /* Read number of bytes */
-        track[i].bytes = ffread(file, 4);
+        track->bytes = list_get_fixed(data, 4);
 
-        /* Allocate memory for track data */
-        data = calloc(sizeof(uint8_t), track[i].bytes);
-
-        /* Read track data */
-        for (j = 0; j < track[i].bytes; j++) {
-            data[j] = ffread(file, 1);
-        }
-
-        /* Count events */
-        track[i].events = count_events(data, track[i].bytes);
+        /* Count events to create event list  */
+        track->events = list_create(count_events(data->cur, track->bytes),
+                                    sizeof(event_t));
 
         /* Read events */
-        track[i].event = read_events(data, track[i].events);
+        if (read_events(data, track->events) != 0) {
+            fprintf(stderr, "Midi events are invalid\n");
+            list_free(tracks);
+            return -1;
+        }
 
-        /* Deallocate memory for track data */
-        free(data);
     }
-    return track;
+
+    /* Reset current track */
+    list_set(tracks, 0, 0, LIST_BEG);
+
+    return 0;
 }
 
 /** Read events */
-event_t *read_events(uint8_t *data, uint16_t events)
+int read_events(list_t *data, list_t *events)
 {
-    uint32_t i,b,ev;
+    uint32_t tmp;
+    int *i,*b;
     event_t *event;
 
-    /* Start at first byte */
-    b = 0;
-
-    /* Allocate memory for events */
-    event = calloc(sizeof(event_t), events);
-
     /* Until end last event */
-    for (ev = 0; ev < events; ev++) {
+    while ((event = list_next(events)) != NULL) {
+
         /* Read delta time */
-        do {
-            event[ev].delta += data[b] % 0x80;
-        } while (data[b++] > 0x80);
+        while ((tmp = list_get(data)) > 0x80) {
+            event->delta += tmp % 0x80;
+        };
+        event->delta += tmp;
 
     
+        /* Get message */
+        tmp = list_get(data);
+
         /* If channel message */
-        if (data[b] >= NOTE_OFF &&
-            data[b] <= PITCH_BEND) {
+        if (tmp >= NOTE_OFF &&
+            tmp <= PITCH_BEND) {
             
-            /* Read event channel */
-            event[ev].chan = data[b] % CHANNELS;
+            /* Set channel */
+            event->chan = tmp % CHANNELS;
             
-            /* Read event msg */
-            event[ev].msg = data[b++] - event[ev].chan;
+            /* Set message */
+            event->msg = tmp - event->chan;
+
         } else {
-            event[ev].msg = data[b++];
+
+            event->msg = tmp;
         }
 
         /* Read message parameters */
-        switch (event[ev].msg) {
+        switch (event->msg) {
             /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
@@ -170,37 +165,38 @@ event_t *read_events(uint8_t *data, uint16_t events)
             case CTRL_MODE:
             case PITCH_BEND:
             case SONG_POS_PTR:
-                event[ev].byte_1 = data[b++];
-                event[ev].byte_2 = data[b++];
+                event->byte_1 = list_get(data);
+                event->byte_2 = list_get(data);
                 break;
             
-            /* Meta message with */
+            /* Meta message */
             case META_MSG:
-                event[ev].byte_1 = data[b++]; /* Meta message */
-                event[ev].byte_2 = data[b++]; /* Meta length  */
+                event->byte_1 = list_get(data); /* Meta message */
+                event->byte_2 = list_get(data); /* Meta length  */
 
                 /* Allocate memory for meta message data */
-                event[ev].data = calloc(sizeof(uint8_t), event[ev].byte_2);
+                event->data = list_slicing(data, data->i, event->byte_2);
 
-                /* Read meta message data */
-                for (i = 0; i < event[ev].byte_2; i++) {
-                    event[ev].data[i] = data[b++];
-                }
+                /* Skip message data */
+                list_set(data, event->byte_2, LIST_FORW, LIST_CUR);
+
                 break;
 
             /* System exclusive start message */
             case SYSEX_START:
-                event[ev].byte_1 = data[b++]; /* Manufacturer ID */
+                event->byte_1 = list_get(data); /* Manufacturer ID */
 
                 /* Count data length */
-                i = b;
-                while (data[i++] != SYSEX_END);
-                event[ev].byte_2 = i - b;    /* Data length */
-                
-                /* Read system exclusive message data */
-                for (i = 0; i < event[ev].byte_2; i++) {
-                    event[ev].data[i] = data[b++];
-                }
+                i = b = data->cur;
+                while (*i++ != SYSEX_END);
+                event->byte_2 = i - b;    /* Data length */
+
+                /* Allocate memory for meta message data */
+                event->data = list_slicing(data, data->i, event->byte_2);
+
+                /* Skip message data */
+                list_set(data, event->byte_2 - 2, LIST_FORW, LIST_CUR);
+
                 break;
 
             /* Messages with zero parameters */
@@ -218,8 +214,8 @@ event_t *read_events(uint8_t *data, uint16_t events)
             case FUNC_UNDEF_2:
             case FUNC_UNDEF_3:
             case FUNC_UNDEF_4:
-                free(event);
-		return NULL;
+                list_free(events);
+                return -1;
 
             /* Messages with one parameter
              * - All data bytes
@@ -228,11 +224,15 @@ event_t *read_events(uint8_t *data, uint16_t events)
              * - TIME_CODE
              * - SONG_SELECT             */
             default:
-                event[ev].byte_1 = data[b++];
+                event->byte_1 = list_get(data);
                 
         }
     }
-    return event;
+
+    /* Reset current event */
+    list_set(events, 0, 0, LIST_BEG);
+
+    return 0;
 }
 
 /** Count events in event data */
@@ -244,6 +244,7 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
 
     /* Until end of data */
     for (ev = 0; b < bytes; ev++) {
+
         /* Skip delta time */
         while (data[b++] > 0x80);
 
@@ -314,11 +315,11 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
 }
 
 /** Merge tracks from mid to single track */
-track_t *merge_tracks(mid_t *mid) {
+list_t *merge_tracks(mid_t *mid) {
 
     switch(mid->format) {
         case SINGLE_TRACK:
-            return mid->track;
+            return list_copy(mid->tracks);
 
         /* TODO */
         case MULTI_TRACK_SYNC:
@@ -336,27 +337,28 @@ void write_mid(FILE *midi_file, mid_t *mid);
 /** Deallocate data in mid_t */
 void free_mid(mid_t *mid)
 {
-    uint32_t i,j;
+    track_t *track;
+    event_t *event;
 
     /* For each track */
-    for (i = 0; i < mid->tracks; i++ ) {
+    while ((track = list_next(mid->tracks)) != NULL) {
         
         /* For message in track */
-        for (j = 0; j < mid->track[i].events; j++) {
+        while ((event = list_next(track->events)) != NULL) {
 
             /* If meta message or sysex */
-            if (mid->track[i].event[j].msg == META_MSG &&
-                mid->track[i].event[j].msg == SYSEX_START) {
+            if (event->msg == META_MSG &&
+                event->msg == SYSEX_START) {
 
                 /* Deallocate meta event data */
-                free(mid->track[i].event[j].data);
+                list_free(event->data);
             }
         }
         /* Deallocate track events */
-        free(mid->track[i].event);
+        list_free(track->events);
     }
     /* Deallocate tracks */
-    free(mid->track);
+    free(mid->tracks);
 
     /* Deallocate mid */
     free(mid);

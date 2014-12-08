@@ -139,44 +139,47 @@ void print_header(mid_t *mid)
 {
     printf("\n<###HEAD INFO###>\n");
     printf("Format:\t\t%i\n",mid->format);
-    printf("Tracks:\t\t%i\n",mid->tracks);
+    printf("Tracks:\t\t%li\n",mid->tracks->n);
     printf("Division:\t%i\n",mid->division);
 }
 
 void print_tracks(mid_t *mid)
 {
-    int i;
+    track_t *track;
 
     printf("\n<###TRACK INFO###>\n");
-    for (i = 0; i < mid->tracks; i++) {
-        printf("Track: \t%u\n",i+1);
-        printf("Track bytes: \t%u\n",mid->track[i].bytes);
-        printf("Track events: \t%u\n",mid->track[i].events);
+    while ((track = list_next(mid->tracks)) != NULL) {
+        printf("Track: \t%lu\n", mid->tracks->i - 1);
+        printf("Track bytes: \t%u\n", track->bytes);
+        printf("Track events: \t%lu\n", track->events->n);
     }
 }
 
 void print_event(mid_t *mid, unsigned int t, unsigned int e)
 {
-    int i;
+    track_t *track;
+    event_t *event;
+    int byte;
+
+    track = list_index(mid->tracks, t);
+    event = list_index(track->events, e);
+
 
     printf("\n<###EVENT INFO###>\n");
     printf("Track %2u | Event %2u\n",t,e);
-    printf("Msg : %x\n",mid->track[t].event[e].msg);
-    printf("Byte 1: %x\n",mid->track[t].event[e].byte_1);
-    printf("Byte 2: %x\n",mid->track[t].event[e].byte_2);
-    printf("Delta: %x\n",mid->track[t].event[e].delta);
+    printf("Msg : %x\n",event->msg);
+    printf("Byte 1: %x\n",event->byte_1);
+    printf("Byte 2: %x\n",event->byte_2);
+    printf("Delta: %x\n", event->delta);
 
-    /* Meta message data */
-    if (mid->track[t].event[e].msg == SYS_RESET) {
+    /* Meta/sysex message data */
+    if (event->msg == SYS_RESET || event->msg == SYSEX_START) {
+
         printf("Data: ");
-        for (i = 0; i < mid->track[t].event[e].byte_2; i++ ) {
-            printf("%x ",mid->track[t].event[e].data[i]);
-        }
-    /* System exclusive message */
-    } else if (mid->track[t].event[e].msg == SYSEX_START) {
-        printf("Data: ");
-        for (i = 0; i < mid->track[t].event[e].byte_2; i++ ) {
-            printf("%x ",mid->track[t].event[e].data[i]);
+
+        while ((byte = list_get(event->data)) != EOL) {
+
+            printf("%02x ", byte);
         }
     }
     printf("\n");
