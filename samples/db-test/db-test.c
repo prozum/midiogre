@@ -16,15 +16,21 @@ int main(int argc, char* argv[])
     char *sql, *sql2, *sql3;
     char *error = 0;
     FILE *file;
+    char *file_name;
     const char* data = "Callback function called";
 
+   
     /* Open mid file */
     file = fopen(argv[1],"rb");
     if(file == NULL) {
         perror(argv[1]);
         return -1;
     }
-    //parse_filename(file);
+
+    file_name = argv[1];
+
+    parse_filename(file);
+
     /* Read content */
     mid = read_mid(file);
     fclose(file);
@@ -86,4 +92,4 @@ int main(int argc, char* argv[])
     sqlite3_close(db);    
  
     return 0;
-}    
+}
