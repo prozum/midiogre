@@ -1,7 +1,6 @@
 #include <mid/mid.h>
 #include <mid/mid-str.h>
 #include <analyze/analyze.h>
-#include <analyze/skyline.h>
 
 #include <stdio.h>
 #include <stdlib.h>
