@@ -269,9 +269,9 @@ list_t *list_slicing(list_t *list, size_t s, size_t e)
 
     tmp = list->ptr;
 
-    memcpy(sliced_list->ptr, tmp + list->size * s, list->n * list->size);
+    memcpy(sliced_list->ptr, tmp + list->size * s, sliced_list->n * list->size);
 
-    return list;
+    return sliced_list;
 }
 
 

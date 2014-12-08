@@ -10,7 +10,7 @@
 int main( int argc, char *argv[] )
 {
     FILE *mid_file;
-    list_t *data;
+    list_t *data,*sliced_data;
     int byte,i;
 
     /* Open file */
@@ -32,8 +32,11 @@ int main( int argc, char *argv[] )
     /* Reset data to start */
     list_set(data,0,LIST_FORW,LIST_BEG);
 
+    /* Test list slicing by cutting of 2 bytes at start & end */
+    sliced_data = list_slicing(data, 2, data->n - 2);
+
     /* Print mid data */
-    while ((byte = list_get(data)) != EOL) {
+    while ((byte = list_get(sliced_data)) != EOL) {
 
 	    printf("%02x ", byte);
 
@@ -44,6 +47,7 @@ int main( int argc, char *argv[] )
 
     /* Deallocate data */
     list_free(data);
+    list_free(sliced_data);
 
 
     printf("\n");
