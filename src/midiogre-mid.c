@@ -12,7 +12,7 @@
 #include <glib/gprintf.h>
 
 /** Import mid struct to tree view */
-void mid_import(GFile *mid_gfile, GtkWidget *notebook)
+int mid_import(GFile *mid_gfile, GtkWidget *notebook)
 {
     uint32_t i, j, k;
     uint32_t len;
@@ -35,6 +35,7 @@ void mid_import(GFile *mid_gfile, GtkWidget *notebook)
         perror(g_file_get_path(mid_gfile));
         return -1;
     }
+
     /* Read content */
     mid = read_mid(mid_file);
     fclose(mid_file);
@@ -193,8 +194,11 @@ void mid_import(GFile *mid_gfile, GtkWidget *notebook)
                                  sw,
                                  gtk_label_new(g_strdup_printf("Track %i",i+1)));
     }
+
     free_mid(mid);
+
+    return 0;
 }
 
 /** Export tree view data to mid struct */
-void mid_export(mid_t *mid);
+int mid_export(mid_t *mid);
