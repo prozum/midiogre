@@ -6,32 +6,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-/**
- * Fixed fread. 
- * - Reads one byte at the time. 
- * - Adds offset
- */
-size_t ffread(FILE *file, size_t buf_size)
-{
-    size_t i,result = 0;
-
-    /* Check buf_size */
-    if (buf_size > sizeof(size_t) || buf_size == 0) {
-        fprintf(stderr,"Buffer size invalid\n");
-        return 0;
-    }
-    
-    for(i = 1; i <= buf_size; i++) {
-        result += fgetc(file);
-        
-        if (i != buf_size) {
-            result <<= 8;
-        }
-    }
- 
-    return result;
-}
-
 /** Read mid file
  * TODO:
  *  - Remove list_get_fixed hack

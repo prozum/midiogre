@@ -379,8 +379,6 @@ typedef struct mid_s
     list_t *tracks;     /**< Tracks list       */
 } mid_t;
 
-size_t ffread(FILE *file, size_t buf_size);
-
 uint32_t count_events(uint8_t *data, uint32_t len);
 
 mid_t *read_mid(FILE *file);
