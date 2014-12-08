@@ -1,7 +1,10 @@
 #include <stdlib.h>
+#include <stdio.h>
+
+#define EOL -10
 
 typedef enum {
-    LIST_FORWARD,
+    LIST_FORW,
     LIST_BACK
 } list_direct_t;
 
@@ -28,10 +31,14 @@ void list_append(list_t *list, void *item);
 
 void *list_next(list_t *list);
 
+int list_get(list_t *list);
+
 void *list_index(list_t *list, size_t index);
 
 list_t *list_copy(list_t *src);
 
 list_t *list_sort(list_t *list, int(cmp)(const void *, const void *));
+
+list_t *list_dump_file(FILE *file);
 
 void list_free(list_t *list);

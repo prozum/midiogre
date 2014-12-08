@@ -1,6 +1,7 @@
 #include "list.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 list_t *list_create(size_t n, size_t size)
@@ -9,7 +10,7 @@ list_t *list_create(size_t n, size_t size)
 
     /* Temp pointer for pointer arithmetic,
      * since arithmetic on void pointers are undefined */
-    char *tmp;
+    unsigned char *tmp;
 
     /* Return NULL if size is invalid or malloc fails */
     if (size == 0 || (list = malloc(sizeof(list_t))) == NULL) {
@@ -53,7 +54,7 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
     /* First item */
     case LIST_BEG:
 
-        if (direct == LIST_FORWARD && list->n > offset) {
+        if (direct == LIST_FORW && list->n > offset) {
 
             list->i = offset;
 
@@ -70,12 +71,12 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
     /* Current item */
     case LIST_CUR:
 
-        if (direct == LIST_FORWARD &&
+        if (direct == LIST_FORW &&
             list->n > list->i + offset) {
 
             list->i += offset;
 
-            tmp = list->ptr;
+            tmp = list->cur;
 
             list->cur = tmp + list->size * offset;
 
@@ -87,21 +88,9 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
 
             list->i -= offset;
 
-            tmp = list->ptr;
+            tmp = list->cur;
 
             list->cur = tmp - list->size * offset;
-
-            return 0;
-        }
-
-        if (list->i + offset > 0 &&
-            list->i + offset < list->n) {
-
-            list->i += offset;
-
-            tmp = list->ptr;
-
-            list->cur = tmp + list->size * offset;
 
             return 0;
         }
@@ -111,13 +100,13 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
     /* Last item */
     case LIST_END:
 
-        if (direct == LIST_BACK && list->n >offset) {
+        if (direct == LIST_BACK && list->n > offset) {
 
             list->i = list->n - 1 - offset;
 
             tmp = list->end;
 
-            list->cur = tmp + list->size * offset;
+            list->cur = tmp - list->size * offset;
 
             return 0;
         }
@@ -157,32 +146,60 @@ void *list_next(list_t *list)
     char *tmp;
 
     /* If last item */
-    if (list->cur == list->end) {
+    if (list->i == list->n - 1) {
 
         list->i++;
         list->cur = NULL;
+
         return list->end;
+    }
 
     /* If list is exceeded */
-    } else if (list->cur == NULL) {
+    if (list->i == list->n) {
 
         return NULL;
 
-    /* If normal */
-    } else {
-
-        /* Step index */
-        list->i++;
-
-        /* Set temp pointer to current item */
-        tmp = list->cur;
-
-        /* Set current pointer to next item */
-        list->cur = tmp + list->size;
-
-        return tmp;
     }
+
+    /* If normal */
+    list->i++;
+
+    /* Set temp pointer to current item */
+    tmp = list->cur;
+
+    /* Set current pointer to next item */
+    list->cur = tmp + list->size;
+
+    return tmp;
+
 }
+
+int list_get(list_t *list)
+{
+    /* Temp pointer for pointer arithmetic,
+     * since arithmetic on void pointers are undefined */
+    unsigned char *tmp;
+
+    if (list->i >= list->n - 1) {
+
+        return EOL;
+
+    }
+
+    /* Only works with 1 byte lists */
+    if (list->size != 1) {
+        return -1;
+    }
+
+    tmp = list->cur;
+    list->cur = tmp + list->size;
+
+    list->i++;
+
+    return *tmp;
+
+}
+
 
 void *list_index(list_t *list, size_t index)
 {
@@ -227,6 +244,32 @@ list_t *list_sort(list_t *list, int(cmp)(const void *, const void *))
     qsort(sorted_list->ptr, sorted_list->n, sorted_list->size, *cmp);
 
     return sorted_list;
+}
+
+list_t *list_dump_file(FILE *file)
+{
+    list_t *list;
+    int *byte;
+    int i;
+    size_t n;
+
+    /* Count bytes in file*/
+    fseek(file, 0, SEEK_END);
+    n = ftell(file);
+
+    /* Create byte list */
+    list = list_create(n, sizeof(char));
+
+    /* Read bytes */
+    fseek(file, 0, SEEK_SET);
+    while ((byte = list_next(list)) != NULL) {
+        *byte = i = fgetc(file);
+    }
+
+    /* Reset list */
+    list_set(list, 0, LIST_FORW, LIST_BEG);
+
+    return list;
 }
 
 
