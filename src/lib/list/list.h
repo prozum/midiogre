@@ -33,6 +33,8 @@ void *list_next(list_t *list);
 
 int list_get(list_t *list);
 
+size_t list_get_fixed(list_t *list, size_t buf_size);
+
 void *list_index(list_t *list, size_t index);
 
 list_t *list_copy(list_t *src);

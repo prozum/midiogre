@@ -197,7 +197,31 @@ int list_get(list_t *list)
     list->i++;
 
     return *tmp;
+}
 
+/**
+ * DANGER:
+ * No way to check if end of list is reached...
+ */
+size_t list_get_fixed(list_t *list, size_t buf_size)
+{
+    size_t i,result = 0;
+
+    /* Check buf_size */
+    if (buf_size > sizeof(size_t) || buf_size == 0) {
+        fprintf(stderr,"Buffer size invalid\n");
+        return 0;
+    }
+
+    for(i = 1; i <= buf_size; i++) {
+        result += list_get(list);
+
+        if (i != buf_size) {
+            result <<= 8;
+        }
+    }
+
+    return result;
 }
 
 
@@ -261,7 +285,7 @@ list_t *list_dump_file(FILE *file)
     /* Read bytes */
     fseek(file, 0, SEEK_SET);
     if ((rv = fread(list->ptr, list->size, list->n, file)) != list->n) {
-        fprintf(stderr, "Failed to read file on element %i\n", (unsigned long)rv);
+        fprintf(stderr, "Failed to read file on element %lu\n", (unsigned long) rv);
         list_free(list);
         return NULL;
     }
