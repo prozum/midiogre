@@ -249,9 +249,7 @@ list_t *list_sort(list_t *list, int(cmp)(const void *, const void *))
 list_t *list_dump_file(FILE *file)
 {
     list_t *list;
-    int *byte;
-    int i;
-    size_t n;
+    size_t n,rv;
 
     /* Count bytes in file*/
     fseek(file, 0, SEEK_END);
@@ -262,8 +260,10 @@ list_t *list_dump_file(FILE *file)
 
     /* Read bytes */
     fseek(file, 0, SEEK_SET);
-    while ((byte = list_next(list)) != NULL) {
-        *byte = i = fgetc(file);
+    if ((rv = fread(list->ptr, list->size, list->n, file)) != list->n) {
+        fprintf(stderr, "Failed to read file on element %i\n", (unsigned long)rv);
+        list_free(list);
+        return NULL;
     }
 
     /* Reset list */
