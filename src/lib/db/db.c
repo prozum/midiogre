@@ -28,7 +28,7 @@ int database_general_error (int rc, char *error, int type){
         fprintf(stderr, "SQL error: %s\n", error);
         sqlite3_free(error);
         return -1;
-    } else {
+    } else {    
     	if (type==1){
         	fprintf(stdout, "Table created successfully\n");
     	} else if (type==2){
@@ -52,6 +52,7 @@ char parse_filename (FILE *file)
 
     sscanf(file, "%s - %s - %i - %s",artist,album,&tracknum,track);
 
-    printf("%s\n\n", artist);
+    //printf("%s\n\n", artist);
+    printf("%s\n\n", file);
     return 0;
 }

@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
         perror(argv[1]);
         return -1;
     }
-
+    //parse_filename(file);
     /* Read content */
     mid = read_mid(file);
     fclose(file);
@@ -75,43 +75,15 @@ int main(int argc, char* argv[])
     database_general_error(rc, error, 2);
 
     /* Create SQL statement */
-    
+    /*
     sql3 = "SELECT * from midiFile";
     rc = sqlite3_exec(db, sql3, callback, (void*)data, &error);
 
     database_general_error(rc, error, 3);
 
-    //parse_filename(file);
+	*/
 	
     sqlite3_close(db);    
  
     return 0;
 }    
-
-/*
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <sqlite3.h>
-
-int main(void)
-{
-    char fileTest[] = "/home/bo/bono-money4bono-1-helptheblacks.mid";
-    char *s;
-    char artist[32], album[32], track[32];
-    int tracknum;
-
-    s = strrchr(fileTest, '/');
-    s++;
-
-    printf("%s\n", s);
-
-    sscanf(s, "%s %s %i %s",artist,album,&tracknum,track);
-
-    printf("%s\n\n",artist);
-
-    return 0;
-}
-
-*/
