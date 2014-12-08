@@ -44,7 +44,7 @@ void *list_index(list_t *list, size_t index);
 
 list_t *list_copy(list_t *list);
 
-list_t *list_slicing(list_t *list, size_t s, size_t e);
+list_t *list_slicing(list_t *list, size_t offset, size_t n);
 
 list_t *list_sort(list_t *list, int(cmp)(const void *, const void *));
 

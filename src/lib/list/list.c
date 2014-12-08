@@ -180,7 +180,7 @@ int list_get(list_t *list)
      * since arithmetic on void pointers are undefined */
     unsigned char *tmp;
 
-    if (list->i >= list->n - 1) {
+    if (list->i >= list->n) {
 
         return EOL;
 
@@ -188,7 +188,9 @@ int list_get(list_t *list)
 
     /* Only works with 1 byte lists */
     if (list->size != 1) {
+
         return -1;
+
     }
 
     tmp = list->cur;
@@ -257,7 +259,7 @@ list_t *list_copy(list_t *list)
     return copy_list;
 }
 
-list_t *list_slicing(list_t *list, size_t s, size_t e)
+list_t *list_slicing(list_t *list, size_t offset, size_t n)
 {
     /* Temp pointer for pointer arithmetic,
      * since arithmetic on void pointers are undefined */
@@ -265,11 +267,11 @@ list_t *list_slicing(list_t *list, size_t s, size_t e)
 
     list_t *sliced_list;
 
-    sliced_list = list_create(e - s, list->size);
+    sliced_list = list_create(n, list->size);
 
     tmp = list->ptr;
 
-    memcpy(sliced_list->ptr, tmp + list->size * s, sliced_list->n * list->size);
+    memcpy(sliced_list->ptr, tmp + list->size * offset, n * list->size);
 
     return sliced_list;
 }
