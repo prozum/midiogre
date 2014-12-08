@@ -82,10 +82,17 @@ void mid_import(GFile *mid_gfile, GtkWidget *notebook)
                 for (k = 0; k < mid->track[i].event[j].para_2; k++) {
 
                     /* Convert Data to hex */
+<<<<<<< HEAD
                     if (mid->track[i].event[j].mdata[k] > 0xF) {
                         g_sprintf(&tmp,"%x ",mid->track[i].event[j].mdata[k]);
                     } else {
                         g_sprintf(&tmp,"0%x ",mid->track[i].event[j].mdata[k]);
+=======
+                    if (mid->track[i].event[j].data[k] > 0xF) {
+                        g_sprintf(&tmp,"%x ",mid->track[i].event[j].data[k]);
+                    } else {
+                        g_sprintf(&tmp,"0%x ",mid->track[i].event[j].data[k]);
+>>>>>>> parent of de18f06... libanalyze: cleanup
                     }
                     strcat(data_str[COLUMN_DATA],tmp);
                 }
