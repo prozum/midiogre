@@ -9,4 +9,4 @@ int database_open_error (int rc, sqlite3 *db);
 
 int database_general_error (int rc, char *error, int type);
 
-char parse_filename (char *file_name);
+char parse_filename (char *file_name, char *artist, char *album, int *trackNum, char *trackName);

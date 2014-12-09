@@ -20,7 +20,6 @@ int main(int argc, char* argv[])
     char *sql, *sql2;
     char *error = 0;
     FILE *file;
-    char *file_name;
     const char* data = "Callback function called";
 
    
@@ -31,9 +30,13 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    char *file_name;
     file_name = argv[1];
 
-    parse_filename(file);
+    char *artist= malloc(sizeof(char) *32), *album= malloc(sizeof(char)*32), *trackName=malloc(sizeof(char) * 32);
+    int *trackNum= malloc(sizeof(int));
+
+    parse_filename(file_name, artist, album, trackNum, trackName);
 
     /* Read content */
     mid = read_mid(file);
@@ -51,40 +54,36 @@ int main(int argc, char* argv[])
           "ALBUM                   CHAR,"   \
           "TRACKNUM        UNSIGNED INT,"   \
           "TRACK                   CHAR,"   \
-          "BYTE1       UNSIGNED INT,"   \
-          "BYTE2                   UNSIGNED INT,"   \
-          "DELTA                   UNSIGNED INT,"   \
-          "INSTRUMENTS             UNSIGNED INT);";
+          "Fp1       		UNSIGNED INT,"   \
+          "Fp2                   UNSIGNED INT,"   \
+          "Fp3                   UNSIGNED INT,"   \
+          "UploadTime             UNSIGNED INT);";
     
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &error);
 
     /* Table error check */
     database_general_error(rc, error, 1);
+    /*
+    asprintf(&sql2, "INSERT INTO midiFile(BYTE1,BYTE2,DELTA) \
+                VALUES (%u, %u, %u);",mid->track[i].event[j].byte_1, \
+                                      mid->track[i].event[j].byte_2, \
+                                      mid->track[i].event[j].delta);
+	*/
+    asprintf(&sql2, "INSERT INTO midiFile(ARTIST, ALBUM, TRACKNUM, TRACK) \
+                VALUES (%s, %s, %i, %s);",artist, \
+                                      album, \
+                                      trackNum, \
+    								  trackName);
+                
+    rc = sqlite3_exec(db, sql2, callback, 0, &error);
+                
+    free(sql2);
 
-    /* For each track in mid */
-    for (i = 0; i < mid->tracks; i++) {
-        /* For each event in track */
-        for (j = 0; j < mid->track[i].events; j++) {
-    
-            /* If meta message */
-            if (mid->track[i].event[j].msg == NOTE_ON) {
-    
-                asprintf(&sql2, "INSERT INTO midiFile(BYTE1,BYTE2,DELTA) \
-                                VALUES (%u, %u, %u);",mid->track[i].event[j].byte_1, \
-                                                      mid->track[i].event[j].byte_2, \
-                                                      mid->track[i].event[j].delta);
-                
-                rc = sqlite3_exec(db, sql2, callback, 0, &error);
-                
-                free(sql2);
-            }
-        }
-    }
     /* Only checks the last command */
     database_general_error(rc, error, 2);
 
-    /* Create SQL statement */
+    /* Create SQL statement, view data */
     /*
     sql3 = "SELECT * from midiFile";
     rc = sqlite3_exec(db, sql3, callback, (void*)data, &error);

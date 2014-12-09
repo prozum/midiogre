@@ -48,16 +48,15 @@ int database_general_error (int rc, char *error, int type){
         return 0;
     }
 }
-char parse_filename (char *file_name) 
-{
-    char artist[32], album[32], track[32];
-    int tracknum, file_pnt;
-    char file1[20]="a-b-3-d";
+char parse_filename (char *file_name, char *artist, char *album, int *trackNum, char *trackName) {
+    char *file_pnt;
+    file_pnt = basename(file_name);
 
-    //file_pnt = strrchr(file1ile, '/');
-
-    sscanf(file_name, "%s-%s-%i-%s",artist,album,&tracknum,track);
+    sscanf(file_pnt, "%[^-]- %[^-]- %d- %[^.mid]",artist,album,&trackNum,trackName);
 
     printf("%s\n\n", artist);
-    printf("%s\n\n", file_name);
+    printf("%s\n\n", album);
+    printf("%i\n\n", trackNum);
+    printf("%s\n\n", trackName);
+    //printf("%s\n\n", file_name);
 }
