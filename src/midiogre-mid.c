@@ -20,7 +20,7 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
     char *data_str[NUM_COLUMNS];
 
     FILE *mid_file;
-    mid_t *mid;
+    mid_t *mid, *mid_tmp;
     track_t *track;
     event_t *event;
     int byte;
@@ -40,8 +40,9 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
     }
 
     /* Read content */
-    mid = read_mid(mid_file);
+    mid_tmp = read_mid(mid_file);
     fclose(mid_file);
+    mid = merge_tracks(mid_tmp);
 
     /* For each track */
     while ((track = list_next(mid->tracks)) != NULL) {
@@ -79,9 +80,9 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
             if (event->msg == META_MSG || event->msg == SYSEX_START) {
 
                 /* Calc string length */
-                len = event->byte_2 * 3;
+                len = event->byte_2 * 3 +1;
 
-                data_str[COLUMN_DATA] = (char *)g_malloc((len + 1) * sizeof(char));
+                data_str[COLUMN_DATA] = calloc(len, 1);
                 strcpy(data_str[COLUMN_DATA],"");
 
                 /* For each byte in meta data */
