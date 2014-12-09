@@ -98,7 +98,7 @@ int read_tracks(list_t *data, list_t *tracks)
 /** Read events */
 int read_events(list_t *data, list_t *events)
 {
-    uint32_t tmp;
+    uint32_t tmp, time_last = 0;
     int *i,*b;
     event_t *event;
 
@@ -110,6 +110,11 @@ int read_events(list_t *data, list_t *events)
             event->delta += tmp % 0x80;
         };
         event->delta += tmp;
+
+        /* Calc total ticks
+         * TODO: Take set tempo into account */
+        event->time = time_last + event->delta;
+        time_last = event->time;
 
     
         /* Get message */
@@ -289,22 +294,116 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
 }
 
 /** Merge tracks from mid to single track */
-list_t *merge_tracks(mid_t *mid) {
-
-    switch(mid->format) {
-        case SINGLE_TRACK:
-            return list_copy(mid->tracks);
-
-        /* TODO */
-        case MULTI_TRACK_SYNC:
-            return NULL;
-
-        /* TODO */
-        case MULTI_TRACK_ASYNC:
-            return NULL;
-    }
-    return NULL;
-}
+//mid_t *merge_tracks(mid_t *mid) {
+//    mid_t *mid_new;
+//    track_t *track;
+//    track_t *track_new;
+//    event_t *event;
+//    event_t *event_new;
+//
+//    int delta_min,first;
+//
+//    int *delta_cur;
+//
+//    /* Number of events plus 1 END_OF_TRACK */
+//    int n = 1;
+//
+//    list_set(mid->tracks, 0, LIST_FORW, LIST_BEG);
+//    while ((track = mid->tracks) != NULL) {
+//
+//        //list_set(track->events, 0, LIST_FORW, LIST_BEG);
+//        //while((event = list_next(track->events)) != NULL) {
+//
+//        /* Validate last message */
+//        event = list_index(mid->tracks, mid->tracks->n - 1);
+//        if (event->msg != META_MSG || event->byte_1 != END_OF_TRACK) {
+//
+//            return NULL;
+//        }
+//        /* Count total events minus END_OF_TRACK message */
+//        n += track->events->n - 1;
+//
+//    }
+//
+//    /* Create new mid with 1 track with n events */
+//    mid_new = malloc(sizeof(mid_t));
+//
+//    mid_new->format = SINGLE_TRACK;
+//    mid_new->tracks = list_create(1, sizeof(track_t));
+//    mid_new->division = mid->division;
+//
+//    track_new = list_index(mid_new->tracks, 0);
+//    track_new->events = list_create(n, sizeof(event_t));
+//
+//
+//
+//    switch(mid->format) {
+//
+//        case SINGLE_TRACK:
+//
+//            /* Copy events */
+//            track = list_index(mid->tracks, 0);
+//            track_new->events = list_copy(track->events);
+//
+//            /* Copy meta/sysex event data */
+//            list_set(track->events, 0, LIST_FORW, LIST_BEG);
+//            while ((event = list_next(track->events)) != NULL) {
+//
+//                if (event->msg == META_MSG ||
+//                    event->msg == SYSEX_START) {
+//
+//                    event_new = list_index(track_new->events, track->events->i - 1);
+//
+//                    event_new->data = list_copy(event->data);
+//                }
+//            }
+//
+//            return mid_new;
+//
+//        /* TODO */
+//        case MULTI_TRACK_SYNC:
+//
+//            delta_cur = calloc(mid->tracks->n, sizeof(int));
+//
+//            while (track_new->events->i < track_new->events->n) {
+//
+//                /* Find min delta for current events */
+//                while ((track = mid->tracks) != NULL) {
+//
+//                    event = track->events->cur;
+//
+//                    if (event->delta > delta_max) {
+//
+//                        delta_max = event->delta;
+//                    }
+//                }
+//
+//                /* Add event if event->delta = delta_max */
+//
+//
+//
+//            }
+//
+//
+//        list_set(mid->tracks, 0, LIST_FORW, LIST_BEG);
+//
+//            while ((track = mid->tracks) != NULL) {
+//
+//                list_set(track->events, 0, LIST_FORW, LIST_BEG);
+//
+//                while((event = list_next(track->events)) != NULL) {
+//
+//                }
+//
+//            }
+//            return NULL;
+//
+//        /* TODO */
+//        case MULTI_TRACK_ASYNC:
+//            return NULL;
+//    }
+//    return NULL;
+//}
 
 void write_mid(FILE *midi_file, mid_t *mid);
 
@@ -321,7 +420,7 @@ void free_mid(mid_t *mid)
         while ((event = list_next(track->events)) != NULL) {
 
             /* If meta message or sysex */
-            if (event->msg == META_MSG &&
+            if (event->msg == META_MSG ||
                 event->msg == SYSEX_START) {
 
                 /* Deallocate meta event data */

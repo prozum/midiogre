@@ -362,7 +362,8 @@ typedef struct event_s
     uint8_t chan;     /**< Event channel              */
     uint8_t byte_1;   /**< First data byte            */
     uint8_t byte_2;   /**< Second data byte           */
-    uint8_t delta;    /**< Delta time                 */
+    uint8_t delta;    /**< Delta ticks                */
+    uint32_t time;    /**< Total ticks                */
     list_t *data;     /**< List for sysex/meta data   */
 } event_t;
 
@@ -385,7 +386,7 @@ mid_t *read_mid(FILE *file);
 int read_tracks(list_t *data, list_t *tracks);
 int read_events(list_t *data, list_t *events);
 
-list_t *merge_tracks(mid_t *mid);
+mid_t *merge_tracks(mid_t *mid);
 
 void write_mid(FILE *file, mid_t *mid);
 
