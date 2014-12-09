@@ -6,6 +6,9 @@
 #include <mid/mid-str.h>
 #include <ext/ext.h>
 
+void bitmapext (int bitmap, int inst);
+
+
 int main(int argc, char* argv[])
 {
     FILE *mid_file;
@@ -32,5 +35,14 @@ int main(int argc, char* argv[])
     printf("\n\n\nThe sum  of bitmap is: %i\n",bitmap);
 
     printf("\n");
+    bitmapext(bitmap,15);
     return 0;
+}
+
+void bitmapext (int bitmap, int inst) {
+    int c;
+
+    c = bitmap & inst;
+
+    printf("\n%i",c);
 }
