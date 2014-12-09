@@ -43,6 +43,11 @@ list_t *list_create(size_t n, size_t size)
     return list;
 }
 
+/** Set current position in list
+ *
+ * TODO:
+ *  - Use GOTO for cleanup/error
+ */
 int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t whence)
 {
     /* Temp pointer for pointer arithmetic,
@@ -64,6 +69,11 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
 
             return 0;
 
+        } else {
+
+            list->i = list->n;
+
+            list->cur = NULL;
         }
 
         break;
@@ -81,9 +91,8 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
             list->cur = tmp + list->size * offset;
 
             return 0;
-        }
 
-        if (direct == LIST_BACK &&
+        } else if (direct == LIST_BACK &&
             list->i >= offset) {
 
             list->i -= offset;
@@ -93,6 +102,13 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
             list->cur = tmp - list->size * offset;
 
             return 0;
+
+        } else {
+
+            list->i = list->n;
+
+            list->cur = NULL;
+
         }
 
         break;
@@ -109,6 +125,11 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
             list->cur = tmp - list->size * offset;
 
             return 0;
+
+        } else {
+            list->i = list->n;
+
+            list->cur = NULL;
         }
 
         break;
