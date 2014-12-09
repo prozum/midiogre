@@ -22,14 +22,14 @@ int main(int argc, char* argv[])
 
     /* Read mid */
     mid = read_mid(mid_file);
-    
+
     /* Close mid_file */
     fclose(mid_file);
 
     /* Extract instrument classes */
     bitmap = extract_instr_classes(mid);
 
-    printf("The sum is: %i\n",bitmap);
+    printf("\n\n\nThe sum  of bitmap is: %i\n",bitmap);
 
     printf("\n");
     return 0;
