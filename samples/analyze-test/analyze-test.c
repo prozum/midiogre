@@ -12,7 +12,6 @@ int main( int argc, char *argv[] )
     FILE *mid_file;
     mid_t *mid;
     f_prn_t *finger_prints;
-    uint8_t i;
 
     /* Open file */
     if((mid_file = fopen(argv[1], "rb")) == NULL ) {
@@ -24,7 +23,7 @@ int main( int argc, char *argv[] )
     mid = read_mid(mid_file);
 
     /* Extract channels */
-    finger_prints = finger_prn_gen(mid->track);
+    finger_prints = finger_prn_gen(mid->tracks->ptr);
 
     putchar('\n');
 

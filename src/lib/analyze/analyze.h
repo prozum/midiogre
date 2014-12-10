@@ -47,8 +47,6 @@ f_prn_t *finger_prn_gen(track_t *track);
 
 channel_t *channel_extract(track_t *track);
 
-uint32_t note_off_time(track_t *track, uint32_t);
-
 void top_rank(channel_t *channels);
 
 void calc_euclid_chan_dist(channel_t *channels);
@@ -72,6 +70,8 @@ int compar_f_prn_dist(const void *a, const void *b);
 int compar_chan_dist(const void *a, const void *b);
 
 f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns);
+
+uint32_t note_off_time(list_t *events, uint32_t position);
 
 histogram_t *calc_chan_histogram(note_t *note, uint32_t notes);
 
