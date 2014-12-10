@@ -1,6 +1,12 @@
+#define _GNU_SOURCE
+
 #include <gtk/gtk.h>
 
+#include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
+#include <dirent.h>
 
 void folder_chooser(GtkWindow *window);
 
@@ -60,12 +66,70 @@ GtkWidget *window_init(void)
     return window;
 }
 
+void mid_import(char* mid_addr)
+{
+    g_print("mid file: %s \n",mid_addr);
+}
+
+int folder_handler(char* folder_addr)
+{
+    DIR *directory = NULL;
+    struct dirent *file;
+    char *tmp;
+
+   if ((directory = opendir(folder_addr)) == NULL) {
+
+       return -1;
+   }
+
+   while ((file = readdir(directory)) != NULL) {
+
+       /* Don't try to open hidden or previous folders */
+       if (file->d_name[0] != '.') {
+
+           /* If folder */
+           if (file->d_type == DT_DIR) {
+
+               asprintf(&tmp, "%s/%s", folder_addr, file->d_name);
+
+               g_print("folder: %s\n", tmp);
+
+               folder_handler(tmp);
+
+
+               free(tmp);
+            g_print("folder: %s\n",folder_addr);
+
+           /* If file */
+           } else {
+
+               /* Check if file have ".mid" extention */
+               if (strcmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0) {
+                   asprintf(&tmp, "%s/%s", folder_addr, file->d_name);
+
+                   mid_import(tmp);
+
+                   free(tmp);
+               }
+           }
+       }
+   }
+
+
+   if (closedir(directory) < 0) {
+
+       return -1;
+   }
+
+   return 0;
+
+}
 
 void folder_chooser(GtkWindow *window)
 {
     GtkWidget      *dialog;
     gint res;
-    char *folder_name = NULL;
+    char *folder_addr = NULL;
 
     dialog = gtk_file_chooser_dialog_new("Pick a Folder",
                                          window,
@@ -81,12 +145,13 @@ void folder_chooser(GtkWindow *window)
 
     if (res == GTK_RESPONSE_ACCEPT) {
 
-        folder_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        folder_addr = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
 
-        g_print("file: %s\n",folder_name);
+        g_print("folder: %s\n",folder_addr);
+        folder_handler(folder_addr);
 
-        g_free(folder_name);
+        g_free(folder_addr);
     }
 
     gtk_widget_destroy(dialog);
