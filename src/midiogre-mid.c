@@ -33,12 +33,13 @@ int mid_import(GtkWindow *window, list_t *mid_addrs)
 
     progress_bar = gtk_progress_bar_new ();
     gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(progress_bar), TRUE);
-    gtk_box_set_center_widget(GTK_BOX (content_area), progress_bar);
+    gtk_box_pack_start(GTK_BOX(content_area), progress_bar, FALSE, FALSE, 0);
     gtk_widget_show (progress_bar);
 
     gtk_widget_show(GTK_WIDGET(dialog));
 
-    if (mid_addrs->n == 0){
+    if (mid_addrs->n == 0) {
+
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), 1);
 
         tmp = g_strdup_printf("No mid files in folder...");
