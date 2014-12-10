@@ -1,4 +1,4 @@
-#include "midiogre-mid.h"
+#include "ginfo-mid.h"
 
 #include <mid/mid.h>
 #include <mid/mid-str.h>

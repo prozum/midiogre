@@ -1,5 +1,5 @@
-#include "midiogre-window.h"
-#include "midiogre-mid.h"
+#include "ginfo-window.h"
+#include "ginfo-mid.h"
 
 #include <gtk/gtk.h>
 
@@ -29,7 +29,7 @@ static void midiogre_app_window_class_init(MidiogreAppWindowClass *class)
 {
     /* Load ui file */
     gtk_widget_class_set_template_from_resource(GTK_WIDGET_CLASS(class),
-                                                "/org/prozum/midiogre/ui/midiogre.ui");
+                                                "/org/prozum/ginfo/ui/ginfo.ui");
 
     /* Pointer to stack */
     gtk_widget_class_bind_template_child_private(GTK_WIDGET_CLASS(class), MidiogreAppWindow, stack);

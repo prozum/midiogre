@@ -1,7 +1,7 @@
 #ifndef __MIDIOGREWIN_H
 #define __MIDIOGREWIN_H
 
-#include "midiogre-app.h"
+#include "ginfo-app.h"
 
 #include <gtk/gtk.h>
 

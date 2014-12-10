@@ -1,4 +1,4 @@
-#include "midiogre-app.h"
+#include "ginfo-app.h"
 #include <gtk/gtk.h>
 
 int main(int argc, char *argv[])
