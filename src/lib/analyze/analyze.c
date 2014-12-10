@@ -89,7 +89,7 @@ void calc_euclid_chan_dist(channel_t *channels)
     norm_histogram = calc_norm_histogram(chan_histogram, channels);
 
     for (i = 0; i < CHANNELS; i++) {
-        if (channels[i].note != NULL) {
+        if (channels[i].notes) {
 
             for (j = 0; j < SEMITONES; j++) {
                 channels[i].dist += calc_euclid_dist(norm_histogram->semitones[j], chan_histogram[i]->semitones[j]);
@@ -116,10 +116,10 @@ int compar_chan_dist(const void *a, const void *b)
 
     if (!chan1->note && chan2->note) {
         return 0;
-    } else if (!chan1->note) {
-        return 1;
-    } else if (!chan2->note) {
+    } else if (chan1->notes && !chan2->notes) {
         return -1;
+    } else if (chan2->notes && !chan1->notes) {
+        return 1;
     } else if (chan1->dist > chan2->dist) {
         return -1;
     } else if (chan2->dist > chan1->dist) {
@@ -154,15 +154,13 @@ f_prn_t *finger_prn_extract(channel_t *channels)
         ret_f_prn = NULL;
     }
 
-    if (ret_f_prn != NULL) {
-        for (i = 0; i < TOP_CHANNELS; i++) {
-            for (j = 0; j < f_prns[i]; j++) {
-                free(f_prn[i][j].f_prn);
-            }
+    for (i = 0; i < TOP_CHANNELS; i++) {
+        for (j = 0; j < f_prns[i]; j++) {
+            free(f_prn[i][j].f_prn);
+        }
 
-            if (f_prns[i]) {
-                free(f_prn[0]);
-            }
+        if (f_prns[i]) {
+            free(f_prn[i]);
         }
     }
 
