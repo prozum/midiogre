@@ -1,5 +1,8 @@
 #include <gtk/gtk.h>
 
+#include <stdio.h>
+
+void folder_chooser(GtkWindow *window);
 
 GtkWidget *window_init(void)
 {
@@ -15,15 +18,22 @@ GtkWidget *window_init(void)
 
     gtk_window_set_default_size (GTK_WINDOW (window), 600, 400);
 
+    /* Setup header bar */
     header = gtk_header_bar_new ();
     gtk_header_bar_set_show_close_button (GTK_HEADER_BAR (header), TRUE);
     gtk_header_bar_set_title (GTK_HEADER_BAR (header), "Midiogre");
     gtk_header_bar_set_has_subtitle (GTK_HEADER_BAR (header), FALSE);
 
+    /* Add folder button */
     button = gtk_button_new ();
     icon = g_themed_icon_new ("document-open-symbolic.symbolic");
     image = gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_BUTTON);
     g_object_unref (icon);
+
+    g_signal_connect_swapped(button, "clicked", G_CALLBACK (folder_chooser), window);
+
+
+    /* Backward, play & forward buttons */
     gtk_container_add (GTK_CONTAINER (button), image);
     gtk_header_bar_pack_end (GTK_HEADER_BAR (header), button);
 
@@ -51,6 +61,37 @@ GtkWidget *window_init(void)
 }
 
 
+void folder_chooser(GtkWindow *window)
+{
+    GtkWidget      *dialog;
+    gint res;
+    char *folder_name = NULL;
+
+    dialog = gtk_file_chooser_dialog_new("Pick a Folder",
+                                         window,
+                                         GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                         ("_Cancel"),
+                                         GTK_RESPONSE_CANCEL,
+                                         ("_Open"),
+                                         GTK_RESPONSE_ACCEPT,
+                                         NULL);
+
+
+    res = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    if (res == GTK_RESPONSE_ACCEPT) {
+
+        folder_name = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+
+
+        g_print("file: %s\n",folder_name);
+
+        g_free(folder_name);
+    }
+
+    gtk_widget_destroy(dialog);
+
+}
 
 int main(int argc, char *argv[])
 {
