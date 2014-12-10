@@ -154,13 +154,15 @@ f_prn_t *finger_prn_extract(channel_t *channels)
         ret_f_prn = NULL;
     }
 
-    for (i = 0; i < TOP_CHANNELS; i++) {
-        for (j = 0; j < f_prns[i]; j++) {
-            free(f_prn[i][j].f_prn);
-        }
+    if (ret_f_prn != NULL) {
+        for (i = 0; i < TOP_CHANNELS; i++) {
+            for (j = 0; j < f_prns[i]; j++) {
+                free(f_prn[i][j].f_prn);
+            }
 
-        if (f_prns[i]) {
-            free(f_prn[0]);
+            if (f_prns[i]) {
+                free(f_prn[0]);
+            }
         }
     }
 
@@ -421,9 +423,15 @@ histogram_t *calc_chan_histogram(note_t *note, uint32_t notes)
     chan_histogram = malloc(sizeof(histogram_t));
     chan_histogram->semitones = calloc(SEMITONES, sizeof(double));
 
-    for (i = 0; i < notes; i++) {
-        semitone = note[i].pitch % SEMITONES;
-        chan_histogram->semitones[semitone]++;
+    if (notes) { 
+        for (i = 0; i < notes; i++) {
+            semitone = note[i].pitch % SEMITONES;
+            chan_histogram->semitones[semitone]++;
+        }
+    }
+
+    for (i = 0; i < SEMITONES; i++) {
+        //printf("%lf\n", chan_histogram->semitones[i]);
     }
 
     return chan_histogram;

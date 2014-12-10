@@ -23,8 +23,11 @@ int main( int argc, char *argv[] )
     /* Read mid */
     mid = read_mid(mid_file);
 
+    mid = merge_tracks(mid);
+
     /* Extract channels */
     finger_prints = finger_prn_gen(mid->tracks->ptr);
+
 
     for (i = 0; i < FINGER_PRNS; i++) {
         for (j = 0; j < FINGER_PRN_LEN; j++) {
