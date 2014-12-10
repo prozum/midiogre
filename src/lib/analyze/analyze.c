@@ -401,6 +401,7 @@ histogram_t *calc_chan_histogram(note_t *note, uint32_t notes)
         }
     }
 
+
     return chan_histogram;
 }
 

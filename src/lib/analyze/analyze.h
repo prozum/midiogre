@@ -50,6 +50,9 @@ f_prn_t *finger_prn_gen(track_t *track);
 /** Returns the elements of notes and the note array as a channel array */
 channel_t *channel_extract(track_t *track);
 
+/** Returns the note off time for a note_off */
+uint32_t note_off_time(list_t *events, uint32_t position);
+
 /** Top Rank algorithm */
 void top_rank(channel_t *channels);
 
@@ -85,6 +88,9 @@ int compar_chan_dist(const void *a, const void *b);
 
 /** Chooses the fingerprints to be returned from finger_prn_gen() */
 f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns);
+
+/** Returns the channel histogram for a given channel */
+histogram_t *calc_chan_histogram(note_t *note, uint32_t notes);
 
 /** Returns the normalized histogram for an array of channels */
 histogram_t *calc_norm_histogram(histogram_t **chan_histogram, channel_t *channels);
