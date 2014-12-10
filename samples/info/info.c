@@ -12,17 +12,22 @@ int main( int argc, char *argv[] )
 
     /* Open file */
     if((mid_file = fopen(argv[1], "rb")) == NULL) {
+
         perror(argv[1]);
         return -1;
     }
 
     /* Read mid */
-    mid = read_mid(mid_file);
+    if ((mid = read_mid(mid_file)) == NULL) {
+
+        fprintf(stderr, "Could not read midi file!\n");
+        return -1;
+    }
 
     /* Print mid data */
     print_header(mid);
     print_tracks(mid);
-    print_event(mid,0,0);
+    print_event(mid, 0, 0);
 
     /* Deallocate mid */
     free_mid(mid);

@@ -1,5 +1,5 @@
-#include "midiogre-app.h"
-#include "midiogre-window.h"
+#include "ginfo-app.h"
+#include "ginfo-window.h"
 
 #include <gtk/gtk.h>
 

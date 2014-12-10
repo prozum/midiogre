@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<gresources>
-  <gresource prefix="/org/prozum/midiogre">
-    <file preprocess="xml-stripblanks">ui/midiogre.ui</file>
-  </gresource>
-</gresources>
