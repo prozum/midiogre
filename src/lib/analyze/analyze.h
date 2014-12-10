@@ -10,6 +10,8 @@
 /* finger_prns per channel */
 #define FINGER_PRNS 3
 
+#define TOP_CHANNELS 3
+
 #include <mid/mid.h>
 
 /** Histogram type */
@@ -22,8 +24,7 @@ typedef struct histogram_s
 typedef struct f_prn_s
 {
     uint8_t *f_prn;
-    histogram_t *f_prn_histogram;
-    double euclid_dist;
+    double dist;
 } f_prn_t;
 
 /** Contains the information of a single note */
@@ -39,77 +40,49 @@ typedef struct channel_s
 {
     note_t *note;
     uint32_t notes;
-
-    f_prn_t *f_prn_arr;
-    uint32_t f_prns;
-
-    histogram_t *chan_histogram;
-    histogram_t *norm_f_prn_histogram;
-    double euclid_dist;
+    double dist;
 } channel_t;
 
-/** Contains song data */
-typedef struct song_data_s
-{
-    channel_t *channels;
-    histogram_t *norm_histogram;
-} song_data_t;
-
-/** Returns channels for a MIDI file */
-channel_t *channel_extract(track_t *track);
-
-/** Returns the offset time for the NOTE_OFF that belongs to a given NOTE_OFF */
-uint32_t note_off_time(track_t *track, uint32_t position);
-
-/** Calculates the histogram for a channel_t */
-histogram_t *calc_chan_histogram(channel_t *chan);
-
-/** Calculates the normalized histogram for a song_data_t */
-histogram_t *calc_norm_histogram(channel_t *channels);
-
-/** Calculates the euclidean distances for all the channels */
-void calc_euclid_dist_set(song_data_t *song_data);
-
-/** Calculates the euclidean distance for a single channel */
-double calc_euclid_dist(double *normalized, double *channel);
-
-/** Returns the fingerprints for a MIDI file with a single track */
 f_prn_t *finger_prn_gen(track_t *track);
 
-/** Extract all the possible fingerprints from a single file */
-void extract_finger_prn(channel_t *channel);
+channel_t *channel_extract(track_t *track);
 
-/** Picks the best fingerprints from an array of fingerprints */
-f_prn_t *finger_prn_pick(song_data_t *song);
+uint32_t note_off_time(track_t *track, uint32_t);
 
-/** Calculates the histogram for a single fingerprint */
-histogram_t *calc_f_prn_histogram(uint8_t *f_prn);
+void top_rank(channel_t *channels);
 
-/** Calculates the normalized histogram for an array of fingerprints */
-histogram_t *calc_f_prn_norm(channel_t *chan);
+void calc_euclid_chan_dist(channel_t *channels);
 
-/** Calculates all the euclidean distances for fingerprints on a given channel */
-void calc_f_prn_dist_set(channel_t *chan);
+f_prn_t *finger_prn_extract(channel_t *channels);
 
-/** Calculates the euclidean distance from a single fingerprint */
-double calc_f_prn_dist(double *normalized, double *f_prn);
+uint32_t finger_prn_extract_inner(note_t *note, uint32_t notes, f_prn_t **f_prn, uint8_t pos);
 
-/** Qsort compare function that sorts a channel_t array by euclidean lengths */
-int dist_compar_chan(const void *a, const void *b);
+uint8_t freq_semitone(histogram_t *chan_histogram);
 
-/** Qsort compare function that sorts a f_prn_t array by euclidean lengths */
-int dist_compar_f_prn(const void *a, const void *b);
+void calc_f_prn_dist(f_prn_t *f_prn, uint32_t f_prns);
 
-/** Returns the Levensthein distance for two set of fingerprints */
+histogram_t *calc_f_prn_histogram(f_prn_t *f_prn, uint32_t f_prns);
+
+histogram_t *calc_f_prn_norm_histogram(histogram_t *f_prn_histogram, uint32_t f_prns);
+
+double calc_euclid_dist(double x, double y);
+
+int compar_f_prn_dist(const void *a, const void *b);
+
+int compar_chan_dist(const void *a, const void *b);
+
+f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns, channel_t *channels);
+
+histogram_t *calc_chan_histogram(note_t *note, uint32_t notes);
+
+histogram_t *calc_norm_histogram(histogram_t **chan_histogram, channel_t *channels);
+
 uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2);
 
-/** Returns the Levenshtein distance for two fingerprints */
 uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2);
 
-/** Skyline algorithm */
-void skyline(song_data_t *song);
+void skyline(channel_t *channels);
 
-/** Quicksort algorithm to sort the eliminated notes out after the Skyline algorithm */
 int skyline_compar(const void *a, const void *b);
 
 #endif
