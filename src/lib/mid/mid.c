@@ -363,7 +363,8 @@ mid_t *merge_tracks(mid_t *mid) {
 
         case MULTI_TRACK_SYNC:
 
-            while (track_new->events->i < track_new->events->n) {
+            /* Untill only one event is left (1 for END_OF_TRACK) */
+            while (track_new->events->i < track_new->events->n - 1) {
 
                 /* Find min time for current events */
                 list_set(mid->tracks, 0, LIST_FORW, LIST_BEG);
@@ -388,14 +389,12 @@ mid_t *merge_tracks(mid_t *mid) {
 
                         if ( event->time == (unsigned) time_min) {
 
-                            if ((event_new = list_next(track_new->events)) != NULL) {
+                            /* Copy all events except END_OF_TRACK */
+                            if ((event->msg    != META_MSG ||
+                                 event->byte_1 != END_OF_TRACK) &&
+                                (event_new = list_next(track_new->events)) != NULL) {
 
-                                /* Copy all events except END_OF_TRACK */
-                                if (event->msg    != META_MSG ||
-                                    event->byte_1 != END_OF_TRACK) {
-
-                                    *event_new = *event;
-                                }
+                                *event_new = *event;
 
                                 /* Copy meta/sysex */
                                 if (event->msg == META_MSG ||
@@ -411,7 +410,12 @@ mid_t *merge_tracks(mid_t *mid) {
                                     event_new->delta = 0;
                                 }
                                 first = 0;
+                            } else {
+
+                                list_set(track->events, 1, LIST_FORW, LIST_CUR);
+
                             }
+
                         }
                     }
                 }
