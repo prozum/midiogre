@@ -25,10 +25,6 @@ f_prn_t *finger_prn_gen(track_t *track)
 
     free(channels);
 
-    for (i = 0; i < 3; i++) {
-        printf("%d\n", finger_prns[i].f_prn[1]);
-    }
-
     return finger_prns;
 }
 
@@ -103,6 +99,16 @@ void calc_euclid_chan_dist(channel_t *channels)
         }
     }
 
+
+    for (i = 0; i < CHANNELS; i++) {
+        free(chan_histogram[i]->semitones);
+        free(chan_histogram[i]);
+    }
+
+    free(chan_histogram);
+    free(norm_histogram->semitones);
+    free(norm_histogram);
+
 }
 
 int compar_chan_dist(const void *a, const void *b)
@@ -130,7 +136,7 @@ f_prn_t *finger_prn_extract(channel_t *channels)
     f_prn_t **f_prn;
     f_prn_t *ret_f_prn;
     uint32_t *f_prns;
-    uint32_t j, k;
+    uint32_t j;
     uint8_t i;
 
     f_prn = malloc(sizeof(f_prn_t *) * TOP_CHANNELS);
@@ -145,18 +151,21 @@ f_prn_t *finger_prn_extract(channel_t *channels)
     }
 
     if (f_prns[0] + f_prns[1] + f_prns[2] >= FINGER_PRNS) {
-        printf("IT RETURNS!\n");
-        ret_f_prn = finger_prn_pick(f_prn, f_prns, channels);
+        ret_f_prn = finger_prn_pick(f_prn, f_prns);
     } else {
         ret_f_prn = NULL;
     }
-/*
+
     for (i = 0; i < TOP_CHANNELS; i++) {
         for (j = 0; j < f_prns[i]; j++) {
-            free(f_prn[i]);
+            free(f_prn[i][j].f_prn);
+        }
+
+        if (f_prns[i]) {
+            free(f_prn[0]);
         }
     }
-*/
+
     free(f_prn);
     free(f_prns);
 
@@ -187,19 +196,18 @@ uint32_t finger_prn_extract_inner(note_t *note, uint32_t notes, f_prn_t **f_prn,
     for (i = 0; i < notes; i++) {
         if (note[i].pitch % SEMITONES == semitone && i >= 3 && i + 3 <= notes) {
             for (j = 0 ; j < FINGER_PRN_LEN; j++ ) {
-                //printf("%d %d\n", i, j);
                 f_prn[pos][f_prns].f_prn[j] = note[i-3].pitch % SEMITONES;
                 i++;
             }
 
             f_prns++;
-            //printf("%d\n", f_prns);
         }
     }
 
     calc_f_prn_dist(f_prn[pos], f_prns);
-
     qsort((void *)f_prn[pos], f_prns, sizeof(f_prn_t), compar_f_prn_dist);
+
+    f_prns += (chan->semitones[semitone] - f_prns);
 
     free(chan->semitones);
     free(chan);
@@ -218,10 +226,8 @@ uint8_t freq_semitone(histogram_t *chan_histogram)
         if (chan_histogram->semitones[i] > chan_histogram->semitones[semitone]) {
             semitone = i;
 
-            //printf("%d\n", semitone);
         }
 
-        //printf("%d\n", chan_histogram->semitones[i]);
     }
 
     return semitone;
@@ -234,8 +240,6 @@ void calc_f_prn_dist(f_prn_t *f_prn, uint32_t f_prns)
     uint32_t i;
     uint8_t j;
 
-    double dist;
-
     if (f_prns) {
         f_prn_histogram = calc_f_prn_histogram(f_prn, f_prns);
         f_prn_norm_histogram = calc_f_prn_norm_histogram(f_prn_histogram, f_prns);
@@ -243,19 +247,17 @@ void calc_f_prn_dist(f_prn_t *f_prn, uint32_t f_prns)
         for (i = 0; i < f_prns; i++) {
             f_prn[i].dist = 0;
             for (j = 0; j < SEMITONES; j++) {
-                printf("%d\n", f_prn[i].f_prn[0]);
                 f_prn[i].dist += calc_euclid_dist(f_prn_norm_histogram->semitones[j], f_prn_histogram[i].semitones[j]);
             }
-            //printf("%d\n", dist);
         }
 
         for (i = 0; i < f_prns; i++) {
-            //free(f_prn_histogram[i].semitones);
+            free(f_prn_histogram[i].semitones);
         }
 
-        //free(f_prn_histogram);
-        //free(f_prn_norm_histogram->semitones);
-        //free(f_prn_norm_histogram);
+        free(f_prn_histogram);
+        free(f_prn_norm_histogram->semitones);
+        free(f_prn_norm_histogram);
     } else {
         f_prn = NULL;
     }
@@ -276,11 +278,9 @@ histogram_t *calc_f_prn_histogram(f_prn_t *f_prn, uint32_t f_prns)
 
 
     for (i = 0; i < f_prns; i++) {
-        //printf("%d\n", f_prn[i].f_prn[0]);
         for (j = 0; j < FINGER_PRN_LEN; j++) {
             semitone = f_prn[i].f_prn[j] % SEMITONES;
             f_prn_histogram[i].semitones[semitone] = f_prn[i].f_prn[j];
-            //printf("%d\n", f_prn[i].f_prn[j]);
         }
     }
 
@@ -299,10 +299,10 @@ histogram_t *calc_f_prn_norm_histogram(histogram_t *f_prn_histogram, uint32_t f_
     if (f_prns) {
         for (i = 0; i < SEMITONES; i++) {
             for (j = 0; j < f_prns; j++) {
-                f_prn_norm_histogram->semitones[j] += f_prn_histogram[j].semitones[i];
+                f_prn_norm_histogram->semitones[i] += f_prn_histogram[j].semitones[i];
             }
 
-            f_prn_norm_histogram->semitones[j] /= f_prns;
+            f_prn_norm_histogram->semitones[i] /= f_prns;
         }
     } else {
         free(f_prn_norm_histogram->semitones);
@@ -332,7 +332,7 @@ int compar_f_prn_dist(const void *a, const void *b)
     return 0;
 }
 
-f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns, channel_t *channels)
+f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
 {
     uint32_t i, j;
     uint8_t f_prns_ret;
@@ -350,10 +350,11 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns, channel_t *channels)
 
     while (f_prns_ret < 3) {
         if (f_prns[i]) {
-            memcpy((void *)f_prn_ret[i].f_prn, (void *)f_prn[i][j].f_prn, sizeof(uint8_t) * FINGER_PRN_LEN);
+            memcpy((void *)f_prn_ret[j].f_prn, (void *)f_prn[i][j].f_prn, sizeof(uint8_t) * FINGER_PRN_LEN);
             f_prns_ret++;
             i++;
         } else if (i == 3){
+            j++;
             i = 0;
         } else {
             i++;

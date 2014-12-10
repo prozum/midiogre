@@ -33,7 +33,8 @@ int main( int argc, char *argv[] )
     /*Test skyline*/
     
     /* Cleanup */
-    //free_mid(mid);
+    free(finger_prints);
+    free_mid(mid);
     fclose(mid_file);
 
     putchar('\n');

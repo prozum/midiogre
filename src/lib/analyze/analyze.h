@@ -71,7 +71,7 @@ int compar_f_prn_dist(const void *a, const void *b);
 
 int compar_chan_dist(const void *a, const void *b);
 
-f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns, channel_t *channels);
+f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns);
 
 histogram_t *calc_chan_histogram(note_t *note, uint32_t notes);
 
