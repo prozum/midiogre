@@ -31,14 +31,11 @@ f_prn_t *finger_prn_gen(track_t *track)
 channel_t *channel_extract(track_t *track)
 {
     uint32_t position;
-    uint32_t start_time;
     uint32_t i;
     event_t *event;
     uint8_t channel;
     channel_t *channels;
 
-    //events = track->events;
-    start_time = 0;
     channels = calloc(sizeof(channel_t), CHANNELS);
 
     for (i = 0; i < CHANNELS; i++) {
@@ -50,16 +47,13 @@ channel_t *channel_extract(track_t *track)
     list_set(track->events, 0, 0, LIST_BEG);
     while ((event = list_next(track->events)) != NULL) {
 
-        start_time += event->delta;
-
         if (event->msg == NOTE_ON) {
             channel = event->chan;
             position = channels[channel].notes;
 
             channels[channel].note[position].pitch = event->byte_1;
-            channels[channel].note[position].onset = start_time;
-            channels[channel].note[position].offset = start_time + note_off_time(track->events, position);
-            //channels[channel].note[position].offset = start_time + event->time;
+            channels[channel].note[position].onset = event->time;
+            channels[channel].note[position].offset = note_off_time(track->events, position);
             channels[channel].notes++;
         }
     }
@@ -397,30 +391,24 @@ uint32_t note_off_time(track_t *track, uint32_t position)
 
 uint32_t note_off_time(list_t *events, uint32_t position)
 {
-    uint32_t i, time;
-    uint32_t pitch, note_off;
-    event_t *event;
+    uint32_t i;
+    event_t *event, *event_cur;
 
-    time = 0;
-
-    /* Get data for current event */
-    event = list_index(events, position);
-    pitch = event->byte_1;
-    note_off = event->chan + NOTE_ON - CHANNELS;
+    event_cur = list_index(events, position);
 
     for (i = position; i < events->n; i++) {
 
         event = list_index(events, i);
 
-        time += event->delta;
+        if (event->msg    == NOTE_OFF        &&
+            event->chan   == event_cur->chan &&
+            event->byte_1 == event_cur->byte_1) {
 
-        if (event->msg == note_off && event->byte_1 == pitch) {
-
-            return time;
+            return event->time;
         }
     }
 
-    return time;
+    return event->time;
 }
 
 
