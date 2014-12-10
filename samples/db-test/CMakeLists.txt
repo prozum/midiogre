@@ -6,7 +6,8 @@ target_link_libraries(db-test
 	mid
 	db
 	${SQLITE3_LIBRARIES}
-	
+	${GLIB2_LIBRARIES}
+
 )
 if (WIN32)
 		target_link_libraries(db-test

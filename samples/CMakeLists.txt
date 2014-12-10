@@ -6,7 +6,7 @@ add_subdirectory(pop-test)
 add_subdirectory(info)
 
 if(SQL)
-#    add_subdirectory(db-test)
+    add_subdirectory(db-test)
 endif()
 
 if(GUI)

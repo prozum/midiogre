@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef _WIN32
-#include <win/asprintf.h>
-#endif
+#include <glib.h>
 
 #include <mid/mid.h>
 #include <mid/mid-str.h>
@@ -16,13 +14,15 @@ int main(int argc, char* argv[])
     sqlite3 *db;
     
     int rc;
-    unsigned int i,j;
     char *sql, *sql2;
     char *error = 0;
     FILE *file;
-    const char* data = "Callback function called";
 
-   
+    char artist[32];
+    char album[32];
+    char trackName[32];
+    int  trackNum;
+
     /* Open mid file */
     file = fopen(argv[1],"rb");
     if(file == NULL) {
@@ -30,10 +30,14 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    char *artist= malloc(sizeof(char) *32), *album= malloc(sizeof(char)*32), *trackName=malloc(sizeof(char) * 32);
-    int *trackNum= malloc(sizeof(int));
+    /*
+    artist= malloc(sizeof(char) *32);
+    album= malloc(sizeof(char)*32);
+    trackName=malloc(sizeof(char) * 32);
+    trackNum= malloc(sizeof(int));
+    */
 
-    parse_filename(argv[1], artist, album, trackNum, trackName);
+    parse_filename(argv[1], (char *)&artist, (char *)&album, &trackNum, (char *)&trackName);
 
     /* Read midi content */
     mid = read_mid(file);
@@ -67,11 +71,11 @@ int main(int argc, char* argv[])
                                       mid->track[i].event[j].byte_2, \
                                       mid->track[i].event[j].delta);
 	*/
-   sql2 = "INSERT INTO midiFile(ARTIST, ALBUM, TRACKNUM, TRACK)" \
-                "VALUES (%s, %s, %i, %s);",artist, \
-                                     	  album, \
-                                      	  trackNum, \
-    								      trackName);
+    sql2 = g_strdup_printf("INSERT INTO midiFile(ARTIST, ALBUM, TRACKNUM, TRACK) VALUES (%s, %s, %d, %s);",
+                                          artist,
+                                          album,
+                                          trackNum,
+                                          trackName);
                 
     rc = sqlite3_exec(db, sql2, callback, 0, &error);
                 
