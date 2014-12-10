@@ -48,15 +48,18 @@ int database_general_error (int rc, char *error, int type){
         return 0;
     }
 }
+/* Parse file name for song data */
 char parse_filename (char *file_name, char *artist, char *album, int *trackNum, char *trackName) {
     char *file_pnt;
-    file_pnt = basename(file_name);
+    file_pnt = basename(file_name); /* Removes file path */
 
-    sscanf(file_pnt, "%[^-]- %[^-]- %d- %[^.mid]",artist,album,&trackNum,trackName);
+    sscanf(file_pnt, "%[^-]- %[^-]- %d- %s",artist,album,&trackNum,trackName);
 
+    /* Removes file extension from last string */
+    trackName[strlen(trackName)-4]=0;
+/*
     printf("%s\n\n", artist);
     printf("%s\n\n", album);
     printf("%i\n\n", trackNum);
-    printf("%s\n\n", trackName);
-    //printf("%s\n\n", file_name);
+    printf("%s\n\n", trackName); */
 }

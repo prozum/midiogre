@@ -30,15 +30,12 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    char *file_name;
-    file_name = argv[1];
-
     char *artist= malloc(sizeof(char) *32), *album= malloc(sizeof(char)*32), *trackName=malloc(sizeof(char) * 32);
     int *trackNum= malloc(sizeof(int));
 
-    parse_filename(file_name, artist, album, trackNum, trackName);
+    parse_filename(argv[1], artist, album, trackNum, trackName);
 
-    /* Read content */
+    /* Read midi content */
     mid = read_mid(file);
     fclose(file);
 
@@ -70,17 +67,17 @@ int main(int argc, char* argv[])
                                       mid->track[i].event[j].byte_2, \
                                       mid->track[i].event[j].delta);
 	*/
-    asprintf(&sql2, "INSERT INTO midiFile(ARTIST, ALBUM, TRACKNUM, TRACK) \
-                VALUES (%s, %s, %i, %s);",artist, \
-                                      album, \
-                                      trackNum, \
-    								  trackName);
+   sql2 = "INSERT INTO midiFile(ARTIST, ALBUM, TRACKNUM, TRACK)" \
+                "VALUES (%s, %s, %i, %s);",artist, \
+                                     	  album, \
+                                      	  trackNum, \
+    								      trackName);
                 
     rc = sqlite3_exec(db, sql2, callback, 0, &error);
                 
     free(sql2);
 
-    /* Only checks the last command */
+    /* Error check, only checks the last command */
     database_general_error(rc, error, 2);
 
     /* Create SQL statement, view data */
