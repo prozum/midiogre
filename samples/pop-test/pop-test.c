@@ -18,8 +18,10 @@ int main(void){
     max_p = 10000;
 
     for(fingerprint = 1; fingerprint <= 21; fingerprint++) {
-        score = song_score(plays, timestamp, min_p, max_p, fingerprint);
-        printf("%f\n",score);
+        if(score > 0) {
+            score = song_score(plays, timestamp, min_p, max_p, fingerprint);
+            printf("%f\n",score);
+        }
     }
 
     return 0;
