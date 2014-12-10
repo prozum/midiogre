@@ -3,21 +3,11 @@ add_subdirectory(lib)
 
 # Main Program 
 if(MAIN)
-    # Convert resources to c
-    add_custom_target(GenerateRessources
-                      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/res/
-                      COMMAND ${GLIB_COMPILE_RESOURCES} --generate-source --target=${CMAKE_CURRENT_SOURCE_DIR}/midiogre-res.c midiogre.gresource.xml)
     
     # Compile
     add_executable(midiogre
-        midiogre-main.c
-        midiogre-app.c
-        midiogre-window.c
-        midiogre-res.c
-        midiogre-mid.c)
+        midiogre.c)
 
-    add_dependencies(midiogre GenerateRessources)
-    
     # Link
     target_link_libraries(midiogre
                           mid
