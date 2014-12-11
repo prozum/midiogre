@@ -84,7 +84,7 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
 
     char *tmp;
 
-    while ((hFind = FindNextFile(folder_addr, &file)) =! 0) {
+    while ((hFind = FindNextFile(folder_addr, &file)) != 0) {
 
        /* Don't try to open hidden or previous folders */
        if (file.cFileName[0] != '.') {
