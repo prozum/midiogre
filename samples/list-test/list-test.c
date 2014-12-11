@@ -7,7 +7,7 @@
 
 #define BYTES_PER_LINE 16
 
-int main( int argc, char *argv[] )
+int main(int argc, char *argv[])
 {
     FILE *mid_file;
     list_t *data,*sliced_data;
