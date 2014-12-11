@@ -90,11 +90,11 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
            /* If folder */
            if (file->d_type == DT_DIR) {
 
-               asprintf(&tmp, "%s/%s", folder_addr, file->d_name);
+               tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
                g_print("folder: %s\n", tmp);
 
                folder_handler(tmp, mid_addrs);
-               free(tmp);
+               g_free(tmp);
 
                g_print("folder: %s\n",folder_addr);
 
@@ -103,7 +103,7 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
 
                /* Check if file have ".mid" extention */
                if (strcmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0) {
-                   asprintf(&tmp, "%s/%s", folder_addr, file->d_name);
+                   tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
 
                    /* Add address to mid_addr */
                    list_append(mid_addrs, tmp);
