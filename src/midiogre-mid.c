@@ -84,7 +84,7 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
 
     char *tmp;
 
-    if (hFind = FindFirstFile(folder_addr, &file)) == INVALID_HANDLE_VALUE) {
+    if ((hFind = FindFirstFile(folder_addr, &file)) == INVALID_HANDLE_VALUE) {
 
         if (GetLastError() == ERROR_FILE_NOT_FOUND) {
 
