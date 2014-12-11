@@ -129,7 +129,6 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
 
    }
 
-
    if (FindClose(hFind) < 0) {
 
        return -1;
@@ -179,7 +178,6 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
            }
        }
    }
-
 
    if (closedir(directory) < 0) {
 

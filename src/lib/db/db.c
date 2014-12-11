@@ -1,5 +1,7 @@
 #include "db.h"
 
+#include <mid/mid.h>
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -29,27 +31,105 @@ int database_open_error (int rc, sqlite3 *db)
     }
 }
 
-int database_general_error (int rc, char *error, int type) {
+int database_general_error (int rc, char *error, int type)
+{
+
     if (rc != SQLITE_OK) {
+
         fprintf(stderr, "SQL error: %s\n", error);
         sqlite3_free(error);
         return -1;
 
     }
+
     switch(type) {
+
         case 1:
             fprintf(stdout, "Table created successfully\n");
             break;
+
         case 2:
             fprintf(stdout, "Table created successfully\n");
             break;
+
         case 3:
             fprintf(stdout, "Data selected successfully\n");
             break;
+
         default:
-        	fprintf(stdout, "The operation completed successfully, no idea which though\n");
+            fprintf(stdout, "The operation completed successfully, no idea which though\n");
     }
+
     return 0;
+}
+
+int db_init(sqlite3 *db)
+{
+    char *sql, *error = 0;
+    int rc;
+
+    /* Write database structure */
+    sql = "CREATE TABLE IF NOT EXISTS midiFile ("          \
+          "ARTIST                  VARCHAR(32),"   \
+          "ALBUM                   VARCHAR(32),"   \
+          "TRACKNUM        UNSIGNED INT,"   \
+          "TRACK                   VARCHAR(32),"   \
+          "Fp1       		UNSIGNED INT,"   \
+          "Fp2                   UNSIGNED INT,"   \
+          "Fp3                   UNSIGNED INT,"   \
+          "UploadTime             UNSIGNED INT);";
+
+    /* Execute SQL statement */
+    rc = sqlite3_exec(db, sql, callback, 0, &error);
+
+    /* Table error check */
+    database_general_error(rc, error, 1);
+
+    return rc;
+}
+
+int db_import_mid(sqlite3 *db, char *mid_addr)
+{
+    FILE * mid_file;
+    mid_t *mid;
+
+    char *sql, *error = 0;
+    int rc;
+
+    char artist[32];
+    char album[32];
+    char track_name[32];
+    int  track_num;
+
+    /* Open mid file */
+    if ((mid_file = fopen(mid_addr, "rb")) == NULL) {
+
+        perror(mid_addr);
+        return -1;
+    }
+
+    /* Read midi content */
+    if ((mid = read_mid(mid_file)) == NULL) {
+
+        fprintf(stderr, "Could not read mid!\n");
+        fclose(mid_file);
+        return -1;
+    }
+    fclose(mid_file);
+
+    /* Exec data import */
+    parse_filename(mid_addr, artist, album, &track_num, track_name);
+    sql = g_strdup_printf("INSERT INTO midiFile (ARTIST, ALBUM, TRACKNUM, TRACK) VALUES ('%s', '%s', %d, '%s');",
+                                          artist,
+                                          album,
+                                          track_num,
+                                          track_name);
+
+    rc = sqlite3_exec(db, sql, callback, 0, &error);
+    free(sql);
+
+    database_general_error(rc, error, 2);
+    return rc;
 }
 
 /* Parse file name for song data */
