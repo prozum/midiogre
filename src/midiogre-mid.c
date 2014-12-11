@@ -82,16 +82,23 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
     WIN32_FIND_DATA file;
     HANDLE hFind;
 
+    DWORD error;
+
     char *tmp;
 
     if ((hFind = FindFirstFile(folder_addr, &file)) == INVALID_HANDLE_VALUE) {
 
-        if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+        if ((error = GetLastError()) == ERROR_FILE_NOT_FOUND) {
 
             g_print("win: folder not found: %s\n", folder_addr);
 
-            return -1;
+        } else {
+
+            g_print("win: unknown error %d: %s\n", error, folder_addr);
+
         }
+
+        return -1;
     }
 
     while (FindNextFile(hFind, &file) != 0) {
