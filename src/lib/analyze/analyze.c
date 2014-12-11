@@ -13,10 +13,14 @@ f_prn_t *finger_prn_gen(track_t *track)
     channel_t *channels;
     f_prn_t *finger_prns;
 
+    /* extract channels and notes */
     channels = channel_extract(track);
+    /* run skyline algorithm on the channels */
     skyline(channels);
+    /* rank the channels */
     top_rank(channels);
 
+    /* find the fingerprints */
     finger_prns = finger_prn_extract(channels);
 
     for (i = 0; i < CHANNELS; i++) {
@@ -44,6 +48,7 @@ channel_t *channel_extract(track_t *track)
         channels[i].dist = 0;
     }
 
+    /* extract notes into channels */
     list_set(track->events, 0, 0, LIST_BEG);
     while ((event = list_next(track->events)) != NULL) {
 
@@ -88,6 +93,7 @@ void calc_euclid_chan_dist(channel_t *channels)
 
     norm_histogram = calc_norm_histogram(chan_histogram, channels);
 
+    /* calculates the Euclidean distance for all the channels */
     for (i = 0; i < CHANNELS; i++) {
         if (channels[i].notes) {
 
@@ -140,6 +146,7 @@ f_prn_t *finger_prn_extract(channel_t *channels)
     f_prn = malloc(sizeof(f_prn_t *) * TOP_CHANNELS);
     f_prns = calloc(TOP_CHANNELS, sizeof(uint32_t));
 
+    /* find how many fingerprints for each top channel and extract the fingerprints */
     for (i = 0; i < TOP_CHANNELS; i++) {
         if (channels[i].notes) {
             f_prns[i] = finger_prn_extract_inner(channels[i].note, channels[i].notes, f_prn, i);
@@ -148,6 +155,7 @@ f_prn_t *finger_prn_extract(channel_t *channels)
         }
     }
 
+    /* if there are more than 3 fingerprints, pick them, else return NULL */
     if (f_prns[0] + f_prns[1] + f_prns[2] >= FINGER_PRNS) {
         ret_f_prn = finger_prn_pick(f_prn, f_prns);
     } else {
@@ -183,28 +191,29 @@ uint32_t finger_prn_extract_inner(note_t *note, uint32_t notes, f_prn_t **f_prn,
     semitone = freq_semitone(chan);
 
     f_prns = 0;
-
     f_prn[pos] = malloc(sizeof(f_prn_t) * chan->semitones[semitone]);
 
     for (i = 0; i < chan->semitones[semitone]; i++) {
         f_prn[pos][i].f_prn = calloc(FINGER_PRN_LEN, sizeof(uint8_t));
     }
 
- 
+    /* extract the fingerprints */ 
     for (i = 0; i < notes; i++) {
         if (note[i].pitch % SEMITONES == semitone && i >= 3 && i + 3 <= notes) {
             for (j = 0 ; j < FINGER_PRN_LEN; j++ ) {
                 f_prn[pos][f_prns].f_prn[j] = note[i-3].pitch % SEMITONES;
                 i++;
             }
-
             f_prns++;
         }
     }
 
+    /* calculate the fingerprint distances */
     calc_f_prn_dist(f_prn[pos], f_prns);
+    /* sort according to the fingerprint distances */
     qsort((void *)f_prn[pos], f_prns, sizeof(f_prn_t), compar_f_prn_dist);
 
+    /* some of the alloced space might not be used so add the space alloced to the f_prns */
     f_prns += (chan->semitones[semitone] - f_prns);
 
     free(chan->semitones);
@@ -238,6 +247,7 @@ void calc_f_prn_dist(f_prn_t *f_prn, uint32_t f_prns)
     uint32_t i;
     uint8_t j;
 
+    /* calculates the Euclidean distance for a set of fingerprints */
     if (f_prns) {
         f_prn_histogram = calc_f_prn_histogram(f_prn, f_prns);
         f_prn_norm_histogram = calc_f_prn_norm_histogram(f_prn_histogram, f_prns);
@@ -274,7 +284,7 @@ histogram_t *calc_f_prn_histogram(f_prn_t *f_prn, uint32_t f_prns)
         f_prn_histogram[i].semitones = calloc(SEMITONES, sizeof(double));
     }
 
-
+    /* calculate fingerprint histogram */
     for (i = 0; i < f_prns; i++) {
         for (j = 0; j < FINGER_PRN_LEN; j++) {
             semitone = f_prn[i].f_prn[j] % SEMITONES;
@@ -294,6 +304,7 @@ histogram_t *calc_f_prn_norm_histogram(histogram_t *f_prn_histogram, uint32_t f_
     f_prn_norm_histogram = malloc(sizeof(histogram_t));
     f_prn_norm_histogram->semitones = calloc(SEMITONES, sizeof(double));
 
+    /* calculate normalized histogram for a set of fingerprints */
     if (f_prns) {
         for (i = 0; i < SEMITONES; i++) {
             for (j = 0; j < f_prns; j++) {
@@ -332,12 +343,10 @@ int compar_f_prn_dist(const void *a, const void *b)
 
 f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
 {
-    uint32_t i, j;
-    uint8_t f_prns_ret;
+    uint32_t i, j, k;
     f_prn_t *f_prn_ret;
 
     f_prn_ret = malloc(sizeof(f_prn_t) * FINGER_PRNS);
-    f_prns_ret = 0;
 
     for (i = 0; i < FINGER_PRNS; i++) {
         f_prn_ret[i].f_prn = calloc(FINGER_PRN_LEN, sizeof(uint8_t));
@@ -345,11 +354,13 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
 
     i = 0;
     j = 0;
+    k = 0;
 
-    while (f_prns_ret < 3) {
+    /* picking fingerprints */
+    while (k < 3) {
         if (f_prns[i]) {
-            memcpy((void *)f_prn_ret[j].f_prn, (void *)f_prn[i][j].f_prn, sizeof(uint8_t) * FINGER_PRN_LEN);
-            f_prns_ret++;
+            memcpy((void *)f_prn_ret[k].f_prn, (void *)f_prn[i][j].f_prn, sizeof(uint8_t) * FINGER_PRN_LEN);
+            k++;
             i++;
         } else if (i == 3){
             j++;
@@ -369,6 +380,7 @@ uint32_t note_off_time(list_t *events, uint32_t position)
 
     event_cur = list_index(events, position);
 
+    /* find the time before the note_off event activates */
     for (i = position; i < events->n; i++) {
 
         event = list_index(events, i);
@@ -394,6 +406,7 @@ histogram_t *calc_chan_histogram(note_t *note, uint32_t notes)
     chan_histogram = malloc(sizeof(histogram_t));
     chan_histogram->semitones = calloc(SEMITONES, sizeof(double));
 
+    /* calculate channel histogram */
     if (notes) { 
         for (i = 0; i < notes; i++) {
             semitone = note[i].pitch % SEMITONES;
@@ -415,17 +428,20 @@ histogram_t *calc_norm_histogram(histogram_t **chan_histogram, channel_t *channe
     norm_histogram = malloc(sizeof(histogram_t));
     norm_histogram->semitones = calloc(sizeof(double), SEMITONES);
 
+    /* count nonzero channels */
     for (i = 0; i < CHANNELS; i++) {
         if (channels[i].notes) {
             nonzero_channels++;
         }
     }
 
+    /* calculate the normalized histogram */
     for (i = 0; i < SEMITONES; i++) {
         for (j = 0; j < CHANNELS; j++) {
             norm_histogram->semitones[i] += chan_histogram[j]->semitones[i];
         }
 
+        /* divide by nonzero channels */
         norm_histogram->semitones[i] /= nonzero_channels;
     }
 
@@ -441,6 +457,7 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
 
     dist = malloc(sizeof(uint8_t) * FINGER_PRNS);
 
+    /* calculate the distance for all possible combinations */
     dist[0] = lev_dist(f_prn1[0].f_prn, f_prn2[0].f_prn) +
               lev_dist(f_prn1[1].f_prn, f_prn2[1].f_prn) +
               lev_dist(f_prn1[2].f_prn, f_prn2[2].f_prn);
@@ -454,6 +471,7 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
               lev_dist(f_prn1[0].f_prn, f_prn2[2].f_prn);
 
 
+    /* choose the shortest distance */
     for (i = 1; i < FINGER_PRNS; i++) {
         if (dist[0] > dist[i]) {
             dist[0] = dist[i];
