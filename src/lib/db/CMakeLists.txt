@@ -3,6 +3,7 @@ add_library(db
 
 target_link_libraries(db
 	mid
+	ext
 	${SQLITE3_LIBRARIES}
 	
 )
