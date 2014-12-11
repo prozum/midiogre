@@ -43,18 +43,16 @@ int main( int argc, char *argv[] )
 
     i = finger_prn_cmp(finger_prints1, finger_prints2);
 
-    printf("TEST RESULTS:\n%d\n", i);
+    printf("TEST RESULTS:\n%d\nFingerprints for first argument\n\n", i);
 
-
-/*
     for (i = 0; i < FINGER_PRNS; i++) {
         for (j = 0; j < FINGER_PRN_LEN; j++) {
-            printf("%d ", finger_prints[i].f_prn[j]);
+            printf("%d ", finger_prints1[i].f_prn[j]);
         }
 
         printf("\n");
     }
-*/
+
     putchar('\n');
 
     putchar('\n');
