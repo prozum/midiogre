@@ -49,7 +49,7 @@ int database_general_error (int rc, char *error, int type)
             break;
 
         case 2:
-            fprintf(stdout, "Table created successfully\n");
+            fprintf(stdout, "Table changed successfully\n");
             break;
 
         case 3:
@@ -72,11 +72,12 @@ int db_init(sqlite3 *db)
     sql = "CREATE TABLE IF NOT EXISTS midiFile ("          \
           "ARTIST                  VARCHAR(32),"   \
           "ALBUM                   VARCHAR(32),"   \
-          "TRACKNUM        UNSIGNED INT,"   \
+          "TRACKNUM               UNSIGNED INT,"   \
           "TRACK                   VARCHAR(32),"   \
-          "Fp1       		UNSIGNED INT,"   \
-          "Fp2                   UNSIGNED INT,"   \
-          "Fp3                   UNSIGNED INT,"   \
+          "INSTRUMENTS            UNSIGNED INT,"   \
+          "Fp1                         CHAR(7),"   \
+          "Fp2                         CHAR(7),"   \
+          "Fp3                         CHAR(7),"   \
           "UploadTime             UNSIGNED INT);";
 
     /* Execute SQL statement */
@@ -129,33 +130,30 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     free(sql);
 
     database_general_error(rc, error, 2);
+
     return rc;
 }
 
 /* Parse file name for song data */
-void parse_filename (char *file_name, char *artist, char *album, int *trackNum, char *trackName)
+void parse_filename (char *file_name, char *artist, char *album, int *track_num, char *track_name)
 {
     char *file_pnt;
 
-    file_pnt = basename(file_name); /* Removes file path */
+    /* Removes file path */
+    file_pnt = basename(file_name);
 
     if (strchr(file_pnt,'-') != NULL) {
 
-        sscanf(file_pnt, "%[^-]- %[^-]- %d- %s", artist, album, trackNum, trackName);
+        sscanf(file_pnt, "%[^-]- %[^-]- %d- %s", artist, album, track_num, track_name);
 
     } else {
 
-        strcpy(trackName, file_pnt);
+        strcpy(track_name, file_pnt);
         strcpy(artist, "N/A");
         strcpy(album, "N/A");
-        *trackNum=0;
+        *track_num=0;
     }
 
     /* Removes file extension from last string */
-    trackName[strlen(trackName)-4]=0;
-
-    printf("%s\n\n", artist);
-    printf("%s\n\n", album);
-    printf("%d\n\n", *trackNum);
-    printf("%s\n\n", trackName);
+    track_name[strlen(track_name)-4] = '\0';
 }

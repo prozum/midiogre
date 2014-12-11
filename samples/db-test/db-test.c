@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     rc = sqlite3_open("mid.db", &db);
 
     /* Database open error check */
-	database_open_error(rc, db);
+    database_open_error(rc, db);
 
     /* Write table structure */
     db_init(db);
@@ -33,9 +33,9 @@ int main(int argc, char* argv[])
 
     database_general_error(rc, error, 3);
 
-	*/
-	
-    sqlite3_close(db);    
+    */
+
+    sqlite3_close(db);
  
     return 0;
 }

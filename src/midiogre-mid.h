@@ -6,7 +6,7 @@
 #include <gtk/gtk.h>
 
 int mid_handler(char* mid_addr, list_t *mid_addrs);
-int folder_handler(char* folder_addr, list_t *mid_addrs);
+int folder_handler(char* folder_addr, GQueue *mid_addrs);
 
 void folder_chooser(GtkWindow *window);
 

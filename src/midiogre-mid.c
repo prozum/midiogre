@@ -3,6 +3,7 @@
 #include "midiogre-mid.h"
 
 #include <list/list.h>
+#include <db/db.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -15,11 +16,15 @@
 #include <dirent.h>
 #endif
 
-int mid_import(GtkWindow *window, list_t *mid_addrs)
+int mid_import(GtkWindow *window, GQueue *mid_addrs)
 {
     GtkWidget *dialog;
     GtkWidget *content_area;
     GtkWidget *progress_bar;
+
+    sqlite3 *db;
+
+    int n,i = 0;
 
     char *mid_addr;
     char *tmp;
@@ -43,7 +48,14 @@ int mid_import(GtkWindow *window, list_t *mid_addrs)
 
     gtk_widget_show(GTK_WIDGET(dialog));
 
-    if (mid_addrs->n == 0) {
+    /* Open db */
+    sqlite3_open("mid.db", &db);
+    db_init(db);
+
+    /* Get number of mid addrs */
+    n = g_queue_get_length(mid_addrs);
+
+    if (n == 0) {
 
         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), 1);
 
@@ -53,31 +65,41 @@ int mid_import(GtkWindow *window, list_t *mid_addrs)
 
     } else {
 
-        while ((mid_addr = list_next(mid_addrs)) != NULL ) {
+        while ((mid_addr = g_queue_pop_head(mid_addrs)) != NULL) {
 
-            gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), (mid_addrs->i - 1) / mid_addrs->n);
 
-            tmp = g_strdup_printf("%ld of %ld mid files imported...", mid_addrs->i - 1, mid_addrs->n);
+            /* Update progress bar */
+            gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), i / n);
+
+            /* Update progress bar text */
+            tmp = g_strdup_printf("%d of %d mid files imported...", i, n);
             gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), tmp);
             g_free(tmp);
 
-            /* Add clever function to handle mid file here! */
+            /* Clever function to handle mid file here! */
+            db_import_mid(db, mid_addr);
 
+            g_print("Import %s", mid_addr);
+            g_free(mid_addr);
+
+            i++;
         }
 
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), mid_addrs->i / mid_addrs->n);
+        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), 1);
 
-        tmp = g_strdup_printf("%ld of %ld mid files imported...", mid_addrs->i, mid_addrs->n);
+        tmp = g_strdup_printf("%d of %d mid files imported...", i, n);
         gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), tmp);
         g_free(tmp);
 
     }
 
+    sqlite3_close(db);
+
     return 0;
 }
 
 #ifdef WIN32
-int folder_handler(char* folder_addr, list_t *mid_addrs)
+int folder_handler(char* folder_addr, GQueue *mid_addrs)
 {
     WIN32_FIND_DATA file;
     HANDLE hFind;
@@ -122,7 +144,7 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
                tmp = g_strdup_printf("%s/%s", folder_addr, file.cFileName);
 
                /* Add address to mid_addr */
-               list_append(mid_addrs, tmp);
+               g_queue_push_tail(mid_addrs, tmp);
 
            }
        }
@@ -137,7 +159,7 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
    return 0;
 }
 #else
-int folder_handler(char* folder_addr, list_t *mid_addrs)
+int folder_handler(char* folder_addr, GQueue *mid_addrs)
 {
     DIR *directory = NULL;
     struct dirent *file;
@@ -172,7 +194,7 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
                    tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
 
                    /* Add address to mid_addr */
-                   list_append(mid_addrs, tmp);
+                   g_queue_push_tail(mid_addrs, tmp);
 
                }
            }
@@ -196,7 +218,7 @@ void folder_chooser(GtkWindow *window)
     gint res;
     char *folder_addr = NULL;
 
-    list_t *mid_addrs;
+    GQueue *mid_addrs = NULL;
 
     dialog = gtk_file_chooser_dialog_new("Pick a Folder",
                                          window,
@@ -217,11 +239,13 @@ void folder_chooser(GtkWindow *window)
         g_print("dialog: folder: %s\n",folder_addr);
 
         /* Create list to store mid files adresses */
-        mid_addrs = list_create(0, sizeof(char *));
+        mid_addrs = g_queue_new();
 
+        /* Find mid files in folder_addr */
         folder_handler(folder_addr, mid_addrs);
         g_free(folder_addr);
 
+        /* Import mid files */
         mid_import(window, mid_addrs);
 
     }
