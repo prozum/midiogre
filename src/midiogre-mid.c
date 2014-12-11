@@ -107,7 +107,11 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
 
     DWORD error;
 
-    char *tmp;
+    char *tmp, *folder_addr_fixed;
+
+
+    folder_addr_fixed = g_strdup_printf("%s\\*", folder_addr);
+
 
     if ((hFind = FindFirstFile(folder_addr, &file)) == INVALID_HANDLE_VALUE) {
 
@@ -124,12 +128,12 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
         return -1;
     }
 
-    while (FindNextFile(hFind, &file) != 0) {
-
+    do
+    {
        /* If folder */
        if (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 
-           tmp = g_strdup_printf("%s/%s", folder_addr, file.cFileName);
+           tmp = g_strdup_printf("%s\\%s", folder_addr, file.cFileName);
            g_print("win: next folder: %s\n", tmp);
 
            folder_handler(tmp, mid_addrs);
@@ -137,27 +141,23 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
 
            g_print("win: back folder: %s\n",folder_addr);
 
-       /* If file */
-       } else {
+       /* If file with ".mid" extention */
+       } else if (strcmp(file.cFileName + strlen(file.cFileName) - 4, ".mid") == 0) {
 
-           /* Check if file have ".mid" extention */
-           if (strcmp(file.cFileName + strlen(file.cFileName) - 4, ".mid") == 0) {
-               tmp = g_strdup_printf("%s/%s", folder_addr, file.cFileName);
+           tmp = g_strdup_printf("%s\\%s", folder_addr, file.cFileName);
 
-               /* Add address to mid_addr */
-               g_queue_push_tail(mid_addrs, tmp);
-
-           }
+           /* Add address to mid_addr */
+           g_queue_push_tail(mid_addrs, tmp);
        }
 
-   }
+    }
+    while (FindNextFile(hFind, &file) != 0);
 
-   if (FindClose(hFind) < 0) {
+    /* Cleanup */
+    g_free(folder_addr_fixed);
+    FindClose(hFind);
 
-       return -1;
-   }
-
-   return 0;
+    return 0;
 }
 #else
 int folder_handler(char* folder_addr, GQueue *mid_addrs)
@@ -187,17 +187,14 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
 
                g_print("unix: back folder: %s\n",folder_addr);
 
-           /* If file */
-           } else {
+           /* If file with ".mid" extention */
+           } else if (strcmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0) {
 
-               /* Check if file have ".mid" extention */
-               if (strcmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0) {
-                   tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
+               tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
 
-                   /* Add address to mid_addr */
-                   g_queue_push_tail(mid_addrs, tmp);
+               /* Add address to mid_addr */
+               g_queue_push_tail(mid_addrs, tmp);
 
-               }
            }
        }
    }
