@@ -95,12 +95,12 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
            if (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 
                tmp = g_strdup_printf("%s/%s", folder_addr, file.cFileName);
-               g_print("folder: %s\n", tmp);
+               g_print("next folder: %s\n", tmp);
 
                folder_handler(tmp, mid_addrs);
                g_free(tmp);
 
-               g_print("folder: %s\n",folder_addr);
+               g_print("back folder: %s\n",folder_addr);
 
            /* If file */
            } else {
