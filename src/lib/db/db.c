@@ -77,10 +77,12 @@ int db_init(sqlite3 *db)
           "TRACKNUM               UNSIGNED INT,"   \
           "TRACK                   VARCHAR(32),"   \
           "INSTR_CLASSES          UNSIGNED INT,"   \
+          "LENGTH                 UNSIGNED INT,"   \
           "Fp1                         CHAR(7),"   \
           "Fp2                         CHAR(7),"   \
           "Fp3                         CHAR(7),"   \
-          "UploadTime             UNSIGNED INT);";
+          "PLAYS                      UNSIGNED,"   \
+          "UPLOADTIME             UNSIGNED INT);";
 
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &error);
