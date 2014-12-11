@@ -26,6 +26,8 @@ double song_score(unsigned int views, unsigned int upload_time, unsigned int min
         return 0;
     } else if(fingerprint > MAX_FINGERPPRINT) {
         return 0;
+    } else if(fingerprint == 0) {
+        return 0;
     } else if(views > MAX_VIEWS) {
         return 0;
     }
@@ -34,7 +36,7 @@ double song_score(unsigned int views, unsigned int upload_time, unsigned int min
 
     view_rating = max_view - views;
 
-    score = (view_rating)*((21-fingerprint)/log2(fingerprint+1))/log2((double)age);
+    score = ((view_rating)*((21-fingerprint)/log2(fingerprint+1))/log2((double)age))/100;
 
     return score;
 
