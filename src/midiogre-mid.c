@@ -84,7 +84,15 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
 
     char *tmp;
 
-    hFind = FindFirstFile(folder_addr, &file);
+    if (hFind = FindFirstFile(folder_addr, &file)) == INVALID_HANDLE_VALUE) {
+
+        if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+
+            g_print("win: folder not found: %s\n", folder_addr);
+
+            return -1;
+        }
+    }
 
     while (FindNextFile(hFind, &file) != 0) {
 
@@ -201,8 +209,7 @@ void folder_chooser(GtkWindow *window)
 
         folder_addr = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
 
-        g_print("folder: %s\n",folder_addr);
-
+        g_print("dialog: folder: %s\n",folder_addr);
 
         /* Create list to store mid files adresses */
         mid_addrs = list_create(0, sizeof(char *));
