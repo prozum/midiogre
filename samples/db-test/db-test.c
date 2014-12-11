@@ -51,10 +51,10 @@ int main(int argc, char* argv[])
 
     /* Write database structure */
     sql = "CREATE TABLE midiFile("          \
-          "ARTIST                  CHAR,"   \
-          "ALBUM                   CHAR,"   \
+          "ARTIST                  VARCHAR(32),"   \
+          "ALBUM                   VARCHAR(32),"   \
           "TRACKNUM        UNSIGNED INT,"   \
-          "TRACK                   CHAR,"   \
+          "TRACK                   VARCHAR(32),"   \
           "Fp1       		UNSIGNED INT,"   \
           "Fp2                   UNSIGNED INT,"   \
           "Fp3                   UNSIGNED INT,"   \
@@ -71,7 +71,13 @@ int main(int argc, char* argv[])
                                       mid->track[i].event[j].byte_2, \
                                       mid->track[i].event[j].delta);
 	*/
-    sql2 = g_strdup_printf("INSERT INTO midiFile(ARTIST, ALBUM, TRACKNUM, TRACK) VALUES (%s, %s, %d, %s);",
+
+	printf("%s\n\n", artist);
+    printf("%s\n\n", album);
+    printf("%d\n\n", trackNum);
+    printf("%s\n\n", trackName);
+
+    sql2 = g_strdup_printf("INSERT INTO midiFile (ARTIST, ALBUM, TRACKNUM, TRACK) VALUES ('%s', '%s', %d, '%s');",
                                           artist,
                                           album,
                                           trackNum,

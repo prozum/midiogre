@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <libgen.h>
 
 #include <sqlite3.h>
 
@@ -57,7 +58,7 @@ void parse_filename (char *file_name, char *artist, char *album, int *trackNum, 
     char *file_pnt;
     file_pnt = basename(file_name); /* Removes file path */
 
-    if (strchr(file_pnt,'-')!=NULL) {
+    if (strchr(file_pnt,'-') != NULL) {
         sscanf(file_pnt, "%[^-]- %[^-]- %d- %s",artist,album,trackNum,trackName);
     } else {
         trackName=file_pnt; artist="N/A"; album="N/A"; *trackNum=0;
