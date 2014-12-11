@@ -76,10 +76,11 @@ int mid_import(GtkWindow *window, GQueue *mid_addrs)
             gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), tmp);
             g_free(tmp);
 
+            g_print("Import mid: %s\n", mid_addr);
+
             /* Clever function to handle mid file here! */
             db_import_mid(db, mid_addr);
 
-            g_print("Import %s", mid_addr);
             g_free(mid_addr);
 
             i++;

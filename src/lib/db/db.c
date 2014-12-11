@@ -92,7 +92,7 @@ int db_init(sqlite3 *db)
 int db_import_mid(sqlite3 *db, char *mid_addr)
 {
     FILE * mid_file;
-    mid_t *mid;
+    mid_t *mid, *mid_tmp;
 
     char *sql, *error = 0;
     int rc;
@@ -110,13 +110,21 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     }
 
     /* Read midi content */
-    if ((mid = read_mid(mid_file)) == NULL) {
+    if ((mid_tmp = read_mid(mid_file)) == NULL) {
 
-        fprintf(stderr, "Could not read mid!\n");
+        g_print("Could not read mid!\n");
         fclose(mid_file);
         return -1;
     }
     fclose(mid_file);
+
+    /* Merge mid tracks */
+    mid = merge_tracks(mid_tmp);
+
+
+
+    free_mid(mid);
+    free_mid(mid_tmp);
 
     /* Exec data import */
     parse_filename(mid_addr, artist, album, &track_num, track_name);
@@ -142,18 +150,19 @@ void parse_filename (char *file_name, char *artist, char *album, int *track_num,
     /* Removes file path */
     file_pnt = basename(file_name);
 
-    if (strchr(file_pnt,'-') != NULL) {
+    /* Removes file extension from last string */
+    file_pnt[strlen(file_pnt)-4] = '\0';
 
-        sscanf(file_pnt, "%[^-]- %[^-]- %d- %s", artist, album, track_num, track_name);
-
-    } else {
+    if (4 != sscanf(file_pnt, "%[^-]- %[^-]- %d- %s",
+                    artist,
+                    album,
+                    track_num,
+                    track_name)) {
 
         strcpy(track_name, file_pnt);
         strcpy(artist, "N/A");
         strcpy(album, "N/A");
-        *track_num=0;
+        *track_num = 0;
     }
 
-    /* Removes file extension from last string */
-    track_name[strlen(track_name)-4] = '\0';
 }
