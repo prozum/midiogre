@@ -37,7 +37,12 @@ int main(int argc, char* argv[])
     trackNum= malloc(sizeof(int));
     */
 
-    parse_filename(argv[1], (char *)&artist, (char *)&album, &trackNum, (char *)&trackName);
+    parse_filename(argv[1], artist, album, &trackNum, trackName);
+
+    printf("%s\n\n", artist);
+    printf("%s\n\n", album);
+    printf("%d\n\n", trackNum);
+    printf("%s\n\n", trackName);
 
     /* Read midi content */
     mid = read_mid(file);
