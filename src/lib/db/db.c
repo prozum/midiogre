@@ -13,8 +13,8 @@ int callback(void *data, int argc, char **argv, char **azColName)
     for(i = 0; i < argc; i++) {
         printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
     }
+    puts("");
 
-    printf("\n");
     return 0;
 }
 
