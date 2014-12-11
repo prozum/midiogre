@@ -88,33 +88,30 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
 
     while (FindNextFile(hFind, &file) != 0) {
 
-       /* Don't try to open hidden or previous folders */
-       if (file.cFileName[0] != '.') {
+       /* If folder */
+       if (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 
-           /* If folder */
-           if (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+           tmp = g_strdup_printf("%s/%s", folder_addr, file.cFileName);
+           g_print("win: next folder: %s\n", tmp);
 
+           folder_handler(tmp, mid_addrs);
+           g_free(tmp);
+
+           g_print("win: back folder: %s\n",folder_addr);
+
+       /* If file */
+       } else {
+
+           /* Check if file have ".mid" extention */
+           if (strcmp(file.cFileName + strlen(file.cFileName) - 4, ".mid") == 0) {
                tmp = g_strdup_printf("%s/%s", folder_addr, file.cFileName);
-               g_print("next folder: %s\n", tmp);
 
-               folder_handler(tmp, mid_addrs);
-               g_free(tmp);
+               /* Add address to mid_addr */
+               list_append(mid_addrs, tmp);
 
-               g_print("back folder: %s\n",folder_addr);
-
-           /* If file */
-           } else {
-
-               /* Check if file have ".mid" extention */
-               if (strcmp(file.cFileName + strlen(file.cFileName) - 4, ".mid") == 0) {
-                   tmp = g_strdup_printf("%s/%s", folder_addr, file.cFileName);
-
-                   /* Add address to mid_addr */
-                   list_append(mid_addrs, tmp);
-
-               }
            }
        }
+
    }
 
 
@@ -146,12 +143,12 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
            if (file->d_type == DT_DIR) {
 
                tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
-               g_print("folder: %s\n", tmp);
+               g_print("unix: next folder: %s\n", tmp);
 
                folder_handler(tmp, mid_addrs);
                g_free(tmp);
 
-               g_print("folder: %s\n",folder_addr);
+               g_print("unix: back folder: %s\n",folder_addr);
 
            /* If file */
            } else {
