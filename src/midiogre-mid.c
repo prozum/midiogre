@@ -8,7 +8,12 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
+
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <dirent.h>
+#endif
 
 int mid_import(GtkWindow *window, list_t *mid_addrs)
 {
@@ -71,6 +76,54 @@ int mid_import(GtkWindow *window, list_t *mid_addrs)
     return 0;
 }
 
+#ifdef WIN32
+int folder_handler(char* folder_addr, list_t *mid_addrs)
+{
+    WIN32_FIND_DATA file;
+    HANDLE hFind;
+
+    char *tmp;
+
+    while ((hFind = FindNextFile(folder_addr, &file)) =! 0) {
+
+       /* Don't try to open hidden or previous folders */
+       if (file->cFileName[0] != '.') {
+
+           /* If folder */
+           if (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+
+               tmp = g_strdup_printf("%s/%s", folder_addr, file->cFileName);
+               g_print("folder: %s\n", tmp);
+
+               folder_handler(tmp, mid_addrs);
+               g_free(tmp);
+
+               g_print("folder: %s\n",folder_addr);
+
+           /* If file */
+           } else {
+
+               /* Check if file have ".mid" extention */
+               if (strcmp(file->cFileName + strlen(file->cFileName) - 4, ".mid") == 0) {
+                   tmp = g_strdup_printf("%s/%s", folder_addr, file->cFileName);
+
+                   /* Add address to mid_addr */
+                   list_append(mid_addrs, tmp);
+
+               }
+           }
+       }
+   }
+
+
+   if (FindClose(hFind) < 0) {
+
+       return -1;
+   }
+
+   return 0;
+}
+#else
 int folder_handler(char* folder_addr, list_t *mid_addrs)
 {
     DIR *directory = NULL;
@@ -120,8 +173,10 @@ int folder_handler(char* folder_addr, list_t *mid_addrs)
    }
 
    return 0;
-
 }
+#endif
+
+
 
 void folder_chooser(GtkWindow *window)
 {
