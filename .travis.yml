@@ -27,7 +27,7 @@ script:
   - sudo make install
   - # TEST:
   - /usr/local/bin/info ~/build/prozum/midiogre/res/mid/test.mid
-  - /usr/local/bin/analyze-test ~/build/prozum/midiogre/res/mid/test.mid
+  - /usr/local/bin/analyze-test ~/build/prozum/midiogre/res/mid/bass.mid ~/build/prozum/midiogre/res/mid/bass.mid
 
 env:
   global:

@@ -1,10 +1,10 @@
-add_executable(exttest
-	exttest.c
+add_executable(ext-test
+	ext-test.c
 )
 
-target_link_libraries(exttest
+target_link_libraries(ext-test
 	ext
 	mid
 )
 
-install(TARGETS exttest DESTINATION bin)
+install(TARGETS ext-test DESTINATION bin)

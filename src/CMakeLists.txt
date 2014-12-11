@@ -6,11 +6,14 @@ if(MAIN)
     
     # Compile
     add_executable(midiogre
-        midiogre.c)
+        midiogre-main.c
+        midiogre-gui.c
+        midiogre-mid.c)
 
     # Link
     target_link_libraries(midiogre
                           mid
+                          list
                           ${GTK3_LIBRARIES})
     # Install
     install(TARGETS midiogre
