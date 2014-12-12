@@ -56,7 +56,7 @@ GtkWidget *window_init(void)
     return window;
 }
 
-GtkWidget *listbox_setup(GtkWidget *box)
+GtkWidget *listbox_new(GtkWidget *box)
 {
     GtkWidget *scrolled, *listbox;
 
@@ -67,16 +67,33 @@ GtkWidget *listbox_setup(GtkWidget *box)
 
     gtk_container_add (GTK_CONTAINER (scrolled), listbox);
 
-    gtk_box_pack_start (GTK_BOX(box), scrolled, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_CONTANER(box), scrolled, FALSE, FALSE, 0);
 
     return listbox;
 }
 
-/*
+
 song_t *song_new(void)
 {
     song_t *song;
 
+    strcpy(song->album, "Best Album");
+    strcpy(song->artist, "Worst Artist");
+    song->track_num = 1;
+    strcpy(song->title, "\"Midiogre\" TitleArtist");
+    song->length = 400;
+    song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    song->plays =500;
+    song->time_added = 100000;
+
     return song;
 }
-*/
+
+GtkListBox *song_row_new(song_t *song)
+{
+    GtkListBox* SongBox;
+
+
+    row->priv->song = song;
+}
+

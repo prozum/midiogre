@@ -23,6 +23,11 @@ int main(int argc, char *argv[])
     listbox3 = listbox_setup(box);
     gtk_widget_show_all(box);
 
+
+    /* Listbox add test row */
+    //gtk_container_add (GTK_CONTAINER (listbox), GTK_WIDGET (row));
+
+
     gtk_main();
 
     return 0;
