@@ -131,7 +131,7 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
     do
     {
        /* Don't try to open hidden or previous folders */
-       if (file->cFileName[0] != '.') {
+       if (file.cFileName[0] != '.') {
 
            /* If folder */
            if (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
