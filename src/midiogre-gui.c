@@ -3,6 +3,8 @@
 
 #include "pop/pop.h"
 
+#include <string.h>
+
 #include <gtk/gtk.h>
 
 GtkWidget *window_init(void)
@@ -67,7 +69,7 @@ GtkWidget *listbox_new(GtkWidget *box)
 
     gtk_container_add (GTK_CONTAINER (scrolled), listbox);
 
-    gtk_box_pack_start (GTK_CONTANER(box), scrolled, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_CONTAINER(box), scrolled, FALSE, FALSE, 0);
 
     return listbox;
 }
@@ -82,7 +84,7 @@ song_t *song_new(void)
     song->track_num = 1;
     strcpy(song->title, "\"Midiogre\" TitleArtist");
     song->length = 400;
-    song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    //song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     song->plays =500;
     song->time_added = 100000;
 
@@ -93,7 +95,6 @@ GtkListBox *song_row_new(song_t *song)
 {
     GtkListBox* SongBox;
 
-
-    row->priv->song = song;
+    //row->priv->song = song;
 }
 

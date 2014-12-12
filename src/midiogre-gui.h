@@ -1,6 +1,8 @@
 #ifndef __MIDIOGRE_GUI_H__
 #define __MIDIOGRE_GUI_H__
 
+#include <pop/pop.h>
+
 #include <gtk/gtk.h>
 
 #define GTK_TYPE_SONG_ROW              (gtk_song_row_get_type())

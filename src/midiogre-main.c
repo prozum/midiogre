@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
     gtk_container_add (GTK_CONTAINER (window), box);
 
     /* Add list boxes */
-    listbox1 = listbox_setup(box);
-    listbox2 = listbox_setup(box);
-    listbox3 = listbox_setup(box);
+    listbox1 = listbox_new(box);
+    listbox2 = listbox_new(box);
+    listbox3 = listbox_new(box);
     gtk_widget_show_all(box);
 
 
