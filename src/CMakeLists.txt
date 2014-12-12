@@ -12,9 +12,10 @@ if(MAIN)
 
     # Link
     target_link_libraries(midiogre
-                          mid
                           list
+                          mid
                           db
+                          pop
                           ${GTK3_LIBRARIES})
     # Install
     install(TARGETS midiogre
