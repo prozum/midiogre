@@ -315,11 +315,15 @@ list_t *list_sort(list_t *list, int(cmp)(const void *, const void *))
 list_t *list_dump_file(FILE *file)
 {
     list_t *list;
-    size_t n,rv;
+    size_t rv;
+    long int n;
 
     /* Count bytes in file*/
     fseek(file, 0, SEEK_END);
-    n = ftell(file);
+    if ((n = ftell(file)) < 0) {
+        fprintf(stderr, "Fseek failed!\n");
+        return NULL;
+    }
 
     /* Create byte list */
     list = list_create(n, sizeof(char));
