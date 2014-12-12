@@ -442,8 +442,6 @@ mid_t *merge_tracks(mid_t *mid) {
     track_new = list_index(mid_new->tracks, 0);
     track_new->events = list_create(n, sizeof(event_t));
 
-
-
     switch(mid->format) {
 
         case SINGLE_TRACK:
@@ -550,6 +548,7 @@ mid_t *merge_tracks(mid_t *mid) {
 
         /* TODO */
         case MULTI_TRACK_ASYNC:
+            free(mid_new);
             return NULL;
     }
     return NULL;
