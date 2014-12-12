@@ -113,15 +113,15 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
     folder_addr_fixed = g_strdup_printf("%s\\*", folder_addr);
 
 
-    if ((hFind = FindFirstFile(folder_addr, &file)) == INVALID_HANDLE_VALUE) {
+    if ((hFind = FindFirstFile(folder_addr_fixed, &file)) == INVALID_HANDLE_VALUE) {
 
         if ((error = GetLastError()) == ERROR_FILE_NOT_FOUND) {
 
-            g_print("win: folder not found: %s\n", folder_addr);
+            g_print("win: folder not found: %s\n", folder_addr_fixed);
 
         } else {
 
-            g_print("win: unknown error %d: %s\n", error, folder_addr);
+            g_print("win: unknown error %d: %s\n", error, folder_addr_fixed);
 
         }
 
