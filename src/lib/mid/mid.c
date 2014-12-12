@@ -120,7 +120,7 @@ int read_events(list_t *data, uint16_t division,  list_t *events)
 
         /* Calc total ticks
          * TODO: Take set tempo into account */
-        event->time = time_last + event->delta;
+        event->time = time_last + event->delta * (tempo/division);
         time_last = event->time;
 
     
