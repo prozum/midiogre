@@ -50,8 +50,8 @@ int song_compare(const void *s1, const void *s2) {
 
     double song1_score = 0, song2_score = 0;
 
-    song1_score = song_score(song1->Plays,song1->TimeAdded,0,MAX_PLAYS, finger_prn_arr_cmp(song1->Fingerprint, song1->Fingerprint));
-    song2_score = song_score(song2->Plays,song2->TimeAdded,0,MAX_PLAYS, finger_prn_arr_cmp(song2->Fingerprint, song2->Fingerprint));
+    song1_score = song_score(song1->plays,song1->time_added,0,MAX_PLAYS, finger_prn_arr_cmp(song1->fingerprint, song1->fingerprint));
+    song2_score = song_score(song2->plays,song2->time_added,0,MAX_PLAYS, finger_prn_arr_cmp(song2->fingerprint, song2->fingerprint));
 
     if(song1_score > song2_score) {
         return 1;

@@ -555,7 +555,7 @@ int skyline_compar(const void *a, const void *b)
     return note1->onset - note2->onset;
 }
 
-uint8_t finger_prn_arr_cmp(uint8_t finger_prn1[21], uint8_t finger_prn2[21])
+uint8_t finger_prn_arr_cmp(const uint8_t finger_prn1[21], const uint8_t finger_prn2[21])
 {
     uint8_t i, j;
     uint8_t dist;

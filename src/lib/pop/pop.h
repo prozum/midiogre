@@ -15,14 +15,14 @@ double song_score(unsigned int plays, unsigned int upload_time, unsigned int min
 int song_compare(const void *s1, const void *s2);
 
 typedef struct {
-    char Artist[64];
-    char Album[64];
-    char Title[64];
-    uint32_t TrackNum;
-    uint32_t Length;
-    uint32_t Plays;
-    uint8_t Fingerprint[21];
-    uint32_t TimeAdded;
+    char artist[64];
+    char album[64];
+    char title[64];
+    uint32_t track_num;
+    uint32_t length;
+    uint32_t plays;
+    uint8_t fingerprint[21];
+    uint32_t time_added;
 } song_t;
 
 #endif
