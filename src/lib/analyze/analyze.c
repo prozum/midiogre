@@ -530,7 +530,7 @@ void skyline(channel_t *channels)
 
             } else if (tmp_note[j].offset > tmp_note[j+1].offset) {
                 /* 2^8 - 1 = 255, the highest possible number in 8 bits */
-                tmp_note[j+1].pitch = pow(2, 8) - 1;
+                tmp_note[j+1].pitch = 255;
                 elim++;
                 j++;
             }
