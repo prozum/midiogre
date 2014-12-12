@@ -26,6 +26,7 @@ mid_t *read_mid(FILE *file)
     /* Check signature */
     if (list_get_fixed(data, 4) != HEADER_SIGNATURE) {
         fprintf(stderr,"Header signature is invalid\n");
+        list_free(data);
         free(mid);
         return NULL;
     }
@@ -33,6 +34,7 @@ mid_t *read_mid(FILE *file)
     /* Check length */
     if (list_get_fixed(data, 4) != HEADER_LENGTH) {
         fprintf(stderr, "Header length is invalid\n");
+        list_free(data);
         free(mid);
         return NULL;
     }
@@ -40,6 +42,7 @@ mid_t *read_mid(FILE *file)
     /* Get format */
     if ((mid->format = list_get_fixed(data, 2)) > MULTI_TRACK_SYNC) {
         fprintf(stderr, "Midi format is invalid or not supported!\n");
+        list_free(data);
         free(mid);
         return NULL;
     }
@@ -53,6 +56,7 @@ mid_t *read_mid(FILE *file)
     /* Get tracks */
     if (read_tracks(data, mid->division, mid->tracks) != 0) {
         fprintf(stderr, "Midi tracks are invalid\n");
+        list_free(data);
         free(mid);
         return NULL;
     }
