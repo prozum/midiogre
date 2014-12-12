@@ -1,6 +1,8 @@
 #include "midiogre-gui.h"
 #include "midiogre-mid.h"
 
+#include "pop/pop.h"
+
 #include <gtk/gtk.h>
 
 GtkWidget *window_init(void)
@@ -49,11 +51,32 @@ GtkWidget *window_init(void)
 
     gtk_header_bar_pack_start (GTK_HEADER_BAR (header), box);
 
-    /* Add temp text view */
-    gtk_container_add (GTK_CONTAINER (window), gtk_text_view_new ());
-
-
     gtk_widget_show_all(window);
 
     return window;
 }
+
+GtkWidget *listbox_setup(GtkWidget *box)
+{
+    GtkWidget *scrolled, *listbox;
+
+    scrolled = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+
+    listbox = gtk_list_box_new();
+
+    gtk_container_add (GTK_CONTAINER (scrolled), listbox);
+
+    gtk_box_pack_start (GTK_BOX(box), scrolled, FALSE, FALSE, 0);
+
+    return listbox;
+}
+
+/*
+song_t *song_new(void)
+{
+    song_t *song;
+
+    return song;
+}
+*/

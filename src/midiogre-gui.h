@@ -5,4 +5,6 @@
 
 GtkWidget *window_init(void);
 
+GtkWidget *listbox_setup(GtkWidget *box);
+
 #endif
