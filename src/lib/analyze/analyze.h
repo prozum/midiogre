@@ -32,8 +32,8 @@ typedef struct f_prn_s
 typedef struct note_s
 {
     uint8_t pitch;
-    uint8_t onset;
-    uint8_t offset;
+    double onset;
+    double offset;
 } note_t;
 
 /** Contains information about notes on a given channel */
