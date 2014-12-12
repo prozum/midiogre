@@ -113,15 +113,15 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
     folder_addr_fixed = g_strdup_printf("%s\\*", folder_addr);
 
 
-    if ((hFind = FindFirstFile(folder_addr, &file)) == INVALID_HANDLE_VALUE) {
+    if ((hFind = FindFirstFile(folder_addr_fixed, &file)) == INVALID_HANDLE_VALUE) {
 
         if ((error = GetLastError()) == ERROR_FILE_NOT_FOUND) {
 
-            g_print("win: folder not found: %s\n", folder_addr);
+            g_print("win: folder not found: %s\n", folder_addr_fixed);
 
         } else {
 
-            g_print("win: unknown error %d: %s\n", error, folder_addr);
+            g_print("win: unknown error %d: %s\n", error, folder_addr_fixed);
 
         }
 
@@ -130,26 +130,29 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
 
     do
     {
-       /* If folder */
-       if (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+       /* Don't try to open hidden or previous folders */
+       if (file.cFileName[0] != '.') {
 
-           tmp = g_strdup_printf("%s\\%s", folder_addr, file.cFileName);
-           g_print("win: next folder: %s\n", tmp);
+           /* If folder */
+           if (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 
-           folder_handler(tmp, mid_addrs);
-           g_free(tmp);
+               tmp = g_strdup_printf("%s\\%s", folder_addr, file.cFileName);
+               g_print("win: next folder: %s\n", tmp);
 
-           g_print("win: back folder: %s\n",folder_addr);
+               folder_handler(tmp, mid_addrs);
+               g_free(tmp);
 
-       /* If file with ".mid" extention */
-       } else if (strcmp(file.cFileName + strlen(file.cFileName) - 4, ".mid") == 0) {
+               g_print("win: back folder: %s\n",folder_addr);
 
-           tmp = g_strdup_printf("%s\\%s", folder_addr, file.cFileName);
+           /* If file with ".mid" extention */
+           } else if (strcmp(file.cFileName + strlen(file.cFileName) - 4, ".mid") == 0) {
 
-           /* Add address to mid_addr */
-           g_queue_push_tail(mid_addrs, tmp);
+               tmp = g_strdup_printf("%s\\%s", folder_addr, file.cFileName);
+
+               /* Add address to mid_addr */
+               g_queue_push_tail(mid_addrs, tmp);
+           }
        }
-
     }
     while (FindNextFile(hFind, &file) != 0);
 
