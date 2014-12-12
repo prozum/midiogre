@@ -40,9 +40,9 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
     }
 
     /* Read content */
-    mid_tmp = read_mid(mid_file);
+    mid = read_mid(mid_file);
     fclose(mid_file);
-    mid = merge_tracks(mid_tmp);
+    //mid = merge_tracks(mid_tmp);
 
     /* For each track */
     while ((track = list_next(mid->tracks)) != NULL) {
@@ -61,7 +61,7 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
 
             /* Convert data to hex */
             data_str[COLUMN_DELTA] = g_strdup_printf("%d",event->delta);
-            data_str[COLUMN_TIME] = g_strdup_printf("%.0f",event->time);
+            data_str[COLUMN_TIME] = g_strdup_printf("%.3f",event->time/1000);
             data_str[COLUMN_MSG] = g_strdup_printf("%x", event->msg);
             data_str[COLUMN_BYTE_1] = g_strdup_printf("%x", event->byte_1);
             data_str[COLUMN_BYTE_2] = g_strdup_printf("%x",event->byte_2);
@@ -135,7 +135,7 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
 
         /* Time column */
         renderer = gtk_cell_renderer_text_new();
-        column = gtk_tree_view_column_new_with_attributes("Time ms",
+        column = gtk_tree_view_column_new_with_attributes("Time (s)",
                                                           renderer,
                                                           "text",
                                                           COLUMN_TIME,

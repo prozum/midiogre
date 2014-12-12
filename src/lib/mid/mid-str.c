@@ -170,7 +170,7 @@ void print_event(mid_t *mid, unsigned int t, unsigned int e)
     printf("Msg : %x\n",event->msg);
     printf("Byte 1: %x\n",event->byte_1);
     printf("Byte 2: %x\n",event->byte_2);
-    printf("Delta: %x\n", event->delta);
+    printf("Delta: %f\n", event->delta);
 
     /* Meta/sysex message data */
     if (event->msg == SYS_RESET || event->msg == SYSEX_START) {

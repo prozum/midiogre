@@ -38,8 +38,8 @@ mid_t *read_mid(FILE *file)
     }
 
     /* Get format */
-    if ((mid->format = list_get_fixed(data, 2)) > MULTI_TRACK_ASYNC) {
-        fprintf(stderr, "Midi format is invalid\n");
+    if ((mid->format = list_get_fixed(data, 2)) > MULTI_TRACK_SYNC) {
+        fprintf(stderr, "Midi format is invalid or not supported!\n");
         free(mid);
         return NULL;
     }
@@ -65,6 +65,10 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 {
     track_t *track;
 
+    uint32_t start_tempo = SET_TEMPO_DEFAULT;
+
+    start_tempo = find_start_tempo(data->cur, data->n);
+
     while ((track = list_next(tracks)) != NULL) {
         
         /* Check signature */
@@ -82,7 +86,7 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
                                     sizeof(event_t));
 
         /* Read events */
-        if (read_events(data, division, track->events) != 0) {
+        if (read_events(data, division, start_tempo, track->events) != 0) {
             fprintf(stderr, "Midi events are invalid\n");
             list_free(tracks);
             return -1;
@@ -96,11 +100,71 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
     return 0;
 }
 
+uint32_t find_start_tempo(uint8_t *data, uint32_t bytes)
+{
+    uint32_t b = 0;
+    uint32_t tempo,msg,n,i;
+
+    /* Skip track signature + number of bytes */
+    b += 8;
+
+    while (b < bytes) {
+
+        /* Skip delta time */
+        while (data[b++] > 0x80);
+
+        msg = data[b++];
+
+        if (msg == META_MSG) {
+
+            /* Set tempo meta message */
+            if (data[b++] == SET_TEMPO) {
+
+                /* Number of bytes in meta message */
+                n = data[b++];
+
+                /* Read and return tempo */
+                tempo = 0;
+                for (i = 0; i < n; i++) {
+                    tempo += data[b++];
+
+                    if (i != n - 1) {
+                        tempo <<= 8;
+                    }
+                }
+                return tempo;
+
+            /* Skip other meta messages */
+            } else {
+
+                /* Number of bytes in meta message */
+                n = data[b++];
+
+                b += n;
+
+            }
+
+        /* Skip sysex message */
+        } else if (msg == SYSEX_START) {
+
+            while (data[b++] != SYSEX_END);
+
+        /* Message must be meta/sysex */
+        } else {
+
+            return SET_TEMPO_DEFAULT;
+        }
+
+    }
+
+    return SET_TEMPO_DEFAULT;
+}
+
 /** Read events */
-int read_events(list_t *data, uint16_t division,  list_t *events)
+int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *events)
 {
     double time_last = 0;
-    uint32_t tempo = SET_TEMPO_DEFAULT;
+    uint32_t tempo = start_tempo;
 
     uint32_t tmp;
     uint32_t i;
@@ -119,7 +183,8 @@ int read_events(list_t *data, uint16_t division,  list_t *events)
         event->delta += tmp;
 
         /* Calc total ticks */
-        event->time = time_last + event->delta * (tempo/division);
+        //event->time = time_last + event->delta;
+        event->time = time_last + event->delta * (tempo/division)/1000;
         time_last = event->time;
 
     
@@ -174,7 +239,7 @@ int read_events(list_t *data, uint16_t division,  list_t *events)
                         byte = list_index(event->data, i);
                         tempo += *byte;
 
-                        if (i != event->byte_2) {
+                        if (i != event->byte_2 - 1) {
                             tempo <<= 8;
                         }
                     }
@@ -338,7 +403,7 @@ mid_t *merge_tracks(mid_t *mid) {
     event_t *event;
     event_t *event_new;
 
-    int time_min = -1;
+    double time_min = -1;
     int first    =  1;
 
 
@@ -410,7 +475,7 @@ mid_t *merge_tracks(mid_t *mid) {
                     /* Get current event in track */
                     if ((event = track->events->cur) != NULL) {
 
-                        if ((time_min == - 1 || event->time < (unsigned) time_min)) {
+                        if ((time_min == -1 || event->time < time_min)) {
 
                             time_min = event->time;
                         }
@@ -424,7 +489,7 @@ mid_t *merge_tracks(mid_t *mid) {
                     /* Get current event in track */
                     if ((event = track->events->cur) != NULL) {
 
-                        if ( event->time == (unsigned) time_min) {
+                        if ( event->time == time_min) {
 
                             /* Copy all events except END_OF_TRACK */
                             if ((event->msg    != META_MSG ||
@@ -463,8 +528,12 @@ mid_t *merge_tracks(mid_t *mid) {
 
             }
 
+            /* Get time from last event before END_OF_TRACK  */
+            event = list_index(track_new->events, track_new->events->n - 2);
+
             /* Set last event to END_OF_TRACK meta event */
             event_new = track_new->events->end;
+            event_new->time   = event->time;
             event_new->msg    = META_MSG;
             event_new->byte_1 = END_OF_TRACK;
             event_new->byte_2 = 0;

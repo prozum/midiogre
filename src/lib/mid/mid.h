@@ -380,11 +380,13 @@ typedef struct mid_s
     list_t *tracks;     /**< Tracks list       */
 } mid_t;
 
-uint32_t count_events(uint8_t *data, uint32_t len);
 
 mid_t *read_mid(FILE *file);
 int read_tracks(list_t *data, uint16_t division, list_t *tracks);
-int read_events(list_t *data, uint16_t division, list_t *events);
+int read_events(list_t *data, uint16_t division, uint32_t start_tempo, list_t *events);
+
+uint32_t find_start_tempo(uint8_t *data, uint32_t bytes);
+uint32_t count_events(uint8_t *data, uint32_t len);
 
 mid_t *merge_tracks(mid_t *mid);
 
