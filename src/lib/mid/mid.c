@@ -99,7 +99,8 @@ int read_tracks(list_t *data, list_t *tracks)
 int read_events(list_t *data, list_t *events)
 {
     uint32_t tmp, time_last = 0;
-    int *i,*b;
+    uint32_t i;
+    uint8_t *byte;
     event_t *event;
 
     /* Until end last event */
@@ -163,18 +164,33 @@ int read_events(list_t *data, list_t *events)
 
             /* System exclusive start message */
             case SYSEX_START:
-                event->byte_1 = list_get(data); /* Manufacturer ID */
+                /* Manufacturer ID */
+                event->byte_1 = list_get(data);
 
                 /* Count data length */
-                i = b = data->cur;
-                while (*i++ != SYSEX_END);
-                event->byte_2 = i - b;    /* Data length */
+                i = data->i;
 
-                /* Allocate memory for meta message data */
+                do {
+                    byte = list_index(data, i);
+                    i++;
+
+                } while (*byte != SYSEX_END && i < data->n);
+
+                /* Check for overflow */
+                if (i == data->n) {
+                    fprintf(stderr, "Sysex overflow!\n");
+                    list_free(events);
+                    return -1;
+                }
+
+                /* Data length */
+                event->byte_2 = i - data->i;
+
+                /* Allocate memory for sysex message data */
                 event->data = list_slicing(data, data->i, event->byte_2);
 
                 /* Skip message data */
-                list_set(data, event->byte_2 - 2, LIST_FORW, LIST_CUR);
+                list_set(data, event->byte_2, LIST_FORW, LIST_CUR);
 
                 break;
 
@@ -193,6 +209,7 @@ int read_events(list_t *data, list_t *events)
             case FUNC_UNDEF_2:
             case FUNC_UNDEF_3:
             case FUNC_UNDEF_4:
+                fprintf(stderr, "Invalid event!\n");
                 list_free(events);
                 return -1;
 
