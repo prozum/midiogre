@@ -3,4 +3,6 @@ add_library(pop
 )
 
 target_link_libraries(pop
+                      analyze
+                      list
                       m)

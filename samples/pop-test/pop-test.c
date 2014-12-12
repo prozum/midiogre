@@ -19,7 +19,7 @@ int main(void){
     max_p = 10000;
 
 
-    printf("finger\\views & 0 & 100 & 200 & 300 & 400 & 500 & 600 & 700 & 800s & 900 & 1000 \\\\ \\hline\n");
+    printf("finger\\plays & 0 & 100 & 200 & 300 & 400 & 500 & 600 & 700 & 800s & 900 & 1000 \\\\ \\hline\n");
     for(i = 0; i <= 10; i++) {
         printf("%d & ", i);
         for(j = 0; j <= 1000; j += 100) {
