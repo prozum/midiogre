@@ -11,8 +11,8 @@
 /** Alt time calculator based on the actual model used på reddit as found here: amix.dk/blog/post/19588*/
 unsigned int calcAge(unsigned int upload_time);
 
-double song_score(unsigned int plays, unsigned int upload_time, unsigned int min_play, unsigned int max_play, unsigned int fingerprint);
-int compare_score(const void *s1, const void *s2);
+double song_score(unsigned int plays, unsigned int upload_time, unsigned int min_play, unsigned int max_play, uint8_t fingerprint);
+int song_compare(const void *s1, const void *s2);
 
 typedef struct {
     char Artist[64];

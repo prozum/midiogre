@@ -1,4 +1,5 @@
 #include "pop.h"
+#include <analyze/analyze.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +14,7 @@ unsigned int calcAge(unsigned int upload_time){
 }
 
 /* The type for fingerprint may be changed based on the type given to it */
-double song_score(unsigned int plays, unsigned int upload_time, unsigned int min_play, unsigned int max_play, unsigned int fingerprint) {
+double song_score(unsigned int plays, unsigned int upload_time, unsigned int min_play, unsigned int max_play, uint8_t fingerprint) {
     unsigned int age = 0, play_rating = 0;
     double score = 0;
 
@@ -42,15 +43,15 @@ double song_score(unsigned int plays, unsigned int upload_time, unsigned int min
 
 }
 
-int compare_song(const void *s1, const void *s2) {
+int song_compare(const void *s1, const void *s2) {
 
     const song_t *song1 = s1;
     const song_t *song2 = s2;
 
     double song1_score = 0, song2_score = 0;
 
-    song1_score = song_score(song1->Plays,song1->TimeAdded,0,MAX_PLAYS,0); /* Argument 5 needed */
-    song2_score = song_score(song2->Plays,song2->TimeAdded,0,MAX_PLAYS,0); /* Argument 5 needed */
+    song1_score = song_score(song1->Plays,song1->TimeAdded,0,MAX_PLAYS, finger_prn_arr_cmp(song1->Fingerprint, song1->Fingerprint));
+    song2_score = song_score(song2->Plays,song2->TimeAdded,0,MAX_PLAYS, finger_prn_arr_cmp(song2->Fingerprint, song2->Fingerprint));
 
     if(song1_score > song2_score) {
         return 1;
