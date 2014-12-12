@@ -61,7 +61,7 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
 
             /* Convert data to hex */
             data_str[COLUMN_DELTA] = g_strdup_printf("%d",event->delta);
-            data_str[COLUMN_TIME] = g_strdup_printf("%d",event->time);
+            data_str[COLUMN_TIME] = g_strdup_printf("%.0f",event->time);
             data_str[COLUMN_MSG] = g_strdup_printf("%x", event->msg);
             data_str[COLUMN_BYTE_1] = g_strdup_printf("%x", event->byte_1);
             data_str[COLUMN_BYTE_2] = g_strdup_printf("%x",event->byte_2);
@@ -135,7 +135,7 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
 
         /* Time column */
         renderer = gtk_cell_renderer_text_new();
-        column = gtk_tree_view_column_new_with_attributes("Total Ticks",
+        column = gtk_tree_view_column_new_with_attributes("Time ms",
                                                           renderer,
                                                           "text",
                                                           COLUMN_TIME,

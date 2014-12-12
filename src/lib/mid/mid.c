@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <math.h>
 
 /** Read mid file
  * TODO:
@@ -50,7 +51,7 @@ mid_t *read_mid(FILE *file)
     mid->division = list_get_fixed(data, 2);
 
     /* Get tracks */
-    if (read_tracks(data, mid->tracks) != 0) {
+    if (read_tracks(data, mid->division, mid->tracks) != 0) {
         fprintf(stderr, "Midi tracks are invalid\n");
         free(mid);
         return NULL;
@@ -60,7 +61,7 @@ mid_t *read_mid(FILE *file)
 }
 
 /** Read tracks */
-int read_tracks(list_t *data, list_t *tracks)
+int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 {
     track_t *track;
 
@@ -81,7 +82,7 @@ int read_tracks(list_t *data, list_t *tracks)
                                     sizeof(event_t));
 
         /* Read events */
-        if (read_events(data, track->events) != 0) {
+        if (read_events(data, division, track->events) != 0) {
             fprintf(stderr, "Midi events are invalid\n");
             list_free(tracks);
             return -1;
@@ -96,9 +97,12 @@ int read_tracks(list_t *data, list_t *tracks)
 }
 
 /** Read events */
-int read_events(list_t *data, list_t *events)
+int read_events(list_t *data, uint16_t division,  list_t *events)
 {
-    uint32_t tmp, time_last = 0;
+    double time_last = 0;
+    uint32_t tempo = SET_TEMPO_DEFAULT;
+
+    uint32_t tmp;
     uint32_t i;
     uint8_t *byte;
     event_t *event;
@@ -107,8 +111,10 @@ int read_events(list_t *data, list_t *events)
     while ((event = list_next(events)) != NULL) {
 
         /* Read delta time */
+        i = 1;
         while ((tmp = list_get(data)) > 0x80) {
-            event->delta += tmp % 0x80;
+            event->delta += (tmp % 0x80) * pow(0x80, i++);
+
         };
         event->delta += tmp;
 
@@ -160,6 +166,21 @@ int read_events(list_t *data, list_t *events)
                 /* Skip message data */
                 list_set(data, event->byte_2, LIST_FORW, LIST_CUR);
 
+                /* Tempo set */
+                if (event->byte_1 == SET_TEMPO) {
+
+                    tempo = 0;
+
+                    for (i = 0; i < event->byte_2; i++) {
+                        byte = list_index(event->data, i);
+                        tempo += *byte;
+
+                        if (i != event->byte_2) {
+                            tempo <<= 8;
+                        }
+                    }
+                }
+
                 break;
 
             /* System exclusive start message */
@@ -177,7 +198,7 @@ int read_events(list_t *data, list_t *events)
                 } while (*byte != SYSEX_END && i < data->n);
 
                 /* Check for overflow */
-                if (i == data->n) {
+                if (i >= data->n) {
                     fprintf(stderr, "Sysex overflow!\n");
                     list_free(events);
                     return -1;

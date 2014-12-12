@@ -4,4 +4,5 @@ add_library(mid
 )
 
 target_link_libraries(mid
-                      list)
+                      list
+                      m)

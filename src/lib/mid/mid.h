@@ -18,7 +18,7 @@
 
 #define FIRST_TRACK_POS  14
 #define CHANNELS         16
-#define INSTR_PER_CLASS 8
+#define INSTR_PER_CLASS  8
 
 /** Default tempo: 500,000 */
 #define SET_TEMPO_DEFAULT 0x07a120
@@ -362,8 +362,8 @@ typedef struct event_s
     uint8_t chan;     /**< Event channel              */
     uint8_t byte_1;   /**< First data byte            */
     uint8_t byte_2;   /**< Second data byte           */
-    uint8_t delta;    /**< Delta ticks                */
-    uint32_t time;    /**< Total ticks                */
+    uint32_t delta;    /**< Delta ticks                */
+    double time;    /**< Total ticks                */
     list_t *data;     /**< List for sysex/meta data   */
 } event_t;
 
@@ -383,8 +383,8 @@ typedef struct mid_s
 uint32_t count_events(uint8_t *data, uint32_t len);
 
 mid_t *read_mid(FILE *file);
-int read_tracks(list_t *data, list_t *tracks);
-int read_events(list_t *data, list_t *events);
+int read_tracks(list_t *data, uint16_t division, list_t *tracks);
+int read_events(list_t *data, uint16_t division, list_t *events);
 
 mid_t *merge_tracks(mid_t *mid);
 
