@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
     FILE *mid_file;
     list_t *data,*sliced_data;
-    int byte,i;
+    int byte,i=0;
 
     /* Open file */
     if((mid_file = fopen(argv[1], "rb")) == NULL) {
