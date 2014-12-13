@@ -77,7 +77,7 @@ int db_init(sqlite3 *db)
           "`num`                    UNSIGNED INT DEFAULT 0,"                                                \
           "`title`                   VARCHAR(64) DEFAULT \'N/A\',"                                          \
           "`instr_classes`          UNSIGNED INT DEFAULT 0,"                                                \
-          "`length`                 UNSIGNED INT DEFAULT 0,"                                                \
+          "`time`                   UNSIGNED INT DEFAULT 0,"                                                \
           "`plays`                      UNSIGNED DEFAULT 0,"                                                \
           "`import_date`               timestamp DEFAULT CURRENT_TIMESTAMP,"                                \
           "`finger_prints`              CHAR(21) DEFAULT \'\',"   \
@@ -100,11 +100,12 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     char *sql, *error = 0;
     int rc;
 
-    char artist[32];
-    char album[32];
-    char track_name[32];
-    int  track_num;
-    int instr_classes;
+    char artist[64];
+    char album[64];
+    char title[64];
+    unsigned  num;
+    unsigned instr_classes;
+    double time;
 
     /* Open mid file */
     if ((mid_file = fopen(mid_addr, "rb")) == NULL) {
@@ -128,17 +129,21 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     /* Instruments */
     instr_classes = extract_instr_classes(mid);
 
+    /* Mid length (ms) */
+    time = extract_time(mid);
+
     free_mid(mid);
     free_mid(mid_tmp);
 
     /* Exec data import */
-    parse_filename(mid_addr, artist, album, &track_num, track_name);
-    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, addr) VALUES ('%s', '%s', %d, '%s', %d, '%s');",
+    parse_filename(mid_addr, artist, album, &num, title);
+    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, '%s');",
                           artist,
                           album,
-                          track_num,
-                          track_name,
+                          num,
+                          title,
                           instr_classes,
+                          time,
                           mid_addr);
 
     rc = sqlite3_exec(db, sql, callback, 0, &error);

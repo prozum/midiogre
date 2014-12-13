@@ -2,13 +2,13 @@
 
 #include <mid/mid.h>
 
-int extract_instr_classes(mid_t *mid)
+unsigned extract_instr_classes(mid_t *mid)
 {
     track_t *track;
     event_t *event;
 
-    unsigned int instr_class;
-    unsigned int bitmap = 0;
+    unsigned instr_class;
+    unsigned bitmap = 0;
     
     while ((track = list_next(mid->tracks)) != NULL) {
     
@@ -74,8 +74,24 @@ int extract_instr_classes(mid_t *mid)
             }
         }
     }
-    
+
+    // ???
     if (bitmap == 0)
       bitmap = 1;
     return bitmap;
+}
+
+double extract_time(mid_t *mid)
+{
+    track_t *track;
+    event_t *event;
+
+    /* Load the first track.
+     * This function should not be used without merge_tracks */
+    track = mid->tracks->ptr;
+
+    /* Load the last event */
+    event = track->events->end;
+
+    return event->time;
 }
