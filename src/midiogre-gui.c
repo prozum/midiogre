@@ -93,10 +93,14 @@ song_t *song_new(void)
     return song;
 }
 
-GtkListBox *song_row_new(song_t *song)
+GtkWidget *song_row_new(song_t *song)
 {
-    GtkListBox* SongBox;
+    GtkWidget* SongBox;
+
+    SongBox = gtk_list_box_row_new();
+
 
     //row->priv->song = song;
+    return SongBox;
 }
 

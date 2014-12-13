@@ -53,4 +53,6 @@ GtkWidget *window_init(void);
 
 GtkWidget *listbox_new(GtkWidget *box);
 
+GtkWidget *song_row_new(song_t *song);
+
 #endif
