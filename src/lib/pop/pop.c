@@ -7,7 +7,7 @@
 #include <time.h>
 
 #define MAX_PLAYS 10000
-#define MAX_FINGERPPRINT 10
+#define MAX_FINGERPPRINT 18
 
 unsigned int calcAge(unsigned int upload_time){
     return time(NULL) - upload_time;
@@ -37,7 +37,7 @@ double song_score(unsigned int plays, unsigned int upload_time, unsigned int min
 
     play_rating = max_play - plays;
 
-    score = ((play_rating)*((21-fingerprint)/log2(fingerprint+1))/log2((double)age))/100;
+    score = ((play_rating)*((18-fingerprint)/log2(fingerprint+1))/log2((double)age))/100;
 
     return score;
 
