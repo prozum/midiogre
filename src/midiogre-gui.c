@@ -79,6 +79,8 @@ song_t *song_new(void)
 {
     song_t *song;
 
+    song = calloc(1,sizeof(song_t));
+
     strcpy(song->album, "Best Album");
     strcpy(song->artist, "Worst Artist");
     song->track_num = 1;
