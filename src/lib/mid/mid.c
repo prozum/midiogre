@@ -181,10 +181,11 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
     while ((event = list_next(events)) != NULL) {
 
         /* Read delta time */
-        i = 1;
-        while ((tmp = list_get(data)) > 0x80) {
-            event->delta += (tmp % 0x80) * pow(0x80, i++);
+        while ((tmp = list_get(data)) >= 0x80) {
 
+            tmp %= 0x80;
+            event->delta += tmp;
+            event->delta <<= 7;
         };
         event->delta += tmp;
 
@@ -213,12 +214,17 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
 
         /* Read message parameters */
         switch (event->msg) {
+
+            case PITCH_BEND:
+                event->byte_1 = list_get(data);
+                event->byte_2 = list_get(data);
+                break;
+
             /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
             case POLY_AFT:
             case CTRL_MODE:
-            case PITCH_BEND:
             case SONG_POS_PTR:
                 event->byte_1 = list_get(data);
                 event->byte_2 = list_get(data);
@@ -228,13 +234,13 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
             case META_MSG:
 
                 /* Byte 1: Meta message */
-                if ((get_tmp = list_get(data)) != EOL) {
+                if ((get_tmp = list_get(data)) > 0) {
 
                     event->byte_1 = get_tmp;
                 }
 
                 /* Byte 2: Meta length  */
-                if ((get_tmp = list_get(data)) != EOL) {
+                if ((get_tmp = list_get(data)) > 0) {
 
                     event->byte_2 = get_tmp;
                 }
