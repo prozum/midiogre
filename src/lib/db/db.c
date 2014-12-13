@@ -124,16 +124,21 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     fclose(mid_file);
 
     /* Merge mid tracks */
-    mid = merge_tracks(mid_tmp);
+    if ((mid = merge_tracks(mid_tmp)) == NULL) {
+
+        fprintf(stderr,"Could not merge tracks!\n");
+        free(mid_tmp);
+        return -1;
+
+    }
+    free_mid(mid_tmp);
 
     /* Instruments */
     instr_classes = extract_instr_classes(mid);
 
     /* Mid length (ms) */
     time = extract_time(mid);
-
     free_mid(mid);
-    free_mid(mid_tmp);
 
     /* Exec data import */
     parse_filename(mid_addr, artist, album, &num, title);
