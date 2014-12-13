@@ -71,18 +71,19 @@ int db_init(sqlite3 *db)
     int rc;
 
     /* Write database structure */
-    sql = "CREATE TABLE IF NOT EXISTS midiFile ("          \
+    sql = "CREATE TABLE IF NOT EXISTS midiFile ("  \
           "ARTIST                  VARCHAR(32),"   \
           "ALBUM                   VARCHAR(32),"   \
-          "TRACKNUM               UNSIGNED INT,"   \
-          "TRACK                   VARCHAR(32),"   \
+          "NUM                    UNSIGNED INT,"   \
+          "TITLE                   VARCHAR(32),"   \
           "INSTR_CLASSES          UNSIGNED INT,"   \
           "LENGTH                 UNSIGNED INT,"   \
           "Fp1                         CHAR(7),"   \
           "Fp2                         CHAR(7),"   \
           "Fp3                         CHAR(7),"   \
           "PLAYS                      UNSIGNED,"   \
-          "UPLOADTIME             UNSIGNED INT);";
+          "UPLOADTIME             UNSIGNED INT,"   \
+          "ADDR                  VARCHAR(1024));";
 
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &error);
@@ -134,12 +135,13 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
     /* Exec data import */
     parse_filename(mid_addr, artist, album, &track_num, track_name);
-    sql = g_strdup_printf("INSERT INTO midiFile (ARTIST, ALBUM, TRACKNUM, TRACK, INSTR_CLASSES) VALUES ('%s', '%s', %d, '%s', %d);",
+    sql = g_strdup_printf("INSERT INTO midiFile (ARTIST, ALBUM, NUM, TITLE, INSTR_CLASSES, ADDR) VALUES ('%s', '%s', %d, '%s', %d, '%s');",
                           artist,
                           album,
                           track_num,
                           track_name,
-                          instr_classes);
+                          instr_classes,
+                          mid_addr);
 
     rc = sqlite3_exec(db, sql, callback, 0, &error);
     free(sql);
