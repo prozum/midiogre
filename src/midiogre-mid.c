@@ -31,7 +31,7 @@ int mid_import(GtkWindow *window, GQueue *mid_addrs)
 
     /* Setup mid import dialog */
     dialog = gtk_message_dialog_new (GTK_WINDOW (window),
-                                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                     GTK_DIALOG_DESTROY_WITH_PARENT,
                                      GTK_MESSAGE_INFO,
                                      GTK_BUTTONS_OK,
                                      "Importing mid files");
@@ -236,6 +236,7 @@ void folder_chooser(GtkWindow *window)
     if (res == GTK_RESPONSE_ACCEPT) {
 
         folder_addr = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        gtk_widget_destroy(dialog);
 
         g_print("dialog: folder: %s\n",folder_addr);
 
@@ -251,6 +252,5 @@ void folder_chooser(GtkWindow *window)
 
     }
 
-    gtk_widget_destroy(dialog);
 
 }

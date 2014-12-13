@@ -69,9 +69,12 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 {
     track_t *track;
 
-    uint32_t n;
+    uint32_t events,bytes;
 
-    uint32_t start_tempo = SET_TEMPO_DEFAULT;
+    uint32_t start_tempo;
+
+    /* Var for checking bytes overflow */
+    bytes = HEADER_BYTES;
 
     start_tempo = find_start_tempo(data->cur, data->n);
 
@@ -79,7 +82,7 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
         
         /* Check signature */
         if (list_get_fixed(data, 4) != TRACK_SIGNATURE) {
-            fprintf(stderr, "Track signature is invalid\n");
+            fprintf(stderr, "Read tracks: Track signature is invalid!\n");
             list_free(tracks);
             return -1;
         }
@@ -87,21 +90,29 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
         /* Read number of bytes */
         track->bytes = list_get_fixed(data, 4);
 
-        /* Count events */
-        if ((n = count_events(data->cur, track->bytes)) == 0) {
+        /* Check for bytes overflow */
+        if ((bytes += track->bytes + TRACK_BYTES) > data->n) {
 
-            fprintf(stderr, "Count events failed!\n");
+            fprintf(stderr, "Read tracks: Track bytes value is invalid!\n");
+            list_free(tracks);
+            return -1;
+        }
+
+        /* Count events */
+        if ((events = count_events(data->cur, track->bytes)) == 0) {
+
+            fprintf(stderr, "Read tracks: Count events failed!\n");
             list_free(tracks);
             return -1;
         }
 
         /* Create event list */
-        track->events = list_create(n, sizeof(event_t));
+        track->events = list_create(events, sizeof(event_t));
 
         /* Read events */
         if (read_events(data, division, start_tempo, track->events) != 0) {
 
-            fprintf(stderr, "Midi events are invalid\n");
+            fprintf(stderr, "Read tracks: Midi events are invalid\n");
             list_free(tracks);
             return -1;
         }
@@ -332,7 +343,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
             case FUNC_UNDEF_2:
             case FUNC_UNDEF_3:
             case FUNC_UNDEF_4:
-                fprintf(stderr, "Invalid event!\n");
+                fprintf(stderr, "Invalid message!\n");
                 list_free(events);
                 return -1;
 
@@ -365,7 +376,14 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
     for (ev = 0; b < bytes; ev++) {
 
         /* Skip delta time */
-        while (data[b++] > 0x80);
+        while (data[b++] > 0x80 && b < bytes)
+
+        /* Check overflow */
+            if (b >= bytes) {
+
+            fprintf(stderr, "Count events failed: Byte overflow!");
+            return 0;
+        }
 
         /* If channel message */
         if (data[b] >= NOTE_OFF &&
@@ -380,6 +398,7 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
         b++;
 
         switch (msg) {
+
             /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
@@ -425,6 +444,7 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
             case FUNC_UNDEF_2:
             case FUNC_UNDEF_3:
             case FUNC_UNDEF_4:
+                fprintf(stderr, "Count events failed: Invalid message!\n");
                 return 0;
 
             /* Messages with one parameter

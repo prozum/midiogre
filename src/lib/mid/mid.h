@@ -14,7 +14,10 @@
 
 #define HEADER_SIGNATURE 0x4D546864
 #define HEADER_LENGTH    0x00000006
+#define HEADER_BYTES     10
 #define TRACK_SIGNATURE  0x4D54726b
+#define TRACK_BYTES      8
+
 
 #define FIRST_TRACK_POS  14
 #define CHANNELS         16
