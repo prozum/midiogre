@@ -198,7 +198,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
 
         /* If channel message */
         if (tmp >= NOTE_OFF &&
-            tmp <= PITCH_BEND) {
+            tmp < PITCH_BEND + CHANNELS) {
             
             /* Set channel */
             event->chan = tmp % CHANNELS;
@@ -346,7 +346,7 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
 
         /* If channel message */
         if (data[b] >= NOTE_OFF &&
-            data[b] <= PITCH_BEND) {
+            data[b] < PITCH_BEND + CHANNELS) {
 
             msg = data[b] - (data[b] % CHANNELS);
         } else {
