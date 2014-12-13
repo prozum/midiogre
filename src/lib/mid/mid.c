@@ -234,13 +234,13 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
             case META_MSG:
 
                 /* Byte 1: Meta message */
-                if ((get_tmp = list_get(data)) != EOL) {
+                if ((get_tmp = list_get(data)) > 0) {
 
                     event->byte_1 = get_tmp;
                 }
 
                 /* Byte 2: Meta length  */
-                if ((get_tmp = list_get(data)) != EOL) {
+                if ((get_tmp = list_get(data)) > 0) {
 
                     event->byte_2 = get_tmp;
                 }
