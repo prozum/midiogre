@@ -583,10 +583,10 @@ uint8_t finger_prn_arr_cmp(const uint8_t finger_prn1[21], const uint8_t finger_p
             free(f_prn1[i].f_prn);
             free(f_prn2[i].f_prn);
         }
-
-        free(f_prn1);
-        free(f_prn2);
     }
+
+    free(f_prn1);
+    free(f_prn2);
 
     return dist;
 }

@@ -264,12 +264,12 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
 
             /* System exclusive start message */
             case SYSEX_START:
+
                 /* Manufacturer ID */
                 event->byte_1 = list_get(data);
 
                 /* Count data length */
                 i = data->i;
-
                 do {
                     byte = list_index(data, i);
                     i++;
