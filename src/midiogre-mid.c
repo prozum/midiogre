@@ -16,87 +16,33 @@
 #include <dirent.h>
 #endif
 
-int mid_import(GtkWindow *window, GQueue *mid_addrs)
+gpointer mid_import(gpointer s)
 {
-    GtkWidget *dialog;
-    GtkWidget *content_area;
-    GtkWidget *progress_bar;
-
+    ProgressStatus *status;
     sqlite3 *db;
-
-    int n,i = 0;
-
     char *mid_addr;
-    char *tmp;
 
-    /* Setup mid import dialog */
-    dialog = gtk_message_dialog_new (GTK_WINDOW (window),
-                                     GTK_DIALOG_DESTROY_WITH_PARENT,
-                                     GTK_MESSAGE_INFO,
-                                     GTK_BUTTONS_OK,
-                                     "Importing mid files");
-
-    g_signal_connect (dialog, "response",
-                      G_CALLBACK(gtk_widget_destroy), dialog);
-
-    content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-
-    progress_bar = gtk_progress_bar_new ();
-    gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(progress_bar), TRUE);
-    gtk_box_pack_start(GTK_BOX(content_area), progress_bar, FALSE, FALSE, 0);
-    gtk_widget_show (progress_bar);
-
-    gtk_widget_show(GTK_WIDGET(dialog));
+    status = s;
 
     /* Open db */
     sqlite3_open("mid.db", &db);
     db_init(db);
 
-    /* Get number of mid addrs */
-    n = g_queue_get_length(mid_addrs);
+    while ((mid_addr = g_queue_pop_head(status->queue)) != NULL) {
 
-    if (n == 0) {
+        g_print("Import mid: %s\n", mid_addr);
 
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), 1);
+        /* Clever function to handle mid file here! */
+        db_import_mid(db, mid_addr);
 
-        tmp = g_strdup_printf("No mid files in folder...");
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), tmp);
-        g_free(tmp);
+        g_free(mid_addr);
 
-    } else {
-
-        while ((mid_addr = g_queue_pop_head(mid_addrs)) != NULL) {
-
-
-            /* Update progress bar */
-            gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), i / n);
-
-            /* Update progress bar text */
-            tmp = g_strdup_printf("%d of %d mid files imported...", i, n);
-            gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), tmp);
-            g_free(tmp);
-
-            g_print("Import mid: %s\n", mid_addr);
-
-            /* Clever function to handle mid file here! */
-            db_import_mid(db, mid_addr);
-
-            g_free(mid_addr);
-
-            i++;
-        }
-
-        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress_bar), 1);
-
-        tmp = g_strdup_printf("%d of %d mid files imported...", i, n);
-        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), tmp);
-        g_free(tmp);
-
+        status->i++;
     }
 
     sqlite3_close(db);
 
-    return 0;
+    return NULL;
 }
 
 #ifdef WIN32
@@ -211,11 +157,70 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
 }
 #endif
 
+gboolean progress_dialog_update(gpointer s)
+{
+    ProgressStatus *status;
 
+    float frac;
+    char *tmp;
+
+    status = s;
+
+    /* Update progress bar */
+    frac = (float)status->i / (float)status->n;
+    gtk_progress_bar_set_fraction(status->progress_bar, frac);
+
+    tmp = g_strdup_printf("%d of %d mid files imported...", status->i, status->n);
+    gtk_progress_bar_set_text(status->progress_bar, tmp);
+    g_free(tmp);
+
+    if (status->i == status->n) {
+        return FALSE;
+    } else {
+        return TRUE;
+    }
+}
+
+ProgressStatus *progress_dialog(GtkWindow *window, GQueue *queue)
+{
+    ProgressStatus *status;
+    GtkWidget *content_area;
+
+
+    status = malloc(sizeof(ProgressStatus));
+    status->i = 0;
+    status->n = queue->length;
+    status->queue = queue;
+
+    /* Setup progress dialog */
+    status->dialog = gtk_message_dialog_new (GTK_WINDOW (window),
+                                     GTK_DIALOG_DESTROY_WITH_PARENT,
+                                     GTK_MESSAGE_INFO,
+                                     GTK_BUTTONS_OK,
+                                     "Importing mid files");
+
+    g_signal_connect (status->dialog, "response",
+                      G_CALLBACK(gtk_widget_destroy), status->dialog);
+    gtk_widget_show(status->dialog);
+
+    /* Setup progress bar */
+    content_area = gtk_dialog_get_content_area (GTK_DIALOG (status->dialog));
+    status->progress_bar = GTK_PROGRESS_BAR(gtk_progress_bar_new());
+    gtk_progress_bar_set_show_text(status->progress_bar, TRUE);
+    gtk_box_pack_start(GTK_BOX(content_area), GTK_WIDGET(status->progress_bar), FALSE, FALSE, 0);
+    gtk_widget_show (GTK_WIDGET(status->progress_bar));
+
+    /* Update progressbar every 100 ms */
+    g_timeout_add(100, progress_dialog_update, status);
+
+
+    return status;
+}
 
 void folder_chooser(GtkWindow *window)
 {
     GtkWidget      *dialog;
+    ProgressStatus *status;
     gint res;
     char *folder_addr = NULL;
 
@@ -247,8 +252,12 @@ void folder_chooser(GtkWindow *window)
         folder_handler(folder_addr, mid_addrs);
         g_free(folder_addr);
 
+        /* Setup progress dialog */
+        status = progress_dialog(window, mid_addrs);
+
         /* Import mid files */
-        mid_import(window, mid_addrs);
+        g_thread_new("mid_import", mid_import, status);
+        //mid_import(mid_addrs, status);
 
     }
 

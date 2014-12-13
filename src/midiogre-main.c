@@ -12,10 +12,7 @@ int main(int argc, char *argv[])
     gtk_init(&argc, &argv);
 
     window = window_init();
-
-    /* Setup box */
-    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
-    gtk_container_add (GTK_CONTAINER (window), box);
+    box = window_box_init(window);
 
     /* Add list boxes */
     listbox1 = listbox_new(box);

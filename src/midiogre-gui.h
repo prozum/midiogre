@@ -46,6 +46,7 @@ struct _SongRowPrivate
     GtkButton *play_button;
 };
 
+
 GType      gtk_song_row_get_type  (void) G_GNUC_CONST;
 
 

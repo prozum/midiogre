@@ -58,6 +58,26 @@ GtkWidget *window_init(void)
     return window;
 }
 
+GtkWidget *window_box_init(GtkWidget *window)
+{
+    GtkWidget *box;
+    GtkWidget *frame;
+    GtkWidget *button;
+
+    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_container_add (GTK_CONTAINER (window), box);
+    gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
+
+
+    frame = gtk_frame_new ("Search");
+    gtk_box_pack_start (GTK_BOX(box), frame, FALSE, FALSE, 0);
+
+    button = gtk_check_button_new();
+    gtk_box_pack_start (GTK_BOX(box), button, FALSE, FALSE, 0);
+
+    return box;
+}
+
 GtkWidget *listbox_new(GtkWidget *box)
 {
     GtkWidget *scrolled, *listbox;
@@ -67,9 +87,9 @@ GtkWidget *listbox_new(GtkWidget *box)
 
     listbox = gtk_list_box_new();
 
-    gtk_container_add (GTK_CONTAINER (scrolled), listbox);
+    gtk_container_add(GTK_CONTAINER (scrolled), listbox);
 
-    gtk_box_pack_start (GTK_CONTAINER(box), scrolled, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box), scrolled, FALSE, FALSE, 0);
 
     return listbox;
 }
