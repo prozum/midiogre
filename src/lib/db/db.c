@@ -71,19 +71,17 @@ int db_init(sqlite3 *db)
     int rc;
 
     /* Write database structure */
-    sql = "CREATE TABLE IF NOT EXISTS midiFile ("  \
-          "ARTIST                  VARCHAR(32),"   \
-          "ALBUM                   VARCHAR(32),"   \
-          "NUM                    UNSIGNED INT,"   \
-          "TITLE                   VARCHAR(32),"   \
-          "INSTR_CLASSES          UNSIGNED INT,"   \
-          "LENGTH                 UNSIGNED INT,"   \
-          "Fp1                         CHAR(7),"   \
-          "Fp2                         CHAR(7),"   \
-          "Fp3                         CHAR(7),"   \
-          "PLAYS                      UNSIGNED,"   \
-          "UPLOADTIME             UNSIGNED INT,"   \
-          "ADDR                  VARCHAR(1024));";
+    sql = "CREATE TABLE IF NOT EXISTS `songs` ("  \
+          "`artist`                  VARCHAR(64) DEFAULT \'N/A\',"                                          \
+          "`album`                   VARCHAR(64) DEFAULT \'N/A\',"                                          \
+          "`num`                    UNSIGNED INT DEFAULT 0,"                                                \
+          "`title`                   VARCHAR(64) DEFAULT \'N/A\',"                                          \
+          "`instr_classes`          UNSIGNED INT DEFAULT 0,"                                                \
+          "`length`                 UNSIGNED INT DEFAULT 0,"                                                \
+          "`plays`                      UNSIGNED DEFAULT 0,"                                                \
+          "`import_date`               timestamp DEFAULT CURRENT_TIMESTAMP,"                                \
+          "`finger_prints`              CHAR(21) DEFAULT \'\',"   \
+          "`addr`                  VARCHAR(1024) DEFAULT \'N/A\');";
 
     /* Execute SQL statement */
     rc = sqlite3_exec(db, sql, callback, 0, &error);
@@ -135,7 +133,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
     /* Exec data import */
     parse_filename(mid_addr, artist, album, &track_num, track_name);
-    sql = g_strdup_printf("INSERT INTO midiFile (ARTIST, ALBUM, NUM, TITLE, INSTR_CLASSES, ADDR) VALUES ('%s', '%s', %d, '%s', %d, '%s');",
+    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, addr) VALUES ('%s', '%s', %d, '%s', %d, '%s');",
                           artist,
                           album,
                           track_num,
