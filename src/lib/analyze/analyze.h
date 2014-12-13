@@ -6,6 +6,7 @@
 
 /* semitones per finger_prn */
 #define FINGER_PRN_LEN 7
+#define FINGER_PRN_CMP_LEN 6
 
 /* finger_prns per channel */
 #define FINGER_PRNS 3
@@ -24,7 +25,7 @@ typedef struct histogram_s
 /** Fingerprint type */
 typedef struct f_prn_s
 {
-    uint8_t *f_prn;
+    int16_t *f_prn;
     double dist;
 } f_prn_t;
 
@@ -99,7 +100,7 @@ histogram_t *calc_norm_histogram(histogram_t **chan_histogram, channel_t *channe
 uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2);
 
 /** Calculates the Levenshtein length for two fingerprints */
-uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2);
+uint8_t lev_dist(int16_t *f_prn1, int16_t *f_prn2);
 
 /** Skyline algorithm */
 void skyline(channel_t *channels);
