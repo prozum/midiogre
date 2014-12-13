@@ -8,9 +8,10 @@
 
 f_prn_t *finger_prn_gen(track_t *track)
 {
-    uint8_t i;
+    uint8_t i, j;
 
     channel_t *channels;
+    f_prn_t *f_prn_tmp;
     f_prn_t *finger_prns;
 
     /* extract channels and notes */
@@ -21,7 +22,19 @@ f_prn_t *finger_prn_gen(track_t *track)
     top_rank(channels);
 
     /* find the fingerprints */
-    finger_prns = finger_prn_extract(channels);
+    f_prn_tmp = finger_prn_extract(channels);
+
+    finger_prns = malloc(3 * sizeof(f_prn_t));
+
+    for (i = 0; i < FINGER_PRNS; i++) {
+        finger_prns[i].f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(int16_t));
+        for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
+            finger_prns[i].f_prn[j] = abs(f_prn_tmp[i].f_prn[j+1] - f_prn_tmp[i].f_prn[j]);
+        }
+        free(f_prn_tmp[i].f_prn);
+    }
+
+    free(f_prn_tmp);
 
     for (i = 0; i < CHANNELS; i++) {
         free(channels[i].note);
@@ -194,7 +207,7 @@ uint32_t finger_prn_extract_inner(note_t *note, uint32_t notes, f_prn_t **f_prn,
     f_prn[pos] = malloc(sizeof(f_prn_t) * chan->semitones[semitone]);
 
     for (i = 0; i < chan->semitones[semitone]; i++) {
-        f_prn[pos][i].f_prn = calloc(FINGER_PRN_LEN, sizeof(uint8_t));
+        f_prn[pos][i].f_prn = calloc(FINGER_PRN_LEN, sizeof(int16_t));
     }
 
     /* extract the fingerprints */ 
@@ -349,7 +362,7 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
     f_prn_ret = malloc(sizeof(f_prn_t) * FINGER_PRNS);
 
     for (i = 0; i < FINGER_PRNS; i++) {
-        f_prn_ret[i].f_prn = calloc(FINGER_PRN_LEN, sizeof(uint8_t));
+        f_prn_ret[i].f_prn = calloc(FINGER_PRN_LEN, sizeof(int16_t));
     }
 
     i = 0;
@@ -359,7 +372,7 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
     /* picking fingerprints */
     while (k < 3) {
         if (f_prns[i]) {
-            memcpy((void *)f_prn_ret[k].f_prn, (void *)f_prn[i][j].f_prn, sizeof(uint8_t) * FINGER_PRN_LEN);
+            memcpy((void *)f_prn_ret[k].f_prn, (void *)f_prn[i][j].f_prn, sizeof(int16_t) * FINGER_PRN_LEN);
             k++;
             i++;
         } else if (i == 3){
@@ -413,7 +426,6 @@ histogram_t *calc_chan_histogram(note_t *note, uint32_t notes)
             chan_histogram->semitones[semitone]++;
         }
     }
-
 
     return chan_histogram;
 }
@@ -484,13 +496,13 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
     return ret_dist;
 }
 
-uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2)
+uint8_t lev_dist(int16_t *f_prn1, int16_t *f_prn2)
 {
     uint8_t dist, i;
 
     dist = 0;
 
-    for (i = 0; i < FINGER_PRN_LEN; i++) {
+    for (i = 0; i < FINGER_PRN_CMP_LEN; i++) {
         if (f_prn1[i] > f_prn2[i] || f_prn1[i] < f_prn2[i]) {
             dist++;
         }
@@ -512,27 +524,21 @@ void skyline(channel_t *channels)
         for (j = 0; j < channels[i].notes; j++) {
             tmp_note = channels[i].note;
 
-            if (tmp_note[j].onset == tmp_note[j+1].onset) {
+            if (tmp_note[j].offset >= tmp_note[j+1].offset) {
                 if (tmp_note[j].pitch > tmp_note[j+1].pitch) {
-                    tmp_note[j+1].onset = tmp_note[j].offset;
-
-                } else if (tmp_note[j].pitch < tmp_note[j+1].pitch) {
-                    tmp_note[j].onset = tmp_note[j+1].offset;
+                    tmp_note[j+1].pitch = 255;
+                    elim++;
+                    j++;
+                } else {
+                    tmp_note[j].offset = tmp_note[j+1].onset;
                 }
-
             } else if (tmp_note[j].offset > tmp_note[j+1].onset) {
                 if (tmp_note[j].pitch > tmp_note[j+1].pitch) {
                     tmp_note[j+1].onset = tmp_note[j].offset;
-
-                } else if (tmp_note[j].pitch < tmp_note[j+1].pitch) {
+                } else {
                     tmp_note[j].offset = tmp_note[j+1].onset;
                 }
 
-            } else if (tmp_note[j].offset > tmp_note[j+1].offset) {
-                /* 2^8 - 1 = 255, the highest possible number in 8 bits */
-                tmp_note[j+1].pitch = 255;
-                elim++;
-                j++;
             }
         }
 
@@ -555,7 +561,7 @@ int skyline_compar(const void *a, const void *b)
     return note1->onset - note2->onset;
 }
 
-uint8_t finger_prn_arr_cmp(const uint8_t finger_prn1[21], const uint8_t finger_prn2[21])
+uint8_t finger_prn_arr_cmp(const uint8_t finger_prn1[18], const uint8_t finger_prn2[18])
 {
     uint8_t i, j;
     uint8_t dist;
