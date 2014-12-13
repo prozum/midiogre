@@ -84,7 +84,7 @@ song_t *song_new(void)
     strcpy(song->album, "Best Album");
     strcpy(song->artist, "Worst Artist");
     song->track_num = 1;
-    strcpy(song->title, "\"Midiogre\" TitleArtist");
+    strcpy(song->title, "\"Midiogre\" Title");
     song->length = 400;
     //song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     song->plays =500;

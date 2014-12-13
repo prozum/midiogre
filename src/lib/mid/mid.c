@@ -170,8 +170,10 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
     double time_last = 0;
     uint32_t tempo = start_tempo;
 
+    int get_tmp;
     uint32_t tmp;
     uint32_t i;
+
     uint8_t *byte;
     event_t *event;
 
@@ -224,8 +226,18 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
             
             /* Meta message */
             case META_MSG:
-                event->byte_1 = list_get(data); /* Meta message */
-                event->byte_2 = list_get(data); /* Meta length  */
+
+                /* Byte 1: Meta message */
+                if ((get_tmp = list_get(data)) != EOL) {
+
+                    event->byte_1 = get_tmp;
+                }
+
+                /* Byte 2: Meta length  */
+                if ((get_tmp = list_get(data)) != EOL) {
+
+                    event->byte_2 = get_tmp;
+                }
 
                 /* Allocate memory for meta message data */
                 event->data = list_slicing(data, data->i, event->byte_2);
@@ -242,7 +254,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
                         byte = list_index(event->data, i);
                         tempo += *byte;
 
-                        if (i != event->byte_2 - 1) {
+                        if (i + 1 != event->byte_2) {
                             tempo <<= 8;
                         }
                     }
