@@ -55,7 +55,7 @@ mid_t *read_mid(FILE *file)
 
     /* Get tracks */
     if (read_tracks(data, mid->division, mid->tracks) != 0) {
-        fprintf(stderr, "Midi tracks are invalid\n");
+        fprintf(stderr, "Midi tracks are invalid!\n");
         list_free(data);
         free(mid);
         return NULL;
@@ -68,6 +68,8 @@ mid_t *read_mid(FILE *file)
 int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 {
     track_t *track;
+
+    uint32_t n;
 
     uint32_t start_tempo = SET_TEMPO_DEFAULT;
 
@@ -85,12 +87,20 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
         /* Read number of bytes */
         track->bytes = list_get_fixed(data, 4);
 
-        /* Count events to create event list  */
-        track->events = list_create(count_events(data->cur, track->bytes),
-                                    sizeof(event_t));
+        /* Count events */
+        if ((n = count_events(data->cur, track->bytes)) == 0) {
+
+            fprintf(stderr, "Count events failed!\n");
+            list_free(tracks);
+            return -1;
+        }
+
+        /* Create event list */
+        track->events = list_create(n, sizeof(event_t));
 
         /* Read events */
         if (read_events(data, division, start_tempo, track->events) != 0) {
+
             fprintf(stderr, "Midi events are invalid\n");
             list_free(tracks);
             return -1;
@@ -186,6 +196,13 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
             tmp %= 0x80;
             event->delta += tmp;
             event->delta <<= 7;
+
+            /* Check for overflow */
+            if(data->i == data->n) {
+                fprintf(stderr, "Delta overflow!\n");
+                list_free(events);
+                return -1;
+            }
         };
         event->delta += tmp;
 
@@ -382,7 +399,15 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
 
             /* System exclusive message */
             case SYSEX_START:
-                while (data[b++] != SYSEX_END);
+                while (data[b++] != SYSEX_END && b < bytes);
+
+                /* Check for overflow */
+                if (b == bytes) {
+
+                    fprintf(stderr, "Count events failed: Sysex overflow!\n");
+                    return 0;
+                }
+
                 break;
                  
             /* Messages with zero parameters */
@@ -434,10 +459,17 @@ mid_t *merge_tracks(mid_t *mid) {
     list_set(mid->tracks, 0, LIST_FORW, LIST_BEG);
     while ((track = list_next(mid->tracks)) != NULL) {
 
+        /* Read last message */
+        if ((event = list_index(track->events, track->events->n - 1)) == NULL) {
+            fprintf(stderr, "Merge tracks failed: Track %lu is empty!\n",
+                    mid->tracks->i);
+            return NULL;
+        }
+
         /* Validate last message */
-        event = list_index(track->events, track->events->n - 1);
         if (event->msg != META_MSG && event->byte_1 != END_OF_TRACK) {
 
+            fprintf(stderr, "Track %lu is invalid!\n", mid->tracks->i);
             return NULL;
         }
 
@@ -499,6 +531,12 @@ mid_t *merge_tracks(mid_t *mid) {
                             time_min = event->time;
                         }
                     }
+                }
+
+                if (time_min == - 1) {
+                    fprintf(stderr, "Merge tracks failed!\n");
+                    free_mid(mid_new);
+                    return NULL;
                 }
 
                 /* Add event if event->time = time_min */
@@ -565,9 +603,13 @@ mid_t *merge_tracks(mid_t *mid) {
 
         /* TODO */
         case MULTI_TRACK_ASYNC:
-            free(mid_new);
+            fprintf(stderr, "Mid type is not supported\n!");
+            free_mid(mid_new);
             return NULL;
     }
+
+    fprintf(stderr, "Mid type is invalid\n!");
+    free_mid(mid_new);
     return NULL;
 }
 
