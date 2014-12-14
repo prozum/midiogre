@@ -36,10 +36,10 @@ int main(int argc, char *argv[])
     gtk_container_add (GTK_CONTAINER (songbox1), GTK_WIDGET (row1));
 
     gtk_widget_show (GTK_WIDGET (row2));
-    gtk_container_add (GTK_CONTAINER (songbox2), GTK_WIDGET (row2));
+    gtk_container_add (GTK_CONTAINER (songbox1), GTK_WIDGET (row2));
 
     gtk_widget_show (GTK_WIDGET (row3));
-    gtk_container_add (GTK_CONTAINER (songbox3), GTK_WIDGET (row3));
+    gtk_container_add (GTK_CONTAINER (songbox1), GTK_WIDGET (row3));
 
     gtk_main();
 

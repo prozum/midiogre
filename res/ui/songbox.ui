@@ -167,7 +167,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="pixel_size">32</property>
-                    <property name="icon_name">media-playback-start-symbolic.symbolic</property>
+                    <property name="resource">/org/prozum/midiogre/media-playback-start-symbolic.symbolic.png</property>
                   </object>
                 </child>
               </object>
@@ -188,7 +188,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="pixel_size">32</property>
-                    <property name="icon_name">list-add-symbolic.symbolic</property>
+                    <property name="resource">/org/prozum/midiogre/list-add-symbolic.symbolic.png</property>
                   </object>
                 </child>
               </object>
@@ -209,7 +209,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="pixel_size">32</property>
-                    <property name="icon_name">star-new-symbolic.symbolic</property>
+                    <property name="resource">/org/prozum/midiogre/star-new-symbolic.symbolic.png</property>
                   </object>
                 </child>
               </object>
