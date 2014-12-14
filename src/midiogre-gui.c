@@ -65,8 +65,6 @@ GlobalWidgets *g_wgs_init(GtkWidget *window)
 {
     GlobalWidgets *g_wgs;
     GtkWidget *tmp;
-    //GtkWidget *box;
-    GtkWidget *frame;
     GtkWidget *grid;
 
     gint i;
@@ -74,19 +72,70 @@ GlobalWidgets *g_wgs_init(GtkWidget *window)
     g_wgs = calloc(1,sizeof(GlobalWidgets));
 
 
+    /* Global horizontal box */
     g_wgs->winbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_container_add (GTK_CONTAINER (window), g_wgs->winbox);
-    //gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
 
 
-    frame = gtk_frame_new ("Search");
-    gtk_box_pack_start (GTK_BOX(g_wgs->winbox), frame, TRUE, TRUE, 10);
+    /* Frame with search criteria widgets */
+    tmp = gtk_frame_new ("Search");
+    gtk_box_pack_start (GTK_BOX(g_wgs->winbox), tmp, TRUE, TRUE, 10);
 
     grid = gtk_grid_new();
     gtk_widget_set_hexpand(grid, TRUE);
-    gtk_container_add(GTK_CONTAINER(frame), grid);
+    gtk_container_add(GTK_CONTAINER(tmp), grid);
 
 
+    /* Title entry */
+    tmp = gtk_label_new("Title:");
+    gtk_grid_attach(GTK_GRID(grid),
+                    GTK_WIDGET(tmp),
+                    1,
+                    1,
+                    1,
+                    1);
+    g_wgs->title_entry = GTK_ENTRY(gtk_entry_new());
+    gtk_grid_attach(GTK_GRID(grid),
+                    GTK_WIDGET(g_wgs->title_entry),
+                    2,
+                    1,
+                    1,
+                    1);
+
+    /* Artist entry */
+    tmp = gtk_label_new("Artist:");
+    gtk_grid_attach(GTK_GRID(grid),
+                    GTK_WIDGET(tmp),
+                    1,
+                    2,
+                    1,
+                    1);
+    g_wgs->artist_entry = GTK_ENTRY(gtk_entry_new());
+    gtk_grid_attach(GTK_GRID(grid),
+                    GTK_WIDGET(g_wgs->artist_entry),
+                    2,
+                    2,
+                    1,
+                    1);
+
+    /* Album entry */
+    tmp = gtk_label_new("Album:");
+    gtk_grid_attach(GTK_GRID(grid),
+                    GTK_WIDGET(tmp),
+                    1,
+                    3,
+                    1,
+                    1);
+    g_wgs->album_entry = GTK_ENTRY(gtk_entry_new());
+    gtk_grid_attach(GTK_GRID(grid),
+                    GTK_WIDGET(g_wgs->album_entry),
+                    2,
+                    3,
+                    1,
+                    1);
+
+
+    /* Instrument class buttons */
     for (i = 0; i < INSTR_CLASSES; i++) {
 
         /* Instrument classes label */
@@ -95,17 +144,17 @@ GlobalWidgets *g_wgs_init(GtkWidget *window)
         gtk_grid_attach(GTK_GRID(grid),
                         GTK_WIDGET(tmp),
                         1,
-                        1 + i,
+                        4 + i,
                         1,
                         1);
 
-        g_wgs->instr_buttons[i] = gtk_check_button_new();
+        g_wgs->instr_buttons[i] = GTK_BUTTON(gtk_check_button_new());
 
         /* Add instrument classes button */
         gtk_grid_attach(GTK_GRID(grid),
                         GTK_WIDGET(g_wgs->instr_buttons[i]),
-                        3,
-                        1 + i,
+                        2,
+                        4 + i,
                         1,
                         1);
     }
