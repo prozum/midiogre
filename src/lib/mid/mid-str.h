@@ -6,6 +6,7 @@
 #include "mid.h"
 
 extern const char *instruments[];
+extern const char *instrument_classes[];
 
 void print_header(mid_t *mid);
 void print_tracks(mid_t *mid);

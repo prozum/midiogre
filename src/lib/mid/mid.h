@@ -21,6 +21,7 @@
 
 #define FIRST_TRACK_POS  14
 #define CHANNELS         16
+#define INSTR_CLASSES    16
 #define INSTR_PER_CLASS  8
 
 /** Default tempo: 500,000 */

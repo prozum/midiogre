@@ -6,22 +6,20 @@
 int main(int argc, char *argv[])
 {
     GtkWidget *window;
+    GlobalWidgets *g_wgs;
     GtkWidget *box;
-    GtkWidget *songbox1, *songbox2, *songbox3;
 
-    song_t *song1, *song2, *song3;
+    Song *song1, *song2, *song3;
     SongRow *row1, *row2, *row3;
 
     gtk_init(&argc, &argv);
 
+    /* Setup window */
     window = window_init();
-    box = window_box_init(window);
 
-    /* Add list boxes */
-    songbox1 = songbox_new(box);
-    songbox2 = songbox_new(box);
-    songbox3 = songbox_new(box);
-    gtk_widget_show_all(box);
+    /* Setup global widgets */
+    g_wgs = g_wgs_init(window);
+
 
     song1 = song_new();
     song2 = song_new();
@@ -33,13 +31,13 @@ int main(int argc, char *argv[])
 
 
     gtk_widget_show (GTK_WIDGET (row1));
-    gtk_container_add (GTK_CONTAINER (songbox1), GTK_WIDGET (row1));
+    gtk_container_add (GTK_CONTAINER (g_wgs->songbox[0]), GTK_WIDGET (row1));
 
     gtk_widget_show (GTK_WIDGET (row2));
-    gtk_container_add (GTK_CONTAINER (songbox1), GTK_WIDGET (row2));
+    gtk_container_add (GTK_CONTAINER (g_wgs->songbox[1]), GTK_WIDGET (row2));
 
     gtk_widget_show (GTK_WIDGET (row3));
-    gtk_container_add (GTK_CONTAINER (songbox1), GTK_WIDGET (row3));
+    gtk_container_add (GTK_CONTAINER (g_wgs->songbox[2]), GTK_WIDGET (row3));
 
     gtk_main();
 

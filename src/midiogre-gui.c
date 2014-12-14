@@ -1,11 +1,14 @@
 #include "midiogre-gui.h"
 #include "midiogre-import.h"
+#include "midiogre-song.h"
 
+#include "mid/mid.h"
+#include "mid/mid-str.h"
 #include "pop/pop.h"
 
-#include <string.h>
-
 #include <gtk/gtk.h>
+
+#include <string.h>
 
 GtkWidget *window_init(void)
 {
@@ -58,23 +61,67 @@ GtkWidget *window_init(void)
     return window;
 }
 
-GtkWidget *window_box_init(GtkWidget *window)
+GlobalWidgets *g_wgs_init(GtkWidget *window)
 {
-    GtkWidget *box;
+    GlobalWidgets *g_wgs;
+    GtkWidget *tmp;
+    //GtkWidget *box;
     GtkWidget *frame;
-    GtkWidget *button;
+    GtkWidget *grid;
 
-    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_container_add (GTK_CONTAINER (window), box);
-    gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
+    gint i;
+
+    g_wgs = calloc(1,sizeof(GlobalWidgets));
+
+
+    g_wgs->winbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_container_add (GTK_CONTAINER (window), g_wgs->winbox);
+    //gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
 
 
     frame = gtk_frame_new ("Search");
-    gtk_box_pack_start (GTK_BOX(box), frame, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX(g_wgs->winbox), frame, TRUE, TRUE, 10);
 
-    button = gtk_check_button_new();
-    gtk_box_pack_start (GTK_BOX(box), button, FALSE, FALSE, 0);
+    grid = gtk_grid_new();
+    gtk_widget_set_hexpand(grid, TRUE);
+    gtk_container_add(GTK_CONTAINER(frame), grid);
 
-    return box;
+
+    for (i = 0; i < INSTR_CLASSES; i++) {
+
+        /* Instrument classes label */
+        tmp = gtk_label_new(instrument_classes[i]);
+        gtk_label_set_justify(GTK_LABEL(tmp), GTK_JUSTIFY_RIGHT);
+        gtk_grid_attach(GTK_GRID(grid),
+                        GTK_WIDGET(tmp),
+                        1,
+                        1 + i,
+                        1,
+                        1);
+
+        g_wgs->instr_buttons[i] = gtk_check_button_new();
+
+        /* Add instrument classes button */
+        gtk_grid_attach(GTK_GRID(grid),
+                        GTK_WIDGET(g_wgs->instr_buttons[i]),
+                        3,
+                        1 + i,
+                        1,
+                        1);
+    }
+
+    /* Add song boxes */
+    g_wgs->songbox[0] = songbox_new(g_wgs->winbox, "<span size=\"large\">Best Match</span>", (GtkListBoxSortFunc) song_row_sort);
+    g_wgs->songbox[1] = songbox_new(g_wgs->winbox, "<span size=\"large\">Random</span>", (GtkListBoxSortFunc)song_row_sort);
+    g_wgs->songbox[2] = songbox_new(g_wgs->winbox, "<span size=\"large\">Newest</span>", (GtkListBoxSortFunc)song_row_sort);
+
+    gtk_widget_show_all(g_wgs->winbox);
+
+
+
+
+
+    //gtk_box_pack_start (GTK_BOX(box), button, FALSE, FALSE, 0);
+
+    return g_wgs;
 }
-

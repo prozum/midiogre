@@ -135,6 +135,25 @@ const char *instruments[] = {
     "Gunshot"
 };
 
+const char *instrument_classes[] = {
+    "Piano",
+    "Chromatic Percussion",
+    "Organ",
+    "Guitar",
+    "Bass",
+    "Strings",
+    "Ensemble",
+    "Brass",
+    "Reed",
+    "Pipe",
+    "Synth Lead",
+    "Synth Pad",
+    "Synth effect",
+    "Ethnic",
+    "Percussion",
+    "Sound Effects"
+};
+
 void print_header(mid_t *mid)
 {
     printf("\n<###HEAD INFO###>\n");

@@ -5,38 +5,43 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct _SongRowPrivate
+G_DEFINE_TYPE(Song, song, G_TYPE_OBJECT);
+
+static void
+song_class_init(SongClass *klass)
 {
-    song_t *song;
+}
 
-    GtkLabel *title_label;
-    GtkLabel *artist_label;
-    GtkLabel *album_label;
-    GtkLabel *time_label;
+static void
+song_init (Song *song)
+{
+}
 
-    GtkButton *play_button;
-    GtkButton *playlist_button;
-    GtkButton *fav_button;
-};
 
 G_DEFINE_TYPE_WITH_PRIVATE(SongRow, song_row, GTK_TYPE_LIST_BOX_ROW);
 
 static void play_clicked(SongRow *row, GtkButton *button)
 {
-    row->priv->song->plays++;
+    SongRowPrivate *priv = row->priv;
+
+    priv->song->plays++;
 }
 
 static void playlist_clicked(SongRow *row, GtkButton *button)
 {
-    row->priv->song->plays++;
+    SongRowPrivate *priv = row->priv;
+
+    priv->song->plays++;
 }
 
 static void fav_clicked(SongRow *row, GtkButton *button)
 {
-  row->priv->song->plays++;
+    SongRowPrivate *priv = row->priv;
+
+    priv->song->plays++;
 }
 
-static int song_row_sort(SongRow *a, SongRow *b, gpointer data)
+int song_row_sort(SongRow *a, SongRow *b, gpointer data)
 {
     return a->priv->song->time_added - b->priv->song->time_added;
 }
@@ -46,9 +51,9 @@ static void song_row_update(SongRow *row)
 {
     SongRowPrivate *priv = row->priv;
 
-    gtk_label_set_text (priv->title_label, priv->song->title);
-    gtk_label_set_text (priv->album_label, priv->song->album);
-    gtk_label_set_text (priv->artist_label, priv->song->artist);
+    gtk_label_set_text(priv->title_label, priv->song->title);
+    gtk_label_set_text(priv->album_label, priv->song->album);
+    gtk_label_set_text(priv->artist_label, priv->song->artist);
 }
 
 static void song_row_class_init(SongRowClass *klass)
@@ -72,16 +77,34 @@ static void song_row_class_init(SongRowClass *klass)
 
 }
 
-static void song_row_init (SongRow *row)
+static void song_row_init(SongRow *row)
 {
     row->priv = song_row_get_instance_private(row);
 
-    gtk_widget_init_template (GTK_WIDGET(row));
+    gtk_widget_init_template(GTK_WIDGET(row));
 }
 
-GtkWidget *songbox_new(GtkWidget *box)
+GtkWidget *songbox_new(GtkWidget *winbox, char *title, GtkListBoxSortFunc sort_func)
 {
-    GtkWidget *scrolled, *listbox;
+    GtkWidget *box, *label;
+    GtkWidget *separator, *scrolled, *listbox;
+
+    /* Add seperator */
+    separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+    gtk_box_pack_start(GTK_BOX(winbox), separator, FALSE, FALSE, 0);
+
+    /* Box for songbox widgets */
+    box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_box_pack_start(GTK_BOX(winbox), box, TRUE, TRUE, 0);
+
+    /* Add title */
+    label = gtk_label_new(NULL);
+    gtk_label_set_markup(label, title);
+    gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+
+    /* Add seperator */
+    separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+    gtk_box_pack_start(GTK_BOX(box), separator, FALSE, FALSE, 0);
 
     /* Add scroll container */
     scrolled = gtk_scrolled_window_new(NULL, NULL);
@@ -89,24 +112,24 @@ GtkWidget *songbox_new(GtkWidget *box)
 
     /* Setup listbox */
     listbox = gtk_list_box_new();
-    gtk_list_box_set_sort_func(GTK_LIST_BOX(listbox), (GtkListBoxSortFunc)song_row_sort, listbox, NULL);
+    gtk_list_box_set_sort_func(GTK_LIST_BOX(listbox), sort_func, listbox, NULL);
 
     /* Add listbox to scroll container */
     gtk_container_add(GTK_CONTAINER (scrolled), listbox);
-    gtk_box_pack_start(GTK_BOX(box), scrolled, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box), scrolled, TRUE, TRUE, 0);
 
     return listbox;
 }
 
-song_t *song_new(void)
+Song *song_new(void)
 {
-    song_t *song;
+    Song *song;
 
-    song = calloc(1,sizeof(song_t));
+    song = g_object_new (song_get_type (), NULL);
 
     strcpy(song->album, "Best Album");
     strcpy(song->artist, "Worst Artist");
-    song->track_num = 1;
+    song->num = 1;
     strcpy(song->title, "\"Midiogre\" Title");
     song->length = 400;
     //song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -116,7 +139,7 @@ song_t *song_new(void)
     return song;
 }
 
-SongRow *song_row_new(song_t *song)
+SongRow *song_row_new(Song *song)
 {
     SongRow *row;
 

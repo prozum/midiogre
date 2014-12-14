@@ -2,25 +2,15 @@
 
 #include <mid/mid.h>
 #include <ext/ext.h>
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <pop/pop.h>
 
 #include <glib.h>
 #include <libgen.h>
 #include <sqlite3.h>
 
-int callback(void *data, int argc, char **argv, char **azColName)
-{
-    int i;
-    for(i = 0; i < argc; i++) {
-        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-    }
-    putchar('\n');
-
-    return 0;
-}
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 int database_open_error (int rc, sqlite3 *db)
 {
@@ -84,7 +74,7 @@ int db_init(sqlite3 *db)
           "`addr`                  VARCHAR(1024) DEFAULT \'N/A\');";
 
     /* Execute SQL statement */
-    rc = sqlite3_exec(db, sql, callback, 0, &error);
+    rc = sqlite3_exec(db, sql, NULL, 0, &error);
 
     /* Table error check */
     database_general_error(rc, error, 1);
@@ -151,7 +141,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
                           time,
                           mid_addr);
 
-    rc = sqlite3_exec(db, sql, callback, 0, &error);
+    rc = sqlite3_exec(db, sql, NULL, 0, &error);
     free(sql);
 
     database_general_error(rc, error, 2);
@@ -159,8 +149,35 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     return rc;
 }
 
+int db_song_handler(void *s, int argc, char **argv, char **col_name)
+{
+    int i;
+    song_t *songs = s;
+
+    //songs = malloc(sizeof(arg));
+
+
+    for(i = 0; i < argc; i++) {
+        printf("%s = %s\n", col_name[i], argv[i] ? argv[i] : "NULL");
+    }
+    putchar('\n');
+
+    return 0;
+}
+
+int db_export_songs(sqlite3 *db, song_t *songs)
+{
+    char *sql, *error = 0;
+
+    sql = "SELECT * FROM songs";
+
+    sqlite3_exec(db, sql, db_song_handler, songs, &error);
+
+    return 0;
+}
+
 /* Parse file name for song data */
-void parse_filename (char *file_name, char *artist, char *album, int *track_num, char *track_name)
+void parse_filename (char *file_name, char *artist, char *album, unsigned *num, char *title)
 {
     char *file_pnt;
 
@@ -170,16 +187,15 @@ void parse_filename (char *file_name, char *artist, char *album, int *track_num,
     /* Removes file extension from last string */
     file_pnt[strlen(file_pnt)-4] = '\0';
 
-    if (4 != sscanf(file_pnt, "%[^-]- %[^-]- %d- %s",
+    if (4 != sscanf(file_pnt, "%[^-]- %[^-]- %u- %s",
                     artist,
                     album,
-                    track_num,
-                    track_name)) {
+                    num,
+                    title)) {
 
-        strcpy(track_name, file_pnt);
+        strcpy(title, file_pnt);
         strcpy(artist, "N/A");
         strcpy(album, "N/A");
-        *track_num = 0;
+        *num = 0;
     }
-
 }

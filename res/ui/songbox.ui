@@ -161,7 +161,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_underline">True</property>
                 <property name="always_show_image">True</property>
-                <signal name="clicked" handler="play_clicked" swapped="no"/>
+                <signal name="clicked" handler="play_clicked" swapped="yes"/>
                 <child>
                   <object class="GtkImage" id="image1">
                     <property name="visible">True</property>
@@ -182,7 +182,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="playlist_clicked" swapped="no"/>
+                <signal name="clicked" handler="playlist_clicked" swapped="yes"/>
                 <child>
                   <object class="GtkImage" id="image2">
                     <property name="visible">True</property>
@@ -203,7 +203,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="fav_clicked" swapped="no"/>
+                <signal name="clicked" handler="fav_clicked" swapped="yes"/>
                 <child>
                   <object class="GtkImage" id="image3">
                     <property name="visible">True</property>

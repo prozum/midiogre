@@ -260,5 +260,4 @@ void folder_chooser(GtkWindow *window)
 
     }
 
-
 }
