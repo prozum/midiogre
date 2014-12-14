@@ -1,5 +1,5 @@
 #include "midiogre-gui.h"
-#include "midiogre-mid.h"
+#include "midiogre-song.h"
 
 #include <gtk/gtk.h>
 

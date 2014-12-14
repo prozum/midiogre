@@ -1,5 +1,5 @@
 # Convert resources to c
-add_custom_target(GenerateRessources
+add_custom_target(GenerateRessourcesGinfo
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                   COMMAND ${GLIB_COMPILE_RESOURCES} --generate-source --target=${CMAKE_CURRENT_SOURCE_DIR}/ginfo-res.c ginfo.gresource.xml)
 
@@ -11,7 +11,7 @@ add_executable(ginfo
     ginfo-res.c
     ginfo-mid.c)
 
-add_dependencies(ginfo GenerateRessources)
+add_dependencies(ginfo GenerateRessourcesGinfo)
 
 # Link
 target_link_libraries(ginfo

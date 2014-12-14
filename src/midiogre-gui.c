@@ -1,5 +1,5 @@
 #include "midiogre-gui.h"
-#include "midiogre-mid.h"
+#include "midiogre-import.h"
 
 #include "pop/pop.h"
 
@@ -29,7 +29,7 @@ GtkWidget *window_init(void)
 
     /* Setup folder button */
     button = gtk_button_new ();
-    gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_icon_name ("document-open-symbolic.symbolic", GTK_ICON_SIZE_BUTTON));
+    gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_resource("/org/prozum/midiogre/document-open-symbolic.symbolic.png"));
     gtk_header_bar_pack_end (GTK_HEADER_BAR (header), button);
 
     g_signal_connect_swapped(button, "clicked", G_CALLBACK (folder_chooser), window);
@@ -40,15 +40,15 @@ GtkWidget *window_init(void)
     gtk_style_context_add_class (gtk_widget_get_style_context (box), "linked");
 
     button = gtk_button_new ();
-    gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_icon_name ("media-skip-backward-symbolic.symbolic", GTK_ICON_SIZE_BUTTON));
+    gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_resource("/org/prozum/midiogre/media-skip-backward-symbolic.symbolic.png"));
     gtk_container_add (GTK_CONTAINER (box), button);
 
     button = gtk_button_new ();
-    gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_icon_name ("media-playback-start-symbolic.symbolic", GTK_ICON_SIZE_BUTTON));
+    gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_resource("/org/prozum/midiogre/media-playback-start-symbolic.symbolic.png"));
     gtk_container_add (GTK_CONTAINER (box), button);
 
     button = gtk_button_new ();
-    gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_icon_name ("media-skip-forward-symbolic.symbolic", GTK_ICON_SIZE_BUTTON));
+    gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_resource("/org/prozum/midiogre/media-skip-forward-symbolic.symbolic.png"));
     gtk_container_add (GTK_CONTAINER (box), button);
 
     gtk_header_bar_pack_start (GTK_HEADER_BAR (header), box);
@@ -76,51 +76,5 @@ GtkWidget *window_box_init(GtkWidget *window)
     gtk_box_pack_start (GTK_BOX(box), button, FALSE, FALSE, 0);
 
     return box;
-}
-
-GtkWidget *listbox_new(GtkWidget *box)
-{
-    GtkWidget *scrolled, *listbox;
-
-    scrolled = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-
-    listbox = gtk_list_box_new();
-
-    gtk_container_add(GTK_CONTAINER (scrolled), listbox);
-
-    gtk_box_pack_start(GTK_BOX(box), scrolled, FALSE, FALSE, 0);
-
-    return listbox;
-}
-
-
-song_t *song_new(void)
-{
-    song_t *song;
-
-    song = calloc(1,sizeof(song_t));
-
-    strcpy(song->album, "Best Album");
-    strcpy(song->artist, "Worst Artist");
-    song->track_num = 1;
-    strcpy(song->title, "\"Midiogre\" Title");
-    song->length = 400;
-    //song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    song->plays =500;
-    song->time_added = 100000;
-
-    return song;
-}
-
-GtkWidget *song_row_new(song_t *song)
-{
-    GtkWidget* SongBox;
-
-    SongBox = gtk_list_box_row_new();
-
-
-    //row->priv->song = song;
-    return SongBox;
 }
 

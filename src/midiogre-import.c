@@ -1,6 +1,6 @@
 #define _GNU_SOURCE
 
-#include "midiogre-mid.h"
+#include "midiogre-import.h"
 
 #include <list/list.h>
 #include <db/db.h>
@@ -170,7 +170,7 @@ gboolean progress_dialog_update(gpointer s)
     frac = (float)status->i / (float)status->n;
     gtk_progress_bar_set_fraction(status->progress_bar, frac);
 
-    tmp = g_strdup_printf("%d of %d mid files imported...", status->i, status->n);
+    tmp = g_strdup_printf("%d of %d files imported", status->i, status->n);
     gtk_progress_bar_set_text(status->progress_bar, tmp);
     g_free(tmp);
 
@@ -197,7 +197,7 @@ ProgressStatus *progress_dialog(GtkWindow *window, GQueue *queue)
                                      GTK_DIALOG_DESTROY_WITH_PARENT,
                                      GTK_MESSAGE_INFO,
                                      GTK_BUTTONS_OK,
-                                     "Importing mid files");
+                                     "Importing files");
 
     g_signal_connect (status->dialog, "response",
                       G_CALLBACK(gtk_widget_destroy), status->dialog);
@@ -257,7 +257,6 @@ void folder_chooser(GtkWindow *window)
 
         /* Import mid files */
         g_thread_new("mid_import", mid_import, status);
-        //mid_import(mid_addrs, status);
 
     }
 
