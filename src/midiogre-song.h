@@ -72,7 +72,7 @@ struct _SongRowPrivate
 GType      song_get_type(void) G_GNUC_CONST;
 GType      song_row_get_type(void) G_GNUC_CONST;
 
-GtkWidget *songbox_new(GtkWidget *winbox, char *title, GtkListBoxSortFunc sort_func);
+GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func);
 Song *song_new(void);
 SongRow *song_row_new(Song *song);
 

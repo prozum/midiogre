@@ -84,27 +84,27 @@ static void song_row_init(SongRow *row)
     gtk_widget_init_template(GTK_WIDGET(row));
 }
 
-GtkWidget *songbox_new(GtkWidget *winbox, char *title, GtkListBoxSortFunc sort_func)
+GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func)
 {
     GtkWidget *box, *label;
     GtkWidget *separator, *scrolled, *listbox;
 
     /* Add seperator */
     separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
-    gtk_box_pack_start(GTK_BOX(winbox), separator, FALSE, FALSE, 0);
+    gtk_box_pack_start(winbox, separator, FALSE, FALSE, 0);
 
     /* Box for songbox widgets */
     box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_box_pack_start(GTK_BOX(winbox), box, TRUE, TRUE, 0);
+    gtk_box_pack_start(winbox, box, TRUE, TRUE, 0);
 
     /* Add title */
     label = gtk_label_new(NULL);
     gtk_label_set_markup(label, title);
-    gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+    gtk_box_pack_start(box, label, FALSE, FALSE, 0);
 
     /* Add seperator */
     separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-    gtk_box_pack_start(GTK_BOX(box), separator, FALSE, FALSE, 0);
+    gtk_box_pack_start(box, separator, FALSE, FALSE, 0);
 
     /* Add scroll container */
     scrolled = gtk_scrolled_window_new(NULL, NULL);
@@ -116,7 +116,7 @@ GtkWidget *songbox_new(GtkWidget *winbox, char *title, GtkListBoxSortFunc sort_f
 
     /* Add listbox to scroll container */
     gtk_container_add(GTK_CONTAINER (scrolled), listbox);
-    gtk_box_pack_start(GTK_BOX(box), scrolled, TRUE, TRUE, 0);
+    gtk_box_pack_start(box, scrolled, TRUE, TRUE, 0);
 
     return listbox;
 }

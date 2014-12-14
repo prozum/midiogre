@@ -64,8 +64,9 @@ GtkWidget *window_init(void)
 GlobalWidgets *g_wgs_init(GtkWidget *window)
 {
     GlobalWidgets *g_wgs;
-    GtkWidget *tmp;
-    GtkWidget *grid;
+    GtkBox *box;
+    GtkWidget *label,*frame;
+    GtkWidget *align;
 
     gint i;
 
@@ -73,98 +74,95 @@ GlobalWidgets *g_wgs_init(GtkWidget *window)
 
 
     /* Global horizontal box */
-    g_wgs->winbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_container_add (GTK_CONTAINER (window), g_wgs->winbox);
+    g_wgs->win_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+    gtk_container_add (GTK_CONTAINER (window), GTK_WIDGET(g_wgs->win_box));
 
 
     /* Frame with search criteria widgets */
-    tmp = gtk_frame_new ("Search");
-    gtk_box_pack_start (GTK_BOX(g_wgs->winbox), tmp, TRUE, TRUE, 10);
-
-    grid = gtk_grid_new();
-    gtk_widget_set_hexpand(grid, TRUE);
-    gtk_container_add(GTK_CONTAINER(tmp), grid);
+    frame = gtk_frame_new("Search");
+    gtk_box_pack_start(g_wgs->win_box, frame, FALSE, FALSE, 10);
+    g_wgs->search_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 10));
+    gtk_container_set_border_width(GTK_CONTAINER(g_wgs->search_box), 20);
+    gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(g_wgs->search_box));
+    gtk_widget_set_size_request(frame, 280, 0);
 
 
     /* Title entry */
-    tmp = gtk_label_new("Title:");
-    gtk_grid_attach(GTK_GRID(grid),
-                    GTK_WIDGET(tmp),
-                    1,
-                    1,
-                    1,
-                    1);
+    box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+    gtk_box_pack_start(g_wgs->search_box, GTK_WIDGET(box), FALSE, FALSE, 0);
+
+    label = gtk_label_new("Title");
+    gtk_box_pack_start(box, label, FALSE, FALSE, 0);
+
+    align = gtk_alignment_new(1,0,1,0);
+    gtk_box_pack_start(box, align, TRUE, TRUE, 0);
+
     g_wgs->title_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_grid_attach(GTK_GRID(grid),
-                    GTK_WIDGET(g_wgs->title_entry),
-                    2,
-                    1,
-                    1,
-                    1);
+    gtk_box_pack_start(box, GTK_WIDGET(g_wgs->title_entry), FALSE, FALSE, 0);
+
 
     /* Artist entry */
-    tmp = gtk_label_new("Artist:");
-    gtk_grid_attach(GTK_GRID(grid),
-                    GTK_WIDGET(tmp),
-                    1,
-                    2,
-                    1,
-                    1);
+    box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+    gtk_box_pack_start(g_wgs->search_box, GTK_WIDGET(box), FALSE, FALSE, 0);
+
+    label = gtk_label_new("Artist");
+    gtk_box_pack_start(box, label, FALSE, FALSE, 0);
+
+    align = gtk_alignment_new(1,0,1,0);
+    gtk_box_pack_start(box, align, TRUE, TRUE, 0);
+
     g_wgs->artist_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_grid_attach(GTK_GRID(grid),
-                    GTK_WIDGET(g_wgs->artist_entry),
-                    2,
-                    2,
-                    1,
-                    1);
+    gtk_box_pack_start(box, GTK_WIDGET(g_wgs->artist_entry), FALSE, FALSE, 0);
+
 
     /* Album entry */
-    tmp = gtk_label_new("Album:");
-    gtk_grid_attach(GTK_GRID(grid),
-                    GTK_WIDGET(tmp),
-                    1,
-                    3,
-                    1,
-                    1);
+    box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+    gtk_box_pack_start(g_wgs->search_box, GTK_WIDGET(box), FALSE, FALSE, 0);
+
+    label = gtk_label_new("Album");
+    gtk_box_pack_start(box, label, FALSE, FALSE, 0);
+
+    align = gtk_alignment_new(1,0,1,0);
+    gtk_box_pack_start(box, align, TRUE, TRUE, 0);
+
     g_wgs->album_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_grid_attach(GTK_GRID(grid),
-                    GTK_WIDGET(g_wgs->album_entry),
-                    2,
-                    3,
-                    1,
-                    1);
+    gtk_box_pack_start(box, GTK_WIDGET(g_wgs->album_entry), FALSE, FALSE, 0);
 
 
     /* Instrument class buttons */
+    frame = gtk_frame_new("Instrument Classes");
+    gtk_box_pack_start(g_wgs->search_box, frame, FALSE, FALSE, 0);
+    g_wgs->instr_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
+    gtk_container_set_border_width(GTK_CONTAINER(g_wgs->instr_box), 20);
+    gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(g_wgs->instr_box));
+
     for (i = 0; i < INSTR_CLASSES; i++) {
 
-        /* Instrument classes label */
-        tmp = gtk_label_new(instrument_classes[i]);
-        gtk_label_set_justify(GTK_LABEL(tmp), GTK_JUSTIFY_RIGHT);
-        gtk_grid_attach(GTK_GRID(grid),
-                        GTK_WIDGET(tmp),
-                        1,
-                        4 + i,
-                        1,
-                        1);
+        box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+        gtk_box_pack_start(g_wgs->instr_box, GTK_WIDGET(box), FALSE, FALSE, 0);
+
+        label = gtk_label_new(instrument_classes[i]);
+        gtk_box_pack_start(box, label, FALSE, FALSE, 0);
+
+        align = gtk_alignment_new(1,0,1,0);
+        gtk_box_pack_start(box, align, TRUE, TRUE, 0);
 
         g_wgs->instr_buttons[i] = GTK_BUTTON(gtk_check_button_new());
+        gtk_box_pack_start(box, GTK_WIDGET(g_wgs->instr_buttons[i]), FALSE, FALSE, 0);
 
         /* Add instrument classes button */
-        gtk_grid_attach(GTK_GRID(grid),
-                        GTK_WIDGET(g_wgs->instr_buttons[i]),
-                        2,
-                        4 + i,
-                        1,
-                        1);
     }
 
-    /* Add song boxes */
-    g_wgs->songbox[0] = songbox_new(g_wgs->winbox, "<span size=\"large\">Best Match</span>", (GtkListBoxSortFunc) song_row_sort);
-    g_wgs->songbox[1] = songbox_new(g_wgs->winbox, "<span size=\"large\">Random</span>", (GtkListBoxSortFunc)song_row_sort);
-    g_wgs->songbox[2] = songbox_new(g_wgs->winbox, "<span size=\"large\">Newest</span>", (GtkListBoxSortFunc)song_row_sort);
+    /* Search button */
+    g_wgs->search_button = GTK_BUTTON(gtk_button_new_with_label("Search"));
+    gtk_box_pack_start(g_wgs->search_box, GTK_WIDGET(g_wgs->search_button), FALSE, FALSE, 0);
 
-    gtk_widget_show_all(g_wgs->winbox);
+    /* Add song boxes */
+    g_wgs->songbox[0] = songbox_new(g_wgs->win_box, "<span size=\"large\">Best Match</span>", (GtkListBoxSortFunc) song_row_sort);
+    g_wgs->songbox[1] = songbox_new(g_wgs->win_box, "<span size=\"large\">Random</span>", (GtkListBoxSortFunc)song_row_sort);
+    g_wgs->songbox[2] = songbox_new(g_wgs->win_box, "<span size=\"large\">Newest</span>", (GtkListBoxSortFunc)song_row_sort);
+
+    gtk_widget_show_all(GTK_WIDGET(g_wgs->win_box));
 
 
 
