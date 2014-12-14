@@ -22,6 +22,8 @@ double song_score(unsigned int plays, unsigned int upload_time, unsigned int min
         max_play = MAX_PLAYS;
     }
 
+    age = calcAge(upload_time);
+
     /* Returns a score of 0 if the song does not meet the required conditions */
     if(plays < min_play) {
         return 0;
@@ -31,9 +33,9 @@ double song_score(unsigned int plays, unsigned int upload_time, unsigned int min
         return 0;
     } else if(plays > MAX_PLAYS) {
         return 0;
+    } else if(age == 0) {
+        return 0;
     }
-
-    age = calcAge(upload_time);
 
     play_rating = max_play - plays;
 
