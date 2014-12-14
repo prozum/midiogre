@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+    <gresource prefix="/org/prozum/midiogre">
+        <file preprocess="xml-stripblanks">ui/songbox.ui</file>
+        <file alias="document-open-symbolic.symbolic.png" preprocess="to-pixdata">icons/document-open-symbolic.symbolic.png</file>
+        <file alias="list-add-symbolic.symbolic.png" preprocess="to-pixdata">icons/list-add-symbolic.symbolic.png</file>
+        <file alias="media-playback-start-symbolic.symbolic.png" preprocess="to-pixdata">icons/media-playback-start-symbolic.symbolic.png</file>
+        <file alias="media-playback-pause-symbolic.symbolic.png" preprocess="to-pixdata">icons/media-playback-pause-symbolic.symbolic.png</file>
+        <file alias="media-skip-backward-symbolic.symbolic.png" preprocess="to-pixdata">icons/media-skip-backward-symbolic.symbolic.png</file>
+        <file alias="media-skip-forward-symbolic.symbolic.png" preprocess="to-pixdata">icons/media-skip-forward-symbolic.symbolic.png</file>
+        <file alias="star-new-symbolic.symbolic.png" preprocess="to-pixdata">icons/star-new-symbolic.symbolic.png</file>
+    </gresource>
+</gresources>
