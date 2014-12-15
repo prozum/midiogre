@@ -153,8 +153,6 @@ int db_song_handler(void *s, int argc, char **argv, char **col_name)
     int i;
     song_t *songs = s;
 
-    //songs = malloc(sizeof(arg));
-
 
     for(i = 0; i < argc; i++) {
         printf("%s = %s\n", col_name[i], argv[i] ? argv[i] : "NULL");
