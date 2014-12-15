@@ -19,13 +19,16 @@ typedef enum {
     LIST_END
 } list_whence_t;
 
+/** Struct
+ *
+ */
 typedef struct {
-    void  *ptr;
-    void  *cur;
-    void  *end;
-    size_t i;
-    size_t n;
-    size_t size;
+    void *ptr;   /**< Points to first element          */
+    void *cur;   /**< Points to current element        */
+    void *end;   /**< Points to last element           */
+    size_t i;    /**< Numeric value of current element */
+    size_t n;    /**< Ammount of elements              */
+    size_t size; /**< Size of elements                 */
 } list_t;
 
 list_t *list_create(size_t n, size_t size);

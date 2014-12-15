@@ -1,3 +1,4 @@
+/** @db.h*/
 #include <sqlite3.h>
 
 #include <stdlib.h>
@@ -8,15 +9,21 @@
 #define ALBUM_MAX_NAME 64
 #define TITLE_MAX_NAME 64
 
+/** Struct
+ *
+ *  Struct containing database variables
+ *
+ */
+
 typedef struct {
-    char artist[ARTIST_MAX_NAME];
-    char album[ALBUM_MAX_NAME];
-    char title[TITLE_MAX_NAME];
-    uint32_t num;
-    uint32_t length;
-    uint32_t plays;
-    uint8_t fingerprint[21];
-    uint32_t time_added;
+    char artist[ARTIST_MAX_NAME]; /**< Name of artist    */
+    char album[ALBUM_MAX_NAME];   /**< Name of album     */
+    char title[TITLE_MAX_NAME];   /**< Name of song      */
+    uint32_t num;                 /**< Track number      */
+    uint32_t length;              /**< Length of song    */
+    uint32_t plays;               /**< Number of plays   */
+    uint8_t fingerprint[21];      /**< Fingerprint value */
+    uint32_t time_added;          /**< Time when added   */
 } song_t;
 
 int database_open_error (int rc, sqlite3 *db);

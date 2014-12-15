@@ -12,17 +12,17 @@
 #include <stddef.h>
 #endif
 
-#define HEADER_SIGNATURE 0x4D546864
-#define HEADER_LENGTH    0x00000006
-#define HEADER_BYTES     10
-#define TRACK_SIGNATURE  0x4D54726b
-#define TRACK_BYTES      8
+#define HEADER_SIGNATURE 0x4D546864 /**< Used to verify first 4 bytes in a midi file */
+#define HEADER_LENGTH    0x00000006 /**< Length of header in a midi file             */
+#define HEADER_BYTES     10         /**< Ammount of bytes in header                  */
+#define TRACK_SIGNATURE  0x4D54726b /**< Used to verify track chunk                  */
+#define TRACK_BYTES      8          /**< Ammount of track bytes                      */
 
 
-#define FIRST_TRACK_POS  14
-#define CHANNELS         16
-#define INSTR_CLASSES    16
-#define INSTR_PER_CLASS  8
+#define FIRST_TRACK_POS  14 /**< Position of first track in a midi file */
+#define CHANNELS         16 /**< Ammount of channels in a midi file     */
+#define INSTR_CLASSES    16 /**< Ammount of instrument clases           */
+#define INSTR_PER_CLASS  8  /**< Ammount of instruments per class       */
 
 /** Default tempo: 500,000 */
 #define SET_TEMPO_DEFAULT 0x07a120
@@ -339,6 +339,12 @@ typedef enum
     GUNSHOT
 } instr_t;
 
+/** Enum containing instrument classes
+ *
+ *  Instruments are divided in to groups with similar instruments
+ *
+ */
+
 typedef enum
 {
     PIANO                   = 0x0,
@@ -359,43 +365,62 @@ typedef enum
     SOUND_EFFECTS           = 0xF
 } instr_class_t;
 
+/** Struct containing midi events
+ *
+ */
 
 typedef struct event_s
 {
-    msg_t   msg;      /**< Event message              */
-    uint8_t chan;     /**< Event channel              */
-    uint8_t byte_1;   /**< First data byte            */
-    uint8_t byte_2;   /**< Second data byte           */
-    uint32_t delta;    /**< Delta ticks                */
-    double time;    /**< Total ticks                */
-    list_t *data;     /**< List for sysex/meta data   */
+    msg_t   msg;    /**< Event message            */
+    uint8_t chan;   /**< Event channel            */
+    uint8_t byte_1; /**< First data byte          */
+    uint8_t byte_2; /**< Second data byte         */
+    uint32_t delta; /**< Delta ticks              */
+    double time;    /**< Total ticks              */
+    list_t *data;   /**< List for sysex/meta data */
 } event_t;
 
+/** Struct containing track data and events
+ *
+ */
 typedef struct track_s
 {
-    uint32_t bytes;  /**< Track length in bytes     */
-    list_t *events;  /**< Events list               */
+    uint32_t bytes;  /**< Track length in bytes */
+    list_t *events;  /**< Events list           */
 } track_t;
 
+/** Struct containing data of a midi file
+ *
+ */
 typedef struct mid_s
 {
-    fmt_t format;       /**< Midi format       */
-    uint16_t division;  /**< Time division     */
-    list_t *tracks;     /**< Tracks list       */
+    fmt_t format;       /**< Midi format   */
+    uint16_t division;  /**< Time division */
+    list_t *tracks;     /**< Tracks list   */
 } mid_t;
 
-
+/** Opens the midi file */
 mid_t *read_mid(FILE *file);
+
+/** Reads tracks in midi file and loads to track_s struct */
 int read_tracks(list_t *data, uint16_t division, list_t *tracks);
+
+/** Reads events in midi file and loads to event_s struct */
 int read_events(list_t *data, uint16_t division, uint32_t start_tempo, list_t *events);
 
+/** Finds start tempo */
 uint32_t find_start_tempo(uint8_t *data, uint32_t bytes);
+
+/** counts ammount of events */
 uint32_t count_events(uint8_t *data, uint32_t len);
 
+/** Merges tracks to a single track */
 mid_t *merge_tracks(mid_t *mid);
 
+/** Writes to midi file */
 void write_mid(FILE *file, mid_t *mid);
 
+/** Frees midi file from memory */
 void free_mid(mid_t *mid);
 
 #endif
