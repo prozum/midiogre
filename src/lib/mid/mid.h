@@ -341,22 +341,22 @@ typedef enum
 
 typedef enum
 {
-    PIANO                   = 0x00,
-    CHROMATIC_PERCUSSION    = 0x01,
-    ORGAN                   = 0x02,
-    GUITAR                  = 0x03,
-    BASS                    = 0x04,
-    STRINGS                 = 0x05,
-    ENSEMBLE                = 0x06,
-    BRASS                   = 0x07,
-    REED                    = 0x08,
-    PIPE                    = 0x09,
-    SYNTH_LEAD              = 0x0A,
-    SYNTH_PAD               = 0x0B,
-    SYNTH_EFFECT            = 0x0C,
-    ETHNIC                  = 0x0D,
-    PERCUSSION              = 0x0E,
-    SOUND_EFFECTS           = 0x0F
+    PIANO                   = 0x0,
+    CHROMATIC_PERCUSSION    = 0x1,
+    ORGAN                   = 0x2,
+    GUITAR                  = 0x3,
+    BASS                    = 0x4,
+    STRINGS                 = 0x5,
+    ENSEMBLE                = 0x6,
+    BRASS                   = 0x7,
+    REED                    = 0x8,
+    PIPE                    = 0x9,
+    SYNTH_LEAD              = 0xA,
+    SYNTH_PAD               = 0xB,
+    SYNTH_EFFECT            = 0xC,
+    ETHNIC                  = 0xD,
+    PERCUSSION              = 0xE,
+    SOUND_EFFECTS           = 0xF
 } instr_class_t;
 
 

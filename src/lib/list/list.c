@@ -12,11 +12,15 @@ list_t *list_create(size_t n, size_t size)
      * since arithmetic on void pointers are undefined */
     unsigned char *tmp;
 
-    /* Return NULL if size is invalid or malloc fails */
-    if (size == 0 || (list = malloc(sizeof(list_t))) == NULL) {
-
+    /* Return NULL if size is invalid */
+    if (size == 0) {
         return NULL;
     };
+
+    /* Return NULL if malloc fails */
+    if ((list = malloc(sizeof(list_t))) == NULL) {
+        return NULL;
+    }
 
     /* Allocate memory if list contains items */
     if (n > 0) {

@@ -34,8 +34,12 @@ int main(int argc, char* argv[])
 
     printf("\n\n\nThe sum  of bitmap is: %i\n",bitmap);
 
-    printf("\n");
-    bitmapext(bitmap,15);
+    /* Check for piano and guitar */
+    bitmapext(bitmap, PIANO + GUITAR);
+
+    /* Free mid */
+    free_mid(mid);
+
     return 0;
 }
 

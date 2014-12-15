@@ -61,6 +61,9 @@ mid_t *read_mid(FILE *file)
         return NULL;
     }
 
+    /* Free mid file data */
+    list_free(data);
+
     return mid;
 }
 
@@ -644,10 +647,16 @@ void free_mid(mid_t *mid)
     track_t *track;
     event_t *event;
 
+    /* Reset tracks list */
+    list_set(mid->tracks, 0, LIST_FORW, LIST_BEG);
+
     /* For each track */
     while ((track = list_next(mid->tracks)) != NULL) {
-        
-        /* For message in track */
+
+        /* Reset events list */
+        list_set(track->events, 0, LIST_FORW, LIST_BEG);
+
+        /* For events in track */
         while ((event = list_next(track->events)) != NULL) {
 
             /* If meta message or sysex */
@@ -662,7 +671,7 @@ void free_mid(mid_t *mid)
         list_free(track->events);
     }
     /* Deallocate tracks */
-    free(mid->tracks);
+    list_free(mid->tracks);
 
     /* Deallocate mid */
     free(mid);
