@@ -177,7 +177,7 @@ gboolean progress_dialog_update(gpointer s)
     } else {
 
         gtk_progress_bar_set_fraction(status->progress_bar, 1);
-        tmp = g_strdup_printf("No mid files in folder!", status->i, status->n);
+        tmp = g_strdup_printf("No mid files in folder!");
     }
 
     gtk_progress_bar_set_text(status->progress_bar, tmp);
