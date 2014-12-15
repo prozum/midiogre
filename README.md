@@ -3,35 +3,6 @@
 
 midiogre
 ========
-- Connecting ogres
-- *Get ogre it*
-- *It'll be ogre before you know it.*
-- *Let's get this ogre with*
-- Build for ogres ahead
-- Touch the ogre
-- Born to ogre
-- Applying ogre
-- Play the ogre
-- Never ogre
-- The way to ogre
-- A breath of fresh ogre
-- The power of ogre
-- The joy of ogre
-- Exceed your ogre
-- The life you ogre
-- Like no ogre
-- Life's ogre
-- Choose ogre
-- On ogre
-- Bringing ogre to life
-- Pure ogre
-- Ogre you can use
-- Ogre your way
-- The ogre for everyone
-- Now presenting the new eyeOgre
-- The way it's meant to be ogred
-
-Ogres are not included.
 
 Dependencies
 --------------------
@@ -42,7 +13,7 @@ Dependencies
 
 Compile Instructions
 --------------------
-Midiogre uses CMake as build system.
+Midiogre uses CMake as the build system.
 
 Here is a description of Midiogres CMake arguments:
 
@@ -54,7 +25,7 @@ CMake Argument  | Default Value | Meaning
 -DDOC           |       1       | Build Documentation
 
 ### Compile Example
-So to install Midiogre to */home/user/midiogre* without samples you could do the following:
+So to install Midiogre to */home/user/midiogre* without including the samples you could do the following:
 
 ```bash
 git clone git@github.com:prozum/midiogre.git 
