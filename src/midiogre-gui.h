@@ -7,6 +7,7 @@
 
 typedef struct {
     GtkBox *win_box;
+    GtkBox *panel_box;
     GtkBox *search_box;
     GtkBox *instr_box;
 
