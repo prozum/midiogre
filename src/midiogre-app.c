@@ -1,6 +1,7 @@
 #include "midiogre-app.h"
 #include "midiogre-import.h"
 #include "midiogre-song.h"
+#include "midiogre-search.h"
 
 #include "mid/mid.h"
 #include "mid/mid-str.h"
@@ -147,7 +148,7 @@ MidiogreApp *midiogre_app_init(void)
     app->search_button = GTK_BUTTON(gtk_button_new_with_label("Search"));
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->search_button), FALSE, FALSE, 0);
 
-    g_signal_connect_swapped(app->search_button, "clicked", G_CALLBACK(update_songboxes), app);
+    g_signal_connect_swapped(app->search_button, "clicked", G_CALLBACK(search_songs), app);
 
 
     /* Playlist */
@@ -166,7 +167,8 @@ MidiogreApp *midiogre_app_init(void)
     gtk_widget_show_all(app->window);
 
 
-
+    /* Allocate song queue */
+    app->songs = g_queue_new();
 
 
     return app;

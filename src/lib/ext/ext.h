@@ -5,7 +5,7 @@
 
 #include <mid/mid.h>
 
-unsigned extract_instr_classes(mid_t *mid);
+int extract_instr_classes(mid_t *mid);
 double extract_time(mid_t *mid);
 
 #endif

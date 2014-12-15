@@ -2,13 +2,13 @@
 
 #include <mid/mid.h>
 
-unsigned extract_instr_classes(mid_t *mid)
+int extract_instr_classes(mid_t *mid)
 {
     track_t *track;
     event_t *event;
 
-    unsigned instr_class;
-    unsigned bitmap = 0;
+    int instr_class;
+    int bitmap = 0;
     
     while ((track = list_next(mid->tracks)) != NULL) {
     
@@ -75,9 +75,12 @@ unsigned extract_instr_classes(mid_t *mid)
         }
     }
 
-    // ???
-    if (bitmap == 0)
-      bitmap = 1;
+    /* Is piano default? */
+    if (bitmap == 0) {
+
+        bitmap = 1;
+    }
+
     return bitmap;
 }
 

@@ -6,18 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-G_DEFINE_TYPE(Song, song, G_TYPE_OBJECT);
-
-static void
-song_class_init(SongClass *klass)
-{
-}
-
-static void
-song_init (Song *song)
-{
-}
-
 
 G_DEFINE_TYPE_WITH_PRIVATE(SongRow, song_row, GTK_TYPE_LIST_BOX_ROW);
 
@@ -125,14 +113,35 @@ GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func
 
 void update_songboxes(MidiogreApp *app)
 {
-    g_print("buuuuuuuu");
+    SongRow *row;
+    song_t *song;
+
+    uint i = 0;
+    while ((song = g_queue_pop_head(app->songs)) != NULL) {
+
+        row = song_row_new(song);
+        gtk_widget_show(row);
+        gtk_container_add (GTK_CONTAINER (app->songbox[0]), GTK_WIDGET (row));
+
+        row = song_row_new(song);
+        gtk_widget_show(row);
+        gtk_container_add (GTK_CONTAINER (app->songbox[1]), GTK_WIDGET (row));
+
+        row = song_row_new(song);
+        gtk_widget_show(row);
+        gtk_container_add (GTK_CONTAINER (app->songbox[2]), GTK_WIDGET (row));
+
+        if (i++ > 10) {
+            break;
+        }
+    }
 }
 
-Song *song_new(void)
+song_t *song_new(void)
 {
-    Song *song;
+    song_t *song;
 
-    song = g_object_new (song_get_type (), NULL);
+    song = calloc(1, sizeof(song_t));
 
     strcpy(song->album, "Best Album");
     strcpy(song->artist, "Worst Artist");
@@ -146,7 +155,7 @@ Song *song_new(void)
     return song;
 }
 
-SongRow *song_row_new(Song *song)
+SongRow *song_row_new(song_t *song)
 {
     SongRow *row;
 

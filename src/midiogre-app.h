@@ -16,7 +16,7 @@ typedef struct {
     GtkBox *search_box;
     GtkBox *instr_box;
 
-    GtkButton *instr_buttons[INSTR_CLASSES];
+    GtkToggleButton *instr_buttons[INSTR_CLASSES];
     GtkEntry *album_entry;
     GtkEntry *artist_entry;
     GtkEntry *title_entry;
@@ -28,6 +28,8 @@ typedef struct {
     /* App structs */
     song_t *cur_play;
     song_t *cur_fav;
+
+    GQueue *songs;
 
 } MidiogreApp;
 

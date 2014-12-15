@@ -93,7 +93,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     char album[64];
     char title[64];
     unsigned  num;
-    unsigned instr_classes;
+    int instr_classes;
     double time;
 
     /* Open mid file */
@@ -169,28 +169,19 @@ int db_song_handler(void *s, int argc, char **argv, char **col_name)
     return 0;
 }
 
-int db_export_songs(sqlite3 *db, song_t *songs)
-{
-    char *sql, *error = 0;
-
-    sql = "SELECT * FROM songs";
-
-    sqlite3_exec(db, sql, db_song_handler, songs, &error);
-
-    return 0;
-}
 /** Checks if sql statement contains ' */
 int check_sql(char *sql)
 {
-    int i;
+    int i = 0;
 
-    for (i = strlen(sql); i > 0; i--) {
+    while (sql[i] != '\0') {
 
-        if (sql[i] == '\'') {
+        if (sql[i++] == '\'') {
 
             return -1;
         }
     }
+
     return 0;
 }
 

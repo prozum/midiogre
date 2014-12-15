@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     MidiogreApp *app;
 
-    Song *song1, *song2, *song3;
+    song_t *song1, *song2, *song3;
     SongRow *row1, *row2, *row3;
 
     gtk_init(&argc, &argv);

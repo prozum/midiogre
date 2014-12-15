@@ -4,11 +4,15 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define ARTIST_MAX_NAME 64
+#define ALBUM_MAX_NAME 64
+#define TITLE_MAX_NAME 64
+
 typedef struct {
-    char artist[64];
-    char album[64];
-    char title[64];
-    uint32_t track_num;
+    char artist[ARTIST_MAX_NAME];
+    char album[ALBUM_MAX_NAME];
+    char title[TITLE_MAX_NAME];
+    uint32_t num;
     uint32_t length;
     uint32_t plays;
     uint8_t fingerprint[21];
