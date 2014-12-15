@@ -116,7 +116,7 @@ void update_songboxes(MidiogreApp *app)
     SongRow *row;
     song_t *song;
 
-    uint i = 0;
+    guint i = 0;
     while ((song = g_queue_pop_head(app->songs)) != NULL) {
 
         row = song_row_new(song);
