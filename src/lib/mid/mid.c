@@ -276,8 +276,8 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
                 /* Allocate memory for meta message data */
                 if (event->byte_2 >= 0) {
 
-		    event->data = list_slicing(data, data->i, event->byte_2);
-		}
+                    event->data = list_slicing(data, data->i, event->byte_2);
+                }
 
                 /* Skip message data */
                 list_set(data, event->byte_2, LIST_FORW, LIST_CUR);
