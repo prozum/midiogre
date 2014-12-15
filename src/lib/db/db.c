@@ -2,7 +2,6 @@
 
 #include <mid/mid.h>
 #include <ext/ext.h>
-#include <pop/pop.h>
 
 #include <glib.h>
 #include <libgen.h>

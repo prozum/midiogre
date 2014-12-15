@@ -12,10 +12,11 @@ if(MAIN)
     # Compile
     add_executable(midiogre
         midiogre-main.c
+        midiogre-app.c
         midiogre-res.c
-        midiogre-gui.c
         midiogre-import.c
-        midiogre-song.c)
+        midiogre-song.c
+        midiogre-search.c)
 
     # Generate ressources before build
     add_dependencies(midiogre GenerateRessources)

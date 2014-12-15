@@ -1,4 +1,5 @@
 #include "midiogre-song.h"
+#include "midiogre-app.h"
 
 #include <gtk/gtk.h>
 
@@ -86,7 +87,8 @@ static void song_row_init(SongRow *row)
 
 GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func)
 {
-    GtkWidget *box, *label;
+    GtkBox *box;
+    GtkLabel *label;
     GtkWidget *separator, *scrolled, *listbox;
 
     /* Add seperator */
@@ -94,13 +96,13 @@ GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func
     gtk_box_pack_start(winbox, separator, FALSE, FALSE, 0);
 
     /* Box for songbox widgets */
-    box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_box_pack_start(winbox, box, TRUE, TRUE, 0);
+    box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 10));
+    gtk_box_pack_start(winbox, GTK_WIDGET(box), TRUE, TRUE, 0);
 
     /* Add title */
-    label = gtk_label_new(NULL);
+    label = GTK_LABEL(gtk_label_new(NULL));
     gtk_label_set_markup(label, title);
-    gtk_box_pack_start(box, label, FALSE, FALSE, 0);
+    gtk_box_pack_start(box, GTK_WIDGET(label), FALSE, FALSE, 0);
 
     /* Add seperator */
     separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
@@ -119,6 +121,11 @@ GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func
     gtk_box_pack_start(box, scrolled, TRUE, TRUE, 0);
 
     return listbox;
+}
+
+void update_songboxes(MidiogreApp *app)
+{
+    g_print("buuuuuuuu");
 }
 
 Song *song_new(void)

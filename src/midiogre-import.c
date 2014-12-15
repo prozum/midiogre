@@ -18,7 +18,7 @@
 
 gpointer mid_import(gpointer s)
 {
-    ProgressStatus *status;
+    ImportStatus *status;
     sqlite3 *db;
     char *mid_addr;
 
@@ -159,7 +159,7 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
 
 gboolean progress_dialog_update(gpointer s)
 {
-    ProgressStatus *status;
+    ImportStatus *status;
 
     float frac;
     char *tmp;
@@ -181,13 +181,13 @@ gboolean progress_dialog_update(gpointer s)
     }
 }
 
-ProgressStatus *progress_dialog(GtkWindow *window, GQueue *queue)
+ImportStatus *import_dialog(GtkWindow *window, GQueue *queue)
 {
-    ProgressStatus *status;
+    ImportStatus *status;
     GtkWidget *content_area;
 
 
-    status = malloc(sizeof(ProgressStatus));
+    status = malloc(sizeof(ImportStatus));
     status->i = 0;
     status->n = queue->length;
     status->queue = queue;
@@ -220,7 +220,7 @@ ProgressStatus *progress_dialog(GtkWindow *window, GQueue *queue)
 void folder_chooser(GtkWindow *window)
 {
     GtkWidget      *dialog;
-    ProgressStatus *status;
+    ImportStatus *status;
     gint res;
     char *folder_addr = NULL;
 
@@ -253,7 +253,7 @@ void folder_chooser(GtkWindow *window)
         g_free(folder_addr);
 
         /* Setup progress dialog */
-        status = progress_dialog(window, mid_addrs);
+        status = import_dialog(window, mid_addrs);
 
         /* Import mid files */
         g_thread_new("mid_import", mid_import, status);

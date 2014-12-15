@@ -1,20 +1,23 @@
 #include "pop.h"
+
 #include <analyze/analyze.h>
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <time.h>
+#include <math.h>
+#include <stdio.h>
 
 #define MAX_PLAYS 10000
 #define MAX_FINGERPPRINT 18
 
-unsigned int calcAge(unsigned int upload_time){
+unsigned int calcAge(unsigned int upload_time)
+{
     return time(NULL) - upload_time;
 }
 
 /* The type for fingerprint may be changed based on the type given to it */
-double song_score(unsigned int plays, unsigned int upload_time, unsigned int min_play, unsigned int max_play, uint8_t fingerprint) {
+double song_score(unsigned int plays, unsigned int upload_time, unsigned int min_play, unsigned int max_play, uint8_t fingerprint)
+{
     unsigned int age = 0, play_rating = 0;
     double score = 0;
 
@@ -45,8 +48,8 @@ double song_score(unsigned int plays, unsigned int upload_time, unsigned int min
 
 }
 
-int song_compare(const void *s1, const void *s2) {
-
+int song_compare(const void *s1, const void *s2)
+{
     const song_t *song1 = s1;
     const song_t *song2 = s2;
 

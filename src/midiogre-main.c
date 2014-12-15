@@ -1,24 +1,19 @@
-#include "midiogre-gui.h"
+#include "midiogre-app.h"
 #include "midiogre-song.h"
 
 #include <gtk/gtk.h>
 
 int main(int argc, char *argv[])
 {
-    GtkWidget *window;
-    GlobalWidgets *g_wgs;
-    GtkWidget *box;
+    MidiogreApp *app;
 
     Song *song1, *song2, *song3;
     SongRow *row1, *row2, *row3;
 
     gtk_init(&argc, &argv);
 
-    /* Setup window */
-    window = window_init();
-
-    /* Setup global widgets */
-    g_wgs = g_wgs_init(window);
+    /* Setup MidiogreApp */
+    app = midiogre_app_init();
 
 
     song1 = song_new();
@@ -31,13 +26,13 @@ int main(int argc, char *argv[])
 
 
     gtk_widget_show (GTK_WIDGET (row1));
-    gtk_container_add (GTK_CONTAINER (g_wgs->songbox[0]), GTK_WIDGET (row1));
+    gtk_container_add (GTK_CONTAINER (app->songbox[0]), GTK_WIDGET (row1));
 
     gtk_widget_show (GTK_WIDGET (row2));
-    gtk_container_add (GTK_CONTAINER (g_wgs->songbox[1]), GTK_WIDGET (row2));
+    gtk_container_add (GTK_CONTAINER (app->songbox[1]), GTK_WIDGET (row2));
 
     gtk_widget_show (GTK_WIDGET (row3));
-    gtk_container_add (GTK_CONTAINER (g_wgs->songbox[2]), GTK_WIDGET (row3));
+    gtk_container_add (GTK_CONTAINER (app->songbox[2]), GTK_WIDGET (row3));
 
     gtk_main();
 

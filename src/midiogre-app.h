@@ -1,11 +1,16 @@
-#ifndef __MIDIOGRE_GUI_H__
-#define __MIDIOGRE_GUI_H__
+#ifndef __MIDIOGRE_APP_H__
+#define __MIDIOGRE_APP_H__
 
 #include <mid/mid.h>
+#include <db/db.h>
 
 #include <gtk/gtk.h>
 
 typedef struct {
+
+    /* App widgets */
+    GtkWindow *window;
+
     GtkBox *win_box;
     GtkBox *panel_box;
     GtkBox *search_box;
@@ -20,9 +25,13 @@ typedef struct {
 
     GtkWidget *songbox[3];
 
-} GlobalWidgets;
+    /* App structs */
+    song_t *cur_play;
+    song_t *cur_fav;
+
+} MidiogreApp;
 
 GtkWidget *window_init(void);
-GlobalWidgets *g_wgs_init(GtkWidget *window);
+MidiogreApp *midiogre_app_init(void);
 
 #endif
