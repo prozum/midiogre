@@ -27,4 +27,6 @@ int db_song_handler(void *s, int argc, char **argv, char **col_name);
 
 int db_read_songs(sqlite3 *db, song_t *songs);
 
+int check_sql(char *sql);
+
 void parse_filename (char *file_name, char *artist, char *album, unsigned *num, char *title);

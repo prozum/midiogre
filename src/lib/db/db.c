@@ -129,6 +129,13 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     time = extract_time(mid);
     free_mid(mid);
 
+    /* Check string for "'" */
+    if (check_sql(mid_addr) == -1) {
+
+        fprintf(stderr,"File contains dangerous character \"\'\"!\nTODO: Proper fix for this.\n");
+        return -1;
+    }
+
     /* Exec data import */
     parse_filename(mid_addr, artist, album, &num, title);
     sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, '%s');",
@@ -170,6 +177,20 @@ int db_export_songs(sqlite3 *db, song_t *songs)
 
     sqlite3_exec(db, sql, db_song_handler, songs, &error);
 
+    return 0;
+}
+/** Checks if sql statement contains ' */
+int check_sql(char *sql)
+{
+    int i;
+
+    for (i = strlen(sql); i > 0; i--) {
+
+        if (sql[i] == '\'') {
+
+            return -1;
+        }
+    }
     return 0;
 }
 

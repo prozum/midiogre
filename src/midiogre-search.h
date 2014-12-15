@@ -5,4 +5,6 @@
 
 #include <gtk/gtk.h>
 
+void search_songs(MidiogreApp *app);
+
 #endif
