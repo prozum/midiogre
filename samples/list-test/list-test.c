@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     }
 
     /* Reset data to start */
-    list_set(data,0,LIST_FORW,LIST_BEG);
+    list_reset(data);
 
     /* Test: Slice 20 bytes at 4 byte offset */
     sliced_data = list_slicing(data, 4, 20);

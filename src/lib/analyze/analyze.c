@@ -62,7 +62,7 @@ channel_t *channel_extract(track_t *track)
     }
 
     /* extract notes into channels */
-    list_set(track->events, 0, 0, LIST_BEG);
+    list_reset(track->events);
     while ((event = list_next(track->events)) != NULL) {
 
         if (event->msg == NOTE_ON) {

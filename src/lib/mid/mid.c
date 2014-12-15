@@ -57,7 +57,7 @@ mid_t *read_mid(FILE *file)
     if (read_tracks(data, mid->division, mid->tracks) != 0) {
         fprintf(stderr, "Midi tracks are invalid!\n");
         list_free(data);
-        free(mid);
+        free_mid(mid);
         return NULL;
     }
 
@@ -79,6 +79,7 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
     /* Var for checking bytes overflow */
     bytes = HEADER_BYTES;
 
+    /* Read start tempo from first track */
     start_tempo = find_start_tempo(data->cur, data->n);
 
     while ((track = list_next(tracks)) != NULL) {
@@ -86,7 +87,6 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
         /* Check signature */
         if (list_get_fixed(data, 4) != TRACK_SIGNATURE) {
             fprintf(stderr, "Read tracks: Track signature is invalid!\n");
-            list_free(tracks);
             return -1;
         }
 
@@ -97,7 +97,6 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
         if ((bytes += track->bytes + TRACK_BYTES) > data->n) {
 
             fprintf(stderr, "Read tracks: Track bytes value is invalid!\n");
-            list_free(tracks);
             return -1;
         }
 
@@ -105,7 +104,6 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
         if ((events = count_events(data->cur, track->bytes)) == 0) {
 
             fprintf(stderr, "Read tracks: Count events failed!\n");
-            list_free(tracks);
             return -1;
         }
 
@@ -116,14 +114,13 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
         if (read_events(data, division, start_tempo, track->events) != 0) {
 
             fprintf(stderr, "Read tracks: Midi events are invalid\n");
-            list_free(tracks);
             return -1;
         }
 
     }
 
     /* Reset current track */
-    list_set(tracks, 0, 0, LIST_BEG);
+    list_reset(tracks);
 
     return 0;
 }
@@ -214,7 +211,6 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
             /* Check for overflow */
             if(data->i == data->n) {
                 fprintf(stderr, "Delta overflow!\n");
-                list_free(events);
                 return -1;
             }
         };
@@ -280,6 +276,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
                 if (event->byte_2 >= 0) {
 
                     event->data = list_slicing(data, data->i, event->byte_2);
+
                 }
 
                 /* Skip message data */
@@ -319,7 +316,6 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
                 /* Check for overflow */
                 if (i >= data->n) {
                     fprintf(stderr, "Sysex overflow!\n");
-                    list_free(events);
                     return -1;
                 }
 
@@ -350,7 +346,6 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
             case FUNC_UNDEF_3:
             case FUNC_UNDEF_4:
                 fprintf(stderr, "Invalid message!\n");
-                list_free(events);
                 return -1;
 
             /* Messages with one parameter
@@ -366,7 +361,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
     }
 
     /* Reset current event */
-    list_set(events, 0, 0, LIST_BEG);
+    list_reset(events);
 
     return 0;
 }
@@ -385,7 +380,7 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
         while (data[b++] > 0x80 && b < bytes)
 
         /* Check overflow */
-            if (b >= bytes) {
+        if (b >= bytes) {
 
             fprintf(stderr, "Count events failed: Byte overflow!");
             return 0;
@@ -482,7 +477,7 @@ mid_t *merge_tracks(mid_t *mid) {
     /* Number of events plus 1 (END_OF_TRACK) */
     int n = 1;
 
-    list_set(mid->tracks, 0, LIST_FORW, LIST_BEG);
+    list_reset(mid->tracks);
     while ((track = list_next(mid->tracks)) != NULL) {
 
         /* Read last message */
@@ -503,7 +498,7 @@ mid_t *merge_tracks(mid_t *mid) {
         n += track->events->n - 1;
 
         /* Reset events list */
-        list_set(track->events, 0, LIST_FORW, LIST_BEG);
+        list_reset(track->events);
 
     }
 
@@ -526,7 +521,7 @@ mid_t *merge_tracks(mid_t *mid) {
             track_new->events = list_copy(track->events);
 
             /* Copy meta/sysex event data */
-            list_set(track->events, 0, LIST_FORW, LIST_BEG);
+            list_reset(track->events);
             while ((event = list_next(track->events)) != NULL) {
 
                 if (event->msg == META_MSG ||
@@ -546,7 +541,7 @@ mid_t *merge_tracks(mid_t *mid) {
             while (track_new->events->i < track_new->events->n - 1) {
 
                 /* Find min time for current events */
-                list_set(mid->tracks, 0, LIST_FORW, LIST_BEG);
+                list_reset(mid->tracks);
                 while ((track = list_next(mid->tracks)) != NULL) {
 
                     /* Get current event in track */
@@ -566,7 +561,7 @@ mid_t *merge_tracks(mid_t *mid) {
                 }
 
                 /* Add event if event->time = time_min */
-                list_set(mid->tracks, 0, LIST_FORW, LIST_BEG);
+                list_reset(mid->tracks);
                 while ((track = list_next(mid->tracks)) != NULL) {
 
                     /* Get current event in track */
@@ -623,7 +618,7 @@ mid_t *merge_tracks(mid_t *mid) {
             event_new->data   = list_create(0, sizeof(char));
 
             /* Reset current event in mid_new->tracks */
-            list_set(track_new->events, 0, LIST_FORW, LIST_BEG);
+            list_reset(track_new->events);
 
             return mid_new;
 

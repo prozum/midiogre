@@ -35,6 +35,8 @@ list_t *list_create(size_t n, size_t size);
 
 int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t whence);
 
+void list_reset(list_t *list);
+
 void list_append(list_t *list, void *item);
 
 void *list_next(list_t *list);

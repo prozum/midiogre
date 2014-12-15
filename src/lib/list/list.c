@@ -58,6 +58,11 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
      * since arithmetic on void pointers are undefined */
     char *tmp;
 
+    if (list == NULL) {
+
+        return -1;
+    }
+
     switch (whence) {
 
     /* First item */
@@ -142,6 +147,12 @@ int list_set(list_t *list, size_t offset, list_direct_t direct, list_whence_t wh
     return -1;
 }
 
+void list_reset(list_t *list)
+{
+    list->i = 0;
+    list->cur = list->ptr;
+}
+
 void list_append(list_t *list, void *item)
 {
     /* Temp pointer for pointer arithmetic,
@@ -169,6 +180,11 @@ void *list_next(list_t *list)
     /* Temp pointer for pointer arithmetic,
      * since arithmetic on void pointers are undefined */
     char *tmp;
+
+    if (list == NULL) {
+
+        return NULL;
+    }
 
     /* If last item */
     if (list->i == list->n - 1) {
@@ -341,7 +357,7 @@ list_t *list_dump_file(FILE *file)
     }
 
     /* Reset list */
-    list_set(list, 0, LIST_FORW, LIST_BEG);
+    list_reset(list);
 
     return list;
 }
@@ -350,8 +366,12 @@ list_t *list_dump_file(FILE *file)
 void list_free(list_t *list)
 {
     /* Free items */
-    free(list->ptr);
+    if (list != NULL && list->ptr != NULL) {
+        free(list->ptr);
+    }
 
     /* Free list */
-    free(list);
+    if (list != NULL) {
+        free(list);
+    }
 }
