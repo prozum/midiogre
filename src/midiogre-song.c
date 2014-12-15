@@ -92,10 +92,6 @@ GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func
     gtk_label_set_markup(label, title);
     gtk_box_pack_start(box, GTK_WIDGET(label), FALSE, FALSE, 0);
 
-    /* Add seperator */
-    separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-    gtk_box_pack_start(box, separator, FALSE, FALSE, 0);
-
     /* Add scroll container */
     scrolled = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -116,7 +112,7 @@ void update_songboxes(MidiogreApp *app)
     SongRow *row;
     song_t *song;
 
-    uint i = 0;
+    guint i = 0;
     while ((song = g_queue_pop_head(app->songs)) != NULL) {
 
         row = song_row_new(song);
