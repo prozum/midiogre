@@ -47,7 +47,7 @@ int main( int argc, char *argv[] )
 
     for (i = 0; i < FINGER_PRNS; i++) {
         for (j = 0; j < FINGER_PRN_LEN; j++) {
-            printf("%d ", finger_prints1[i].f_prn[j]);
+            printf("%d ", finger_prints2[i].f_prn[j]);
         }
 
         printf("\n");
@@ -60,15 +60,19 @@ int main( int argc, char *argv[] )
     /*Test skyline*/
     
     /* Cleanup */
-/*
+
     for (i = 0; i < FINGER_PRNS; i++) {
-        free(finger_prints[i].f_prn);
+        free(finger_prints1[i].f_prn);
+        free(finger_prints2[i].f_prn);
     }
 
-    free(finger_prints);
-    free_mid(tmp_mid);
-    free_mid(mid);
-*/
+    free(finger_prints1);
+    free(finger_prints2);
+    free_mid(tmp_mid1);
+    free_mid(tmp_mid2);
+    free_mid(mid1);
+    free_mid(mid2);
+
     putchar('\n');
     return 0;
 }
