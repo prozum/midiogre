@@ -167,10 +167,19 @@ gboolean progress_dialog_update(gpointer s)
     status = s;
 
     /* Update progress bar */
-    frac = (float)status->i / (float)status->n;
-    gtk_progress_bar_set_fraction(status->progress_bar, frac);
+    if (status->n != 0) {
 
-    tmp = g_strdup_printf("%d of %d files imported", status->i, status->n);
+        frac = (float)status->i / (float)status->n;
+        gtk_progress_bar_set_fraction(status->progress_bar, frac);
+
+        tmp = g_strdup_printf("%d of %d files imported", status->i, status->n);
+
+    } else {
+
+        gtk_progress_bar_set_fraction(status->progress_bar, 1);
+        tmp = g_strdup_printf("No mid files in folder!", status->i, status->n);
+    }
+
     gtk_progress_bar_set_text(status->progress_bar, tmp);
     g_free(tmp);
 
@@ -201,14 +210,14 @@ ImportStatus *import_dialog(GtkWindow *window, GQueue *queue)
 
     g_signal_connect (status->dialog, "response",
                       G_CALLBACK(gtk_widget_destroy), status->dialog);
-    gtk_widget_show(status->dialog);
 
     /* Setup progress bar */
     content_area = gtk_dialog_get_content_area (GTK_DIALOG (status->dialog));
     status->progress_bar = GTK_PROGRESS_BAR(gtk_progress_bar_new());
     gtk_progress_bar_set_show_text(status->progress_bar, TRUE);
     gtk_box_pack_start(GTK_BOX(content_area), GTK_WIDGET(status->progress_bar), FALSE, FALSE, 0);
-    gtk_widget_show (GTK_WIDGET(status->progress_bar));
+
+    gtk_widget_show_all(status->dialog);
 
     /* Update progressbar every 100 ms */
     g_timeout_add(100, progress_dialog_update, status);
