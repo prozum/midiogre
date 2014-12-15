@@ -19,6 +19,9 @@ if(DEBUG)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -Wno-unused-parameter")
 else()
     set(CMAKE_BUILD_TYPE Release)
+    if(WIN32)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mwindows")
+    endif()
 endif()
 
 # Include libs
