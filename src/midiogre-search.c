@@ -1,5 +1,6 @@
 #include "midiogre-search.h"
 #include "midiogre-app.h"
+#include "midiogre-song.h"
 
 #include <gtk/gtk.h>
 
@@ -13,7 +14,6 @@ gint search_songs(MidiogreApp *app)
     sqlite3 *db;
 
     gchar *sql;
-    gchar *tmp[5];
 
 
 
@@ -32,7 +32,6 @@ gint search_songs(MidiogreApp *app)
     instr_classes = read_instr_classes(app);
 
 
-    tmp[1] =g_strdup_printf("");
 
     artist_value = gtk_entry_get_text(app->artist_entry);
     if (check_sql(artist_value) == -1) {
@@ -65,7 +64,6 @@ gint search_songs(MidiogreApp *app)
 
 
     update_songboxes(app);
-    //db_export_songs(sqlite3 *db, sql, songs);
 
 
     return 0;
@@ -73,7 +71,6 @@ gint search_songs(MidiogreApp *app)
 
 int search_handler(void *a, int argc, char **argv, char **col_name)
 {
-    int i;
     song_t *song;
     MidiogreApp *app = a;
 
@@ -83,7 +80,7 @@ int search_handler(void *a, int argc, char **argv, char **col_name)
 
     strcpy(song->artist, argv[0]);
     strcpy(song->album,  argv[1]);
-    song->num = (argv[2]);
+    song->num = atoi(argv[2]);
     strcpy(song->title,  argv[3]);
     song->length = atoi(argv[5]);
     song->plays = atoi(argv[6]);
