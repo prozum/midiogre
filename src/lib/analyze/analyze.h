@@ -16,33 +16,41 @@
 
 #include <mid/mid.h>
 
-/** Histogram type */
+/** Histogram type
+ *
+ */
 typedef struct histogram_s
 {
-    double *semitones;
+    double *semitones; /**< Value of semitones */
 } histogram_t;
 
-/** Fingerprint type */
+/** Fingerprint type
+ *
+ */
 typedef struct f_prn_s
 {
-    int16_t *f_prn;
-    double dist;
+    uint8_t *f_prn; /**< Fingerprint array  */
+    double dist;    /**< Euclidian distance */
 } f_prn_t;
 
-/** Contains the information of a single note */
+/** Contains the information of a single note
+ *
+ */
 typedef struct note_s
 {
-    uint8_t pitch;
-    double onset;
-    double offset;
+    uint8_t pitch; /**< Pitch value                                          */
+    double onset;  /**< Time from song start until note start in miliseconds */
+    double offset; /**< Time from song start until note ends in miliseconds  */
 } note_t;
 
-/** Contains information about notes on a given channel */
+/** Contains information about notes on a given channel
+ *
+ */
 typedef struct channel_s
 {
-    note_t *note;
-    uint32_t notes;
-    double dist;
+    note_t *note;   /**< Array containing notes in specific channel */
+    uint32_t notes; /**< Elements in note */
+    double dist;    /**< Euclidian distance */
 } channel_t;
 
 /** Returns 3 fingerprints from a track */
