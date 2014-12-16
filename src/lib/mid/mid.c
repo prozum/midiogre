@@ -76,7 +76,7 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
     uint32_t bytes;        /**< Var for checking bytes overflow      */
     uint32_t start_tempo;  /**< Var for start tempo from first track */
 
-    /* Add bytes
+    /* Add HEADER_BYTES to byte overflow check */
     bytes = HEADER_BYTES;
 
     /* Read start tempo from first track */
