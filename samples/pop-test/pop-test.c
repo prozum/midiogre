@@ -5,7 +5,7 @@
 #include <time.h>
 
 int main(void){
-    unsigned int min_p, max_p;
+    /* unsigned int min_p, max_p; */
     int i = 0, j = 0;
 
     printf("finger\\textbackslash plays & 0 & 1000 & 2000 & 3000 & 4000 & 5000 & 6000 & 7000 & 8000 & 9000 & 10000 \\\\ \\hline\n");
