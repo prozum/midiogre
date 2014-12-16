@@ -9,15 +9,10 @@
 
 gint search_songs(MidiogreApp *app)
 {
-    char *error = 0;
 
     sqlite3 *db;
 
-    gchar *sql;
-
-
-
-
+    gchar *sql_base;
 
     gint instr_classes;
     const gchar *artist_value;
@@ -25,21 +20,18 @@ gint search_songs(MidiogreApp *app)
     const gchar *title_value;
 
 
+    sqlite3_open("mid.db", &db);
 
-    sql = "SELECT * FROM songs;";
 
 
+    /* Gather search criterias */
     instr_classes = read_instr_classes(app);
-
-
 
     artist_value = gtk_entry_get_text(app->artist_entry);
     if (check_sql(artist_value) == -1) {
 
         return -1;
     }
-
-
 
     album_value = gtk_entry_get_text(app->album_entry);
     if (check_sql(album_value) == -1) {
@@ -53,12 +45,24 @@ gint search_songs(MidiogreApp *app)
         return -1;
     }
 
+    sql_base = g_strdup_printf("SELECT * FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%';",
+                               artist_value,
+                               album_value,
+                               title_value);
 
 
-    sqlite3_open("mid.db", &db);
 
-    sqlite3_exec(db, sql, search_handler, app, &error);
 
+
+    search_alpha(app, db, sql_base);
+    //search_best(app,sql);
+    //search_finger(app,sql);
+    //search_pop(app,sql);
+    //search_date(app,sql);
+
+
+
+    g_free(sql_base);
     sqlite3_close(db);
 
 
@@ -69,10 +73,24 @@ gint search_songs(MidiogreApp *app)
     return 0;
 }
 
-int search_handler(void *a, int argc, char **argv, char **col_name)
+int search_alpha(MidiogreApp *app, sqlite3 *db, gchar *base_sql)
+{
+    char *error = 0;
+
+    sqlite3_exec(db, base_sql, search_handler, app->songs, &error);
+
+    return 0;
+}
+
+int search_best(MidiogreApp app, gchar base_sql);
+int search_finger(MidiogreApp app, gchar base_sql);
+int search_pop(MidiogreApp app, gchar base_sql);
+int search_date(MidiogreApp app, gchar base_sql);
+
+gint search_handler(void *s, int argc, char **argv, char **col_name)
 {
     song_t *song;
-    MidiogreApp *app = a;
+    GQueue *songs = s;
 
     song = calloc(1, sizeof(song_t));
 
@@ -97,7 +115,7 @@ int search_handler(void *a, int argc, char **argv, char **col_name)
     song->plays = atoi(argv[6]);
 
     /* Push column to queue */
-    g_queue_push_tail(app->songs, song);
+    g_queue_push_tail(songs, song);
 
     return 0;
 }

@@ -116,6 +116,34 @@ GtkListBox *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_fun
     return songbox;
 }
 
+void songbox_alpha_update(MidiogreApp *app)
+{
+    SongRow *row;
+    song_t *song;
+
+    guint i = 0;
+    while ((song = g_queue_pop_head(app->songs)) != NULL) {
+
+        /* Limit number of results by result spinbox */
+        if (i++ >= gtk_spin_button_get_value_as_int(app->result_spinbutton) ) {
+            break;
+        }
+
+        row = song_row_new(song);
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_list_box_prepend(app->songbox_alpha, GTK_WIDGET (row));
+
+        row = song_row_new(song);
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_list_box_prepend(app->songbox_new, GTK_WIDGET (row));
+
+        row = song_row_new(song);
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_list_box_prepend(app->songbox_best, GTK_WIDGET (row));
+
+    }
+}
+
 void songboxes_update(MidiogreApp *app)
 {
     SongRow *row;

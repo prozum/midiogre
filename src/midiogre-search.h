@@ -7,7 +7,9 @@
 
 gint search_songs(MidiogreApp *app);
 
-int search_handler(void *a, int argc, char **argv, char **col_name);
+gint search_alpha(MidiogreApp *app, sqlite3 *db, gchar *base_sql);
+
+gint search_handler(void *a, int argc, char **argv, char **col_name);
 
 gint read_instr_classes(MidiogreApp *app);
 
