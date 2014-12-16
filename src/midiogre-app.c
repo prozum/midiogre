@@ -176,9 +176,11 @@ MidiogreApp *midiogre_app_init(void)
     /* TODO */
 
     /* Add song boxes */
-    app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical Order</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_date  = songbox_new(app->win_box, "<span size=\"large\">Date Order</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_match = songbox_new(app->win_box, "<span size=\"large\">Match Order</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_best  = songbox_new(app->win_box, "<span size=\"large\">Best match (All)</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_fprnt = songbox_new(app->win_box, "<span size=\"large\">Best match (Fingerprint)</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_pop   = songbox_new(app->win_box, "<span size=\"large\">Best match (Popularity)</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_new   = songbox_new(app->win_box, "<span size=\"large\">Newest</span>", (GtkListBoxSortFunc)song_row_sort);
 
     gtk_widget_show_all(GTK_WIDGET(app->window));
 

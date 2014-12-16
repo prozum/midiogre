@@ -28,9 +28,11 @@ typedef struct {
 
     GtkButton *search_button; /**< Search button */
 
-    GtkWidget *songbox_alpha; /**< SongBox sorting songs by alphabetical order */
-    GtkWidget *songbox_date;  /**< SongBox sorting songs by date               */
-    GtkWidget *songbox_match; /**< SongBox sorting songs by best match         */
+    GtkListBox *songbox_alpha; /**< SongBox sorting songs by alphabetical order */
+    GtkListBox *songbox_best;  /**< SongBox sorting songs by best match         */
+    GtkListBox *songbox_fprnt; /**< SongBox sorting songs by fingerprint        */
+    GtkListBox *songbox_pop;   /**< SongBox sorting songs by popularity         */
+    GtkListBox *songbox_new;   /**< SongBox sorting songs by date               */
 
     /* App vars */
     GQueue *songs;            /**< Used to store and sort songs from db */

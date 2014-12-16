@@ -29,10 +29,10 @@ int main(int argc, char *argv[])
     gtk_container_add (GTK_CONTAINER (app->songbox_alpha), GTK_WIDGET (row1));
 
     gtk_widget_show (GTK_WIDGET (row2));
-    gtk_container_add (GTK_CONTAINER (app->songbox_date), GTK_WIDGET (row2));
+    gtk_container_add (GTK_CONTAINER (app->songbox_new), GTK_WIDGET (row2));
 
     gtk_widget_show (GTK_WIDGET (row3));
-    gtk_container_add (GTK_CONTAINER (app->songbox_match), GTK_WIDGET (row3));
+    gtk_container_add (GTK_CONTAINER (app->songbox_best), GTK_WIDGET (row3));
 
     gtk_main();
 

@@ -80,11 +80,12 @@ static void song_row_init(SongRow *row)
     gtk_widget_init_template(GTK_WIDGET(row));
 }
 
-GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func)
+GtkListBox *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func)
 {
+    GtkListBox *songbox;
     GtkBox *box;
     GtkLabel *label;
-    GtkWidget *separator, *scrolled, *listbox;
+    GtkWidget *separator, *scrolled;
 
     /* Add seperator */
     separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
@@ -104,18 +105,18 @@ GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func
     scrolled = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-    /* Setup listbox */
-    listbox = gtk_list_box_new();
-    gtk_list_box_set_sort_func(GTK_LIST_BOX(listbox), sort_func, listbox, NULL);
+    /* Setup songbox */
+    songbox = GTK_LIST_BOX(gtk_list_box_new());
+    gtk_list_box_set_sort_func(songbox, sort_func, songbox, NULL);
 
     /* Add listbox to scroll container */
-    gtk_container_add(GTK_CONTAINER (scrolled), listbox);
+    gtk_container_add(GTK_CONTAINER(scrolled), GTK_WIDGET(songbox));
     gtk_box_pack_start(box, scrolled, TRUE, TRUE, 0);
 
-    return listbox;
+    return songbox;
 }
 
-void update_songboxes(MidiogreApp *app)
+void songboxes_update(MidiogreApp *app)
 {
     SongRow *row;
     song_t *song;
@@ -123,21 +124,23 @@ void update_songboxes(MidiogreApp *app)
     guint i = 0;
     while ((song = g_queue_pop_head(app->songs)) != NULL) {
 
-        row = song_row_new(song);
-        gtk_widget_show(GTK_WIDGET(row));
-        gtk_container_add (GTK_CONTAINER (app->songbox_alpha), GTK_WIDGET (row));
-
-        row = song_row_new(song);
-        gtk_widget_show(GTK_WIDGET(row));
-        gtk_container_add (GTK_CONTAINER (app->songbox_date), GTK_WIDGET (row));
-
-        row = song_row_new(song);
-        gtk_widget_show(GTK_WIDGET(row));
-        gtk_container_add (GTK_CONTAINER (app->songbox_match), GTK_WIDGET (row));
-
-        if (i++ > 10) {
+        /* Limit number of results by result spinbox */
+        if (i++ >= gtk_spin_button_get_value_as_int(app->result_spinbutton) ) {
             break;
         }
+
+        row = song_row_new(song);
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_list_box_prepend(app->songbox_alpha, GTK_WIDGET (row));
+
+        row = song_row_new(song);
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_list_box_prepend(app->songbox_new, GTK_WIDGET (row));
+
+        row = song_row_new(song);
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_list_box_prepend(app->songbox_best, GTK_WIDGET (row));
+
     }
 }
 

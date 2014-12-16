@@ -63,7 +63,7 @@ gint search_songs(MidiogreApp *app)
 
 
 
-    update_songboxes(app);
+    songboxes_update(app);
 
 
     return 0;
