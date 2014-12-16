@@ -19,13 +19,12 @@ MidiogreApp *midiogre_app_init(void)
     GtkBox *box;
     GtkWidget *label,*frame;
     GtkWidget *button;
-    GtkWidget *align;
 
     gint i;
 
-
     /* Allocate app */
     app = calloc(1, sizeof(MidiogreApp));
+
 
     /* Setup window */
     app->window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
@@ -134,8 +133,14 @@ MidiogreApp *midiogre_app_init(void)
     gtk_box_pack_start(app->search_box, frame, FALSE, FALSE, 0);
 
     app->instr_grid = GTK_GRID(gtk_grid_new());
+
+#if GTK_MINOR_VERSION >= 12
     gtk_widget_set_margin_start(GTK_WIDGET(app->instr_grid), 10);
     gtk_widget_set_margin_end(GTK_WIDGET(app->instr_grid), 10);
+#else
+    gtk_widget_set_margin_left(GTK_WIDGET(app->instr_grid), 10);
+    gtk_widget_set_margin_right(GTK_WIDGET(app->instr_grid), 10);
+#endif
     gtk_widget_set_margin_bottom(GTK_WIDGET(app->instr_grid), 10);
     gtk_widget_set_margin_top(GTK_WIDGET(app->instr_grid), 10);
     gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(app->instr_grid));
