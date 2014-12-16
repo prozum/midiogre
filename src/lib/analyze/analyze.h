@@ -149,7 +149,8 @@ histogram_t *calc_norm_histogram(histogram_t **chan_histogram, channel_t *channe
 uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2);
 
 /** Calculates the Levenshtein length for two fingerprints
- * @param
+ * @param f_prn1: First fingerprint
+ * @param f_prn2: Second fingerprint
  */
 uint8_t edit_dist(uint8_t *f_prn1, uint8_t *f_prn2);
 
