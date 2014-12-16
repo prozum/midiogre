@@ -23,6 +23,8 @@ typedef struct {
     GtkEntry *artist_entry;   /**< Artist name input widget */
     GtkEntry *title_entry;    /**< Title name input widget  */
 
+    GtkSpinButton *result_spinbutton; /**< Button to specify number of result */
+
     GtkButton *search_button; /**< Search button */
 
     GtkWidget *songbox_alpha; /**< SongBox sorting songs by alphabetical order */

@@ -15,6 +15,7 @@ MidiogreApp *midiogre_app_init(void)
     MidiogreApp *app;
 
     GtkWidget *header;
+    GtkWidget *scrolled;
     GtkBox *box;
     GtkWidget *label,*frame;
     GtkWidget *button;
@@ -70,10 +71,17 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_add(GTK_CONTAINER(app->window), GTK_WIDGET(app->win_box));
 
 
+    /* Scroll container for sidepanel */
+    scrolled = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_box_pack_start(app->win_box, scrolled, TRUE, TRUE, 0);
+
+
     /* Sidepanel box */
     app->panel_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
-    gtk_box_pack_start(app->win_box, GTK_WIDGET(app->panel_box), FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER (scrolled), GTK_WIDGET(app->panel_box));
     gtk_container_set_border_width(GTK_CONTAINER(app->panel_box), 10);
+
 
     /* Frame with search criteria widgets */
     frame = gtk_frame_new("Search");
@@ -83,7 +91,7 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_set_border_width(GTK_CONTAINER(app->search_box), 10);
 
     gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(app->search_box));
-    gtk_widget_set_size_request(frame, 280, 0);
+    //gtk_widget_set_size_request(frame, 280, 0);
 
 
     /* Title entry */
@@ -144,12 +152,15 @@ MidiogreApp *midiogre_app_init(void)
         gtk_box_pack_start(box, GTK_WIDGET(app->instr_buttons[i]), FALSE, FALSE, 0);
     }
 
+
     /* Search button */
     app->search_button = GTK_BUTTON(gtk_button_new_with_label("Search"));
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->search_button), FALSE, FALSE, 0);
-
     g_signal_connect_swapped(app->search_button, "clicked", G_CALLBACK(search_songs), app);
 
+    /* Result spinbutton */
+    app->result_spinbutton = gtk_spin_button_new_with_range(0, 50, 1);
+    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
 
     /* Playlist */
     /* TODO */
@@ -158,7 +169,7 @@ MidiogreApp *midiogre_app_init(void)
     /* TODO */
 
     /* Add song boxes */
-    app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical Order</span>", (GtkListBoxSortFunc) song_row_sort);
+    app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical Order</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_date  = songbox_new(app->win_box, "<span size=\"large\">Date Order</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_match = songbox_new(app->win_box, "<span size=\"large\">Match Order</span>", (GtkListBoxSortFunc)song_row_sort);
 
