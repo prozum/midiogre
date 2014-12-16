@@ -132,23 +132,25 @@ MidiogreApp *midiogre_app_init(void)
     /* Instrument class buttons */
     frame = gtk_frame_new("Instrument Classes");
     gtk_box_pack_start(app->search_box, frame, FALSE, FALSE, 0);
-    app->instr_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
-    gtk_container_set_border_width(GTK_CONTAINER(app->instr_box), 10);
-    gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(app->instr_box));
+
+    app->instr_grid = GTK_GRID(gtk_grid_new());
+    gtk_widget_set_margin_start(GTK_WIDGET(app->instr_grid), 10);
+    gtk_widget_set_margin_end(GTK_WIDGET(app->instr_grid), 10);
+    gtk_widget_set_margin_bottom(GTK_WIDGET(app->instr_grid), 10);
+    gtk_widget_set_margin_top(GTK_WIDGET(app->instr_grid), 10);
+    gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(app->instr_grid));
+
 
     for (i = 0; i < INSTR_CLASSES; i++) {
 
-        box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
-        gtk_box_pack_start(app->instr_box, GTK_WIDGET(box), FALSE, FALSE, 0);
-
         label = gtk_label_new(instrument_classes[i]);
-        gtk_box_pack_start(box, label, FALSE, FALSE, 0);
-
-        align = gtk_alignment_new(1,0,1,0);
-        gtk_box_pack_start(box, align, TRUE, TRUE, 0);
+        gtk_widget_set_halign(GTK_WIDGET(label),GTK_ALIGN_START);
+        gtk_grid_attach(app->instr_grid, label, 1, i + 1, 1, 1);
 
         app->instr_buttons[i] = GTK_CHECK_BUTTON(gtk_check_button_new());
-        gtk_box_pack_start(box, GTK_WIDGET(app->instr_buttons[i]), FALSE, FALSE, 0);
+        gtk_widget_set_halign(GTK_WIDGET(app->instr_buttons[i]),GTK_ALIGN_END);
+        gtk_widget_set_hexpand(GTK_WIDGET(app->instr_buttons[i]),TRUE);
+        gtk_grid_attach(app->instr_grid, GTK_WIDGET(app->instr_buttons[i]), 2, i + 1, 1, 1);
     }
 
 

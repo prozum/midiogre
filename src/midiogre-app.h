@@ -15,7 +15,8 @@ typedef struct {
     GtkBox *win_box;    /**< Window box containing window widgets            */
     GtkBox *panel_box;  /**< Sidepanel box containing sidepanel widgets      */
     GtkBox *search_box; /**< Search box containing search widgets            */
-    GtkBox *instr_box;  /**< Instrument box containing instrument checkboxes */
+
+    GtkGrid *instr_grid;  /**< Instrument grid containing instrument checkboxes */
 
     GtkCheckButton *instr_buttons[INSTR_CLASSES]; /**< Instrument checkboxes */
 

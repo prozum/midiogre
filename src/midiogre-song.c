@@ -63,7 +63,6 @@ static void song_row_class_init(SongRowClass *klass)
     gtk_widget_class_bind_template_callback(widget_class, play_clicked);
     gtk_widget_class_bind_template_callback(widget_class, playlist_clicked);
     gtk_widget_class_bind_template_callback(widget_class, fav_clicked);
-
 }
 
 static void song_row_init(SongRow *row)
