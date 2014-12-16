@@ -5,11 +5,11 @@
 
 #include "mid.h"
 
-extern const char *instruments[];
-extern const char *instrument_classes[];
+extern const char *instruments[]; /**< names of instruments */
+extern const char *instrument_classes[]; /**< Names of instrument classes */
 
-void print_header(mid_t *mid);
-void print_tracks(mid_t *mid);
-void print_event(mid_t *mid, unsigned int t, unsigned int e);
+void print_header(mid_t *mid); /**< prints header */
+void print_tracks(mid_t *mid); /**< prints tracks */
+void print_event(mid_t *mid, unsigned int t, unsigned int e); /**< prints events */
 
 #endif
