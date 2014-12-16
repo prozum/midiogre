@@ -91,7 +91,6 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_set_border_width(GTK_CONTAINER(app->search_box), 10);
 
     gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(app->search_box));
-    //gtk_widget_set_size_request(frame, 280, 0);
 
 
     /* Title entry */
@@ -159,8 +158,9 @@ MidiogreApp *midiogre_app_init(void)
     g_signal_connect_swapped(app->search_button, "clicked", G_CALLBACK(search_songs), app);
 
     /* Result spinbutton */
-    app->result_spinbutton = gtk_spin_button_new_with_range(0, 50, 1);
+    app->result_spinbutton = GTK_SPIN_BUTTON(gtk_spin_button_new_with_range(1, 50, 1));
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
+    gtk_spin_button_set_value(app->result_spinbutton, 8);
 
     /* Playlist */
     /* TODO */
