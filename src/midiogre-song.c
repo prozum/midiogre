@@ -40,6 +40,14 @@ static void song_row_update(SongRow *row)
 {
     SongRowPrivate *priv = row->priv;
 
+    gchar *tmp;
+
+    tmp = g_strdup_printf("%02d:%02d", priv->song->length/1000 / 60,
+                                       priv->song->length/1000 % 60);
+
+    gtk_label_set_text(priv->time_label, tmp);
+    g_free(tmp);
+
     gtk_label_set_text(priv->title_label, priv->song->title);
     gtk_label_set_text(priv->album_label, priv->song->album);
     gtk_label_set_text(priv->artist_label, priv->song->artist);
