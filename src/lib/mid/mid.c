@@ -591,7 +591,6 @@ mid_t *merge_tracks(mid_t *mid)
 
                 /* Reset vars for next events */
                 time_min = -1;
-                first = 1;
 
             }
 
