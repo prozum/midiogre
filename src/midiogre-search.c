@@ -45,10 +45,12 @@ gint search_event(MidiogreApp *app)
         return -1;
     }
 
-    sql_head = g_strdup_printf("SELECT * FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%'",
+    sql_head = g_strdup_printf("SELECT * FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
                                artist_value,
                                album_value,
-                               title_value);
+                               title_value,
+                               instr_classes,
+                               instr_classes);
 
 
     limit = gtk_spin_button_get_value_as_int(app->result_spinbutton);
@@ -61,37 +63,40 @@ gint search_event(MidiogreApp *app)
 
     search_db(app->songs_alpha, db, sql_head, "%s ORDER BY title,album,artist LIMIT %d;", limit);
     search_db(app->songs_new, db, sql_head, "%s ORDER BY import_date DESC LIMIT %d;", limit);
+    //search_db(app->songs_pop, db, sql_head, "%s ORDER BY title,album,artist;", 0);
     //search_best(app,sql);
     //search_finger(app,sql);
     //search_pop(app,sql);
     //search_date(app,sql);
-
-
 
     g_free(sql_head);
     sqlite3_close(db);
 
 
 
+
+
     songbox_update(app->songbox_alpha, app->songs_alpha, limit);
     songbox_update(app->songbox_new, app->songs_new, limit);
-
 
     return 0;
 }
 
 int search_db(GQueue *songs, sqlite3 *db, gchar *head, gchar *body, gint limit)
 {
-    char *error = 0;
-
+    gint rc;
     gchar *sql;
+    gchar *error = 0;
+
 
     sql = g_strdup_printf(body,
                           head,
                           limit);
 
 
-    sqlite3_exec(db, sql, search_handler, songs, &error);
+    rc = sqlite3_exec(db, sql, search_handler, songs, &error);
+
+    database_general_error(rc, error, 2);
 
     free(sql);
 
