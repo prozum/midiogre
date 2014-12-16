@@ -9,10 +9,5 @@ target_link_libraries(db-test
 	${GLIB2_LIBRARIES}
 
 )
-if (WIN32)
-		target_link_libraries(db-test
-					win)
-endif()
-
 
 install(TARGETS db-test DESTINATION bin)

@@ -7,8 +7,4 @@ target_link_libraries(db
 	${SQLITE3_LIBRARIES}
 	
 )
-if (WIN32)
-		target_link_libraries(db
-				      win)
-endif()
 

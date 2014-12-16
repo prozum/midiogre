@@ -5,6 +5,3 @@ add_subdirectory(pop)
 add_subdirectory(db)
 add_subdirectory(ext)
 
-if(WIN32)
-	add_subdirectory(win)
-endif()
