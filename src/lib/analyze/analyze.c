@@ -27,7 +27,7 @@ f_prn_t *finger_prn_gen(track_t *track)
     finger_prns = malloc(3 * sizeof(f_prn_t));
 
     for (i = 0; i < FINGER_PRNS; i++) {
-        finger_prns[i].f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(int16_t));
+        finger_prns[i].f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
         for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
             finger_prns[i].f_prn[j] = abs(f_prn_tmp[i].f_prn[j+1] - f_prn_tmp[i].f_prn[j]);
         }
@@ -470,17 +470,17 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
     dist = malloc(sizeof(uint8_t) * FINGER_PRNS);
 
     /* calculate the distance for all possible combinations */
-    dist[0] = lev_dist(f_prn1[0].f_prn, f_prn2[0].f_prn) +
-              lev_dist(f_prn1[1].f_prn, f_prn2[1].f_prn) +
-              lev_dist(f_prn1[2].f_prn, f_prn2[2].f_prn);
+    dist[0] = edit_dist(f_prn1[0].f_prn, f_prn2[0].f_prn) +
+              edit_dist(f_prn1[1].f_prn, f_prn2[1].f_prn) +
+              edit_dist(f_prn1[2].f_prn, f_prn2[2].f_prn);
 
-    dist[1] = lev_dist(f_prn1[2].f_prn, f_prn2[0].f_prn) +
-              lev_dist(f_prn1[0].f_prn, f_prn2[1].f_prn) +
-              lev_dist(f_prn1[1].f_prn, f_prn2[2].f_prn);
+    dist[1] = edit_dist(f_prn1[2].f_prn, f_prn2[0].f_prn) +
+              edit_dist(f_prn1[0].f_prn, f_prn2[1].f_prn) +
+              edit_dist(f_prn1[1].f_prn, f_prn2[2].f_prn);
 
-    dist[2] = lev_dist(f_prn1[1].f_prn, f_prn2[0].f_prn) +
-              lev_dist(f_prn1[2].f_prn, f_prn2[1].f_prn) +
-              lev_dist(f_prn1[0].f_prn, f_prn2[2].f_prn);
+    dist[2] = edit_dist(f_prn1[1].f_prn, f_prn2[0].f_prn) +
+              edit_dist(f_prn1[2].f_prn, f_prn2[1].f_prn) +
+              edit_dist(f_prn1[0].f_prn, f_prn2[2].f_prn);
 
 
     /* choose the shortest distance */
@@ -496,7 +496,7 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
     return ret_dist;
 }
 
-uint8_t lev_dist(int16_t *f_prn1, int16_t *f_prn2)
+uint8_t edit_dist(uint8_t *f_prn1, uint8_t *f_prn2)
 {
     uint8_t dist, i;
 
@@ -573,8 +573,8 @@ uint8_t finger_prn_arr_cmp(const uint8_t finger_prn1[18], const uint8_t finger_p
     f_prn2 = malloc(sizeof(f_prn_t) * FINGER_PRNS);
 
     for (i = 0; i < FINGER_PRNS; i+=FINGER_PRN_CMP_LEN) {
-        f_prn1->f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(int16_t));
-        f_prn2->f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(int16_t));
+        f_prn1->f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
+        f_prn2->f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
 
         for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
             f_prn1->f_prn[j + i] = finger_prn1[j + i];
