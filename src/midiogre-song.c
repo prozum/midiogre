@@ -89,11 +89,12 @@ GtkWidget *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func
     /* Add title */
     label = GTK_LABEL(gtk_label_new(NULL));
     gtk_label_set_markup(label, title);
+    gtk_widget_set_margin_top(GTK_WIDGET(label), 10);
     gtk_box_pack_start(box, GTK_WIDGET(label), FALSE, FALSE, 0);
 
     /* Add scroll container */
     scrolled = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
     /* Setup listbox */
     listbox = gtk_list_box_new();
