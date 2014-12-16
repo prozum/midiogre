@@ -7,20 +7,20 @@
 #include <string.h>
 #include <math.h>
 
-gint search_songs(MidiogreApp *app)
+gint search_event(MidiogreApp *app)
 {
 
     sqlite3 *db;
 
-    gchar *sql_base;
+    gchar *sql_head;
 
     gint instr_classes;
     const gchar *artist_value;
     const gchar *album_value;
     const gchar *title_value;
+    gint limit;
 
 
-    sqlite3_open("mid.db", &db);
 
 
 
@@ -45,16 +45,22 @@ gint search_songs(MidiogreApp *app)
         return -1;
     }
 
-    sql_base = g_strdup_printf("SELECT * FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%';",
+    sql_head = g_strdup_printf("SELECT * FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%'",
                                artist_value,
                                album_value,
                                title_value);
 
 
+    limit = gtk_spin_button_get_value_as_int(app->result_spinbutton);
+
+
+    sqlite3_open("mid.db", &db);
 
 
 
-    search_alpha(app, db, sql_base);
+
+    search_db(app->songs_alpha, db, sql_head, "%s ORDER BY title,album,artist LIMIT %d;", limit);
+    search_db(app->songs_new, db, sql_head, "%s ORDER BY import_date DESC LIMIT %d;", limit);
     //search_best(app,sql);
     //search_finger(app,sql);
     //search_pop(app,sql);
@@ -62,27 +68,54 @@ gint search_songs(MidiogreApp *app)
 
 
 
-    g_free(sql_base);
+    g_free(sql_head);
     sqlite3_close(db);
 
 
 
-    songboxes_update(app);
+    songbox_update(app->songbox_alpha, app->songs_alpha, limit);
+    songbox_update(app->songbox_new, app->songs_new, limit);
 
 
     return 0;
 }
 
-int search_alpha(MidiogreApp *app, sqlite3 *db, gchar *base_sql)
+int search_db(GQueue *songs, sqlite3 *db, gchar *head, gchar *body, gint limit)
 {
     char *error = 0;
 
-    sqlite3_exec(db, base_sql, search_handler, app->songs, &error);
+    gchar *sql;
+
+    sql = g_strdup_printf(body,
+                          head,
+                          limit);
+
+
+    sqlite3_exec(db, sql, search_handler, songs, &error);
+
+    free(sql);
 
     return 0;
 }
 
-int search_best(MidiogreApp app, gchar base_sql);
+int search_new(MidiogreApp *app, sqlite3 *db, gchar *base_sql, gint limit)
+{
+    char *error = 0;
+
+    gchar *sql;
+
+    sql = g_strdup_printf("%s ORDER BY LIMIT %d",
+                          base_sql,
+                          limit);
+
+
+    sqlite3_exec(db, sql, search_handler, app->songs_new, &error);
+
+    free(sql);
+
+    return 0;
+}
+
 int search_finger(MidiogreApp app, gchar base_sql);
 int search_pop(MidiogreApp app, gchar base_sql);
 int search_date(MidiogreApp app, gchar base_sql);

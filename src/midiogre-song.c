@@ -80,6 +80,14 @@ static void song_row_init(SongRow *row)
     gtk_widget_init_template(GTK_WIDGET(row));
 }
 
+void song_row_destroy(SongRow *row)
+{
+    g_free(row->priv->song);
+
+    gtk_widget_destroy(GTK_WIDGET(row));
+}
+
+
 GtkListBox *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func)
 {
     GtkListBox *songbox;
@@ -116,58 +124,26 @@ GtkListBox *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_fun
     return songbox;
 }
 
-void songbox_alpha_update(MidiogreApp *app)
+void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
 {
     SongRow *row;
     song_t *song;
 
     guint i = 0;
-    while ((song = g_queue_pop_head(app->songs)) != NULL) {
+
+    //songbox_delete_rows(songbox);
+    gtk_container_foreach(GTK_CONTAINER(songbox), song_row_destroy, NULL);
+
+    while ((song = g_queue_pop_head(songs)) != NULL) {
 
         /* Limit number of results by result spinbox */
-        if (i++ >= gtk_spin_button_get_value_as_int(app->result_spinbutton) ) {
+        if (i++ >= limit) {
             break;
         }
 
         row = song_row_new(song);
         gtk_widget_show(GTK_WIDGET(row));
-        gtk_list_box_prepend(app->songbox_alpha, GTK_WIDGET (row));
-
-        row = song_row_new(song);
-        gtk_widget_show(GTK_WIDGET(row));
-        gtk_list_box_prepend(app->songbox_new, GTK_WIDGET (row));
-
-        row = song_row_new(song);
-        gtk_widget_show(GTK_WIDGET(row));
-        gtk_list_box_prepend(app->songbox_best, GTK_WIDGET (row));
-
-    }
-}
-
-void songboxes_update(MidiogreApp *app)
-{
-    SongRow *row;
-    song_t *song;
-
-    guint i = 0;
-    while ((song = g_queue_pop_head(app->songs)) != NULL) {
-
-        /* Limit number of results by result spinbox */
-        if (i++ >= gtk_spin_button_get_value_as_int(app->result_spinbutton) ) {
-            break;
-        }
-
-        row = song_row_new(song);
-        gtk_widget_show(GTK_WIDGET(row));
-        gtk_list_box_prepend(app->songbox_alpha, GTK_WIDGET (row));
-
-        row = song_row_new(song);
-        gtk_widget_show(GTK_WIDGET(row));
-        gtk_list_box_prepend(app->songbox_new, GTK_WIDGET (row));
-
-        row = song_row_new(song);
-        gtk_widget_show(GTK_WIDGET(row));
-        gtk_list_box_prepend(app->songbox_best, GTK_WIDGET (row));
+        gtk_list_box_prepend(songbox, GTK_WIDGET(row));
 
     }
 }

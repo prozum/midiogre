@@ -10,23 +10,23 @@
 typedef struct {
 
     /* App widgets */
-    GtkWindow *window;  /**< Midiogre window */
+    GtkWindow *window;         /**< Midiogre window */
 
-    GtkBox *win_box;    /**< Window box containing window widgets            */
-    GtkBox *panel_box;  /**< Sidepanel box containing sidepanel widgets      */
-    GtkBox *search_box; /**< Search box containing search widgets            */
+    GtkBox *win_box;           /**< Window box containing window widgets            */
+    GtkBox *panel_box;         /**< Sidepanel box containing sidepanel widgets      */
+    GtkBox *search_box;        /**< Search box containing search widgets            */
 
-    GtkGrid *instr_grid;  /**< Instrument grid containing instrument checkboxes */
+    GtkGrid *instr_grid;       /**< Instrument grid containing instrument checkboxes */
 
     GtkCheckButton *instr_buttons[INSTR_CLASSES]; /**< Instrument checkboxes */
 
-    GtkEntry *album_entry;    /**< Album name input widget  */
-    GtkEntry *artist_entry;   /**< Artist name input widget */
-    GtkEntry *title_entry;    /**< Title name input widget  */
+    GtkEntry *album_entry;     /**< Album name input widget  */
+    GtkEntry *artist_entry;    /**< Artist name input widget */
+    GtkEntry *title_entry;     /**< Title name input widget  */
 
     GtkSpinButton *result_spinbutton; /**< Button to specify number of result */
 
-    GtkButton *search_button; /**< Search button */
+    GtkButton *search_button;  /**< Search button */
 
     GtkListBox *songbox_alpha; /**< SongBox sorting songs by alphabetical order */
     GtkListBox *songbox_best;  /**< SongBox sorting songs by best match         */
@@ -34,11 +34,16 @@ typedef struct {
     GtkListBox *songbox_pop;   /**< SongBox sorting songs by popularity         */
     GtkListBox *songbox_new;   /**< SongBox sorting songs by date               */
 
+    GQueue *songs_alpha;       /**< Used to store and sort songs from db */
+    GQueue *songs_best;        /**< Used to store and sort songs from db */
+    GQueue *songs_fprnt;       /**< Used to store and sort songs from db */
+    GQueue *songs_pop;         /**< Used to store and sort songs from db */
+    GQueue *songs_new;         /**< Used to store and sort songs from db */
+
     /* App vars */
-    GQueue *songs;            /**< Used to store and sort songs from db */
-    song_t *cur_play;         /**< Current played song                  */
-    song_t *cur_fav;          /**< Current favorite song                */
-    GQueue *playlist;         /**< Song playlist                        */
+    song_t *cur_play;          /**< Current played song                  */
+    song_t *cur_fav;           /**< Current favorite song                */
+    GQueue *playlist;          /**< Song playlist                        */
 
 } MidiogreApp;
 

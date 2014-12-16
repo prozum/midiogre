@@ -162,7 +162,7 @@ MidiogreApp *midiogre_app_init(void)
     /* Search button */
     app->search_button = GTK_BUTTON(gtk_button_new_with_label("Search"));
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->search_button), FALSE, FALSE, 0);
-    g_signal_connect_swapped(app->search_button, "clicked", G_CALLBACK(search_songs), app);
+    g_signal_connect_swapped(app->search_button, "clicked", G_CALLBACK(search_event), app);
 
     /* Result spinbutton */
     app->result_spinbutton = GTK_SPIN_BUTTON(gtk_spin_button_new_with_range(1, 50, 1));
@@ -186,7 +186,11 @@ MidiogreApp *midiogre_app_init(void)
 
 
     /* Allocate song queue */
-    app->songs = g_queue_new();
+    app->songs_alpha   = g_queue_new();
+    app->songs_best    = g_queue_new();
+    app->songs_fprnt   = g_queue_new();
+    app->songs_pop     = g_queue_new();
+    app->songs_new     = g_queue_new();
 
 
     return app;

@@ -5,9 +5,10 @@
 
 #include <gtk/gtk.h>
 
-gint search_songs(MidiogreApp *app);
+gint search_event(MidiogreApp *app);
 
-gint search_alpha(MidiogreApp *app, sqlite3 *db, gchar *base_sql);
+int search_db(GQueue *songs, sqlite3 *db, gchar *base, gchar *body, gint limit);
+
 
 gint search_handler(void *a, int argc, char **argv, char **col_name);
 
