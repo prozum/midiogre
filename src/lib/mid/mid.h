@@ -391,7 +391,7 @@ typedef struct
 } mid_t;
 
 /** read_mid - Reads the midi file
- * @file: Mid file to open
+ * @param file: Mid file to open
  */
 mid_t *read_mid(FILE *file);
 

@@ -118,7 +118,7 @@ gint read_instr_classes(MidiogreApp *app)
 
     for (i = 0; i < INSTR_CLASSES; i++) {
 
-        if (gtk_toggle_button_get_active(app->instr_buttons[i])) {
+        if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(app->instr_buttons[i]))) {
 
             rv += pow(2, i);
         }

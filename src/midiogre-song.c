@@ -7,7 +7,7 @@
 #include <string.h>
 
 
-G_DEFINE_TYPE_WITH_PRIVATE(SongRow, song_row, GTK_TYPE_LIST_BOX_ROW);
+G_DEFINE_TYPE_WITH_PRIVATE(SongRow, song_row, GTK_TYPE_LIST_BOX_ROW)
 
 static void play_clicked(SongRow *row, GtkButton *button)
 {
@@ -116,16 +116,16 @@ void update_songboxes(MidiogreApp *app)
     while ((song = g_queue_pop_head(app->songs)) != NULL) {
 
         row = song_row_new(song);
-        gtk_widget_show(row);
-        gtk_container_add (GTK_CONTAINER (app->songbox[0]), GTK_WIDGET (row));
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_container_add (GTK_CONTAINER (app->songbox_alpha), GTK_WIDGET (row));
 
         row = song_row_new(song);
-        gtk_widget_show(row);
-        gtk_container_add (GTK_CONTAINER (app->songbox[1]), GTK_WIDGET (row));
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_container_add (GTK_CONTAINER (app->songbox_date), GTK_WIDGET (row));
 
         row = song_row_new(song);
-        gtk_widget_show(row);
-        gtk_container_add (GTK_CONTAINER (app->songbox[2]), GTK_WIDGET (row));
+        gtk_widget_show(GTK_WIDGET(row));
+        gtk_container_add (GTK_CONTAINER (app->songbox_match), GTK_WIDGET (row));
 
         if (i++ > 10) {
             break;
@@ -144,7 +144,7 @@ song_t *song_new(void)
     song->num = 1;
     strcpy(song->title, "\"Midiogre\" Title");
     song->length = 400;
-    //song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    /*song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; */
     song->plays =500;
     song->time_added = 100000;
 

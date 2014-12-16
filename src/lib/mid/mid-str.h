@@ -1,4 +1,4 @@
-/** @file mid-util.h */
+/** @file mid-str.h */
 
 #ifndef __MIDIUTIL_H__
 #define __MIDIUTIL_H__

@@ -9,12 +9,7 @@
 #define ALBUM_MAX_NAME 64
 #define TITLE_MAX_NAME 64
 
-/** Struct
- *
- *  Struct containing database variables
- *
- */
-
+/** song_t - Struct containing song variables from database */
 typedef struct {
     char artist[ARTIST_MAX_NAME]; /**< Name of artist    */
     char album[ALBUM_MAX_NAME];   /**< Name of album     */
@@ -38,6 +33,6 @@ int db_song_handler(void *s, int argc, char **argv, char **col_name);
 
 int db_read_songs(sqlite3 *db, song_t *songs);
 
-int check_sql(char *sql);
+int check_sql(const char *sql);
 
 void parse_filename (char *file_name, char *artist, char *album, unsigned *num, char *title);

@@ -49,18 +49,19 @@ Comments: Doxygen compatible
  * 
  * 1. header file
  * 2. project libs
- * 3. standard libs
- * 4. 3rd party libs
+ * 3. 3rd party libs
+ * 4. standard libs
  */
 #include "example.h"
 
 #include <projectlib/projectlib.h>
 #include <projectlib/projectlib-util.h>
 
+#include <3rdlib/3rdlib.h>
+
 #include <stdio.h>
 #include <stdint.h>
 
-#include <3rdlib/3rdlib.h>
 
 /** this_is_a_enum - enum example
  *  
@@ -76,9 +77,9 @@ enum this_is_a_enum
 
 /**
  * this_is_a_func - a func example 
- * @var_1: description of var_1
- * @var_2: description of var_2
- * @var_3: description of var_3
+ * @param var_1: description of var_1
+ * @param var_2: description of var_2
+ * @param var_3: description of var_3
  *
  * This function is used as an example.
  * More info about function...

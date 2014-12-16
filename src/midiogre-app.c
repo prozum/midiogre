@@ -140,7 +140,7 @@ MidiogreApp *midiogre_app_init(void)
         align = gtk_alignment_new(1,0,1,0);
         gtk_box_pack_start(box, align, TRUE, TRUE, 0);
 
-        app->instr_buttons[i] = GTK_BUTTON(gtk_check_button_new());
+        app->instr_buttons[i] = GTK_CHECK_BUTTON(gtk_check_button_new());
         gtk_box_pack_start(box, GTK_WIDGET(app->instr_buttons[i]), FALSE, FALSE, 0);
     }
 
@@ -158,13 +158,11 @@ MidiogreApp *midiogre_app_init(void)
     /* TODO */
 
     /* Add song boxes */
-    app->songbox[0] = songbox_new(app->win_box, "<span size=\"large\">Alphabetical Order</span>", (GtkListBoxSortFunc) song_row_sort);
-    app->songbox[1] = songbox_new(app->win_box, "<span size=\"large\">Date Order</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox[2] = songbox_new(app->win_box, "<span size=\"large\">Match Order</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical Order</span>", (GtkListBoxSortFunc) song_row_sort);
+    app->songbox_date  = songbox_new(app->win_box, "<span size=\"large\">Date Order</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_match = songbox_new(app->win_box, "<span size=\"large\">Match Order</span>", (GtkListBoxSortFunc)song_row_sort);
 
-    //gtk_widget_show_all(GTK_WIDGET(app->win_box));
-
-    gtk_widget_show_all(app->window);
+    gtk_widget_show_all(GTK_WIDGET(app->window));
 
 
     /* Allocate song queue */

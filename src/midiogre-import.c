@@ -138,8 +138,8 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
                g_print("unix: back folder: %s\n",folder_addr);
 
            /* If file with ".mid" extention */
-           } else if (g_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0 ||
-                      g_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".kar") == 0) {
+           } else if (g_ascii_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0 ||
+                      g_ascii_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".kar") == 0) {
 
                tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
 

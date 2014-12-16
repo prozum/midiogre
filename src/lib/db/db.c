@@ -170,7 +170,7 @@ int db_song_handler(void *s, int argc, char **argv, char **col_name)
 }
 
 /** Checks if sql statement contains ' */
-int check_sql(char *sql)
+int check_sql(const char *sql)
 {
     int i = 0;
 

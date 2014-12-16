@@ -5,13 +5,14 @@
 
 #include <gtk/gtk.h>
 
+/** ImportStatus - Struct containing information about import progress */
 typedef struct
 {
-    guint i;
-    guint n;
-    GQueue *queue;
-    GtkWidget *dialog;
-    GtkProgressBar *progress_bar;
+    guint i;                      /**< Items done          */
+    guint n;                      /**< Items total         */
+    GQueue *queue;                /**< Items queue         */
+    GtkWidget *dialog;            /**< Progress dialog     */
+    GtkProgressBar *progress_bar; /**< Progress bar widget */
 } ImportStatus;
 
 int mid_handler(char* mid_addr, list_t *mid_addrs);

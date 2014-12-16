@@ -16,30 +16,33 @@ typedef struct _SongRow         SongRow;
 typedef struct _SongRowClass    SongRowClass;
 typedef struct _SongRowPrivate  SongRowPrivate;
 
+/** SongRow - SongRow struct with instance variables */
 struct _SongRow
 {
-    GtkListBoxRow parent;
+    GtkListBoxRow parent;  /**< Parent instance struct     */
 
-    SongRowPrivate *priv;
+    SongRowPrivate *priv;  /**< Instance private variables */
 };
 
+/** SongRowClass - SongRow struct with class variables */
 struct _SongRowClass
 {
-    GtkListBoxRowClass parent_class;
+    GtkListBoxRowClass parent_class; /**< Parent class struct */
 };
 
+/** SongRowPrivate - SongRow struct with private instance variables */
 struct _SongRowPrivate
 {
-    song_t *song;
+    song_t *song; /**< Song contain ing song data */
 
-    GtkLabel *title_label;
-    GtkLabel *artist_label;
-    GtkLabel *album_label;
-    GtkLabel *time_label;
+    GtkLabel *title_label;  /**< Song title  label */
+    GtkLabel *artist_label; /**< Song artist label */
+    GtkLabel *album_label;  /**< Song album  label */
+    GtkLabel *time_label;   /**< Song time   label */
 
-    GtkButton *play_button;
-    GtkButton *playlist_button;
-    GtkButton *fav_button;
+    GtkButton *play_button;     /**< Song play button     */
+    GtkButton *playlist_button; /**< Song playlist button */
+    GtkButton *fav_button;      /**< Song favorite button */
 };
 
 GType      song_row_get_type(void) G_GNUC_CONST;

@@ -6,30 +6,34 @@
 
 #include <gtk/gtk.h>
 
+/** MidiogreApp - Struct containing app vars */
 typedef struct {
 
     /* App widgets */
-    GtkWindow *window;
+    GtkWindow *window;  /**< Midiogre window */
 
-    GtkBox *win_box;
-    GtkBox *panel_box;
-    GtkBox *search_box;
-    GtkBox *instr_box;
+    GtkBox *win_box;    /**< Window box containing window widgets            */
+    GtkBox *panel_box;  /**< Sidepanel box containing sidepanel widgets      */
+    GtkBox *search_box; /**< Search box containing search widgets            */
+    GtkBox *instr_box;  /**< Instrument box containing instrument checkboxes */
 
-    GtkToggleButton *instr_buttons[INSTR_CLASSES];
-    GtkEntry *album_entry;
-    GtkEntry *artist_entry;
-    GtkEntry *title_entry;
+    GtkCheckButton *instr_buttons[INSTR_CLASSES]; /**< Instrument checkboxes */
 
-    GtkButton *search_button;
+    GtkEntry *album_entry;    /**< Album name input widget  */
+    GtkEntry *artist_entry;   /**< Artist name input widget */
+    GtkEntry *title_entry;    /**< Title name input widget  */
 
-    GtkWidget *songbox[3];
+    GtkButton *search_button; /**< Search button */
 
-    /* App structs */
-    song_t *cur_play;
-    song_t *cur_fav;
+    GtkWidget *songbox_alpha; /**< SongBox sorting songs by alphabetical order */
+    GtkWidget *songbox_date;  /**< SongBox sorting songs by date               */
+    GtkWidget *songbox_match; /**< SongBox sorting songs by best match         */
 
-    GQueue *songs;
+    /* App vars */
+    GQueue *songs;            /**< Used to store and sort songs from db */
+    song_t *cur_play;         /**< Current played song                  */
+    song_t *cur_fav;          /**< Current favorite song                */
+    GQueue *playlist;         /**< Song playlist                        */
 
 } MidiogreApp;
 
