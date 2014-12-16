@@ -219,7 +219,6 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
         event->time = time_last + event->delta * (tempo/division)/1000;
         time_last = event->time;
 
-    
         /* Get message */
         tmp = list_get(data);
 
@@ -263,7 +262,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
                 event->byte_1 = list_get(data);
 
                 /* Byte 2: Meta length  */
-                if ((get_tmp = list_get(data)) > 0) {
+                if ((get_tmp = list_get(data)) >= 0) {
 
                     event->byte_2 = get_tmp;
 
