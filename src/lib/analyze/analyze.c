@@ -470,17 +470,17 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
     dist = malloc(sizeof(uint8_t) * FINGER_PRNS);
 
     /* calculate the distance for all possible combinations */
-    dist[0] = lev_dist(f_prn1[0].f_prn, f_prn2[0].f_prn) +
-              lev_dist(f_prn1[1].f_prn, f_prn2[1].f_prn) +
-              lev_dist(f_prn1[2].f_prn, f_prn2[2].f_prn);
+    dist[0] = edit_dist(f_prn1[0].f_prn, f_prn2[0].f_prn) +
+              edit_dist(f_prn1[1].f_prn, f_prn2[1].f_prn) +
+              edit_dist(f_prn1[2].f_prn, f_prn2[2].f_prn);
 
-    dist[1] = lev_dist(f_prn1[2].f_prn, f_prn2[0].f_prn) +
-              lev_dist(f_prn1[0].f_prn, f_prn2[1].f_prn) +
-              lev_dist(f_prn1[1].f_prn, f_prn2[2].f_prn);
+    dist[1] = edit_dist(f_prn1[2].f_prn, f_prn2[0].f_prn) +
+              edit_dist(f_prn1[0].f_prn, f_prn2[1].f_prn) +
+              edit_dist(f_prn1[1].f_prn, f_prn2[2].f_prn);
 
-    dist[2] = lev_dist(f_prn1[1].f_prn, f_prn2[0].f_prn) +
-              lev_dist(f_prn1[2].f_prn, f_prn2[1].f_prn) +
-              lev_dist(f_prn1[0].f_prn, f_prn2[2].f_prn);
+    dist[2] = edit_dist(f_prn1[1].f_prn, f_prn2[0].f_prn) +
+              edit_dist(f_prn1[2].f_prn, f_prn2[1].f_prn) +
+              edit_dist(f_prn1[0].f_prn, f_prn2[2].f_prn);
 
 
     /* choose the shortest distance */
@@ -496,7 +496,7 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
     return ret_dist;
 }
 
-uint8_t lev_dist(uint8_t *f_prn1, uint8_t *f_prn2)
+uint8_t edit_dist(uint8_t *f_prn1, uint8_t *f_prn2)
 {
     uint8_t dist, i;
 
