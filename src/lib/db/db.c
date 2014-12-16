@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int database_open_error (int rc, sqlite3 *db)
+int database_open_error(int rc, sqlite3 *db)
 {
     if(rc) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
@@ -22,7 +22,7 @@ int database_open_error (int rc, sqlite3 *db)
     }
 }
 
-int database_general_error (int rc, char *error, int type)
+int database_general_error(int rc, char *error, int type)
 {
 
     if (rc != SQLITE_OK) {
@@ -155,37 +155,24 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     return rc;
 }
 
-int db_song_handler(void *s, int argc, char **argv, char **col_name)
-{
-    int i;
-    song_t *songs = s;
-
-
-    for(i = 0; i < argc; i++) {
-        printf("%s = %s\n", col_name[i], argv[i] ? argv[i] : "NULL");
-    }
-    putchar('\n');
-
-    return 0;
-}
-
-/** Checks if sql statement contains ' */
+/** Checks if sql statement contains "'" or """ */
 int check_sql(const char *sql)
 {
     int i = 0;
 
     while (sql[i] != '\0') {
 
-        if (sql[i++] == '\'') {
+        if (sql[i] == '\'' || sql[i] == '\"') {
 
             return -1;
         }
+        i++;
     }
 
     return 0;
 }
 
-/* Parse file name for song data */
+/** Parse file name for song data */
 void parse_filename (char *file_name, char *artist, char *album, unsigned *num, char *title)
 {
     char *file_pnt;
