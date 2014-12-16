@@ -76,14 +76,37 @@ int search_handler(void *a, int argc, char **argv, char **col_name)
 
     song = calloc(1, sizeof(song_t));
 
-    g_queue_push_tail(app->songs, song);
+    /* Load columns for song row */
 
+    /* Inforce max string length ARTIST_MAX_NAME */
+    if (strlen(argv[0]) >= ARTIST_MAX_NAME) {
+
+        argv[0][ARTIST_MAX_NAME] = '\0';
+    }
     strcpy(song->artist, argv[0]);
+
+    /* Inforce max string length ALBUM_MAX_NAME */
+    if (strlen(argv[1]) >= ALBUM_MAX_NAME) {
+
+        argv[1][ALBUM_MAX_NAME] = '\0';
+    }
     strcpy(song->album,  argv[1]);
+
     song->num = atoi(argv[2]);
+
+    /* Inforce max string length TITLE_MAX_NAME */
+    if (strlen(argv[3]) >= TITLE_MAX_NAME) {
+
+        argv[1][ALBUM_MAX_NAME] = '\0';
+    }
     strcpy(song->title,  argv[3]);
+
     song->length = atoi(argv[5]);
+
     song->plays = atoi(argv[6]);
+
+    /* Push column to queue */
+    g_queue_push_tail(app->songs, song);
 
     return 0;
 }
