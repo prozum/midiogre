@@ -12,7 +12,7 @@ int main(void){
     for(i = 0; i <= 18; i++) {
         printf("%d & ", i);
         for(j = 0; j <= 10000; j += 1000) {
-            printf("%.1f",song_score(j, time(NULL) - 3600, i));
+            printf("%.1f",song_score_all(j, time(NULL) - 3600, i));
             if(j != 10000) {
                 printf(" & ");
             } else {
