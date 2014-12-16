@@ -24,8 +24,8 @@
 #define INSTR_CLASSES    16 /**< Ammount of instrument clases           */
 #define INSTR_PER_CLASS  8  /**< Ammount of instruments per class       */
 
-/** Default tempo: 500,000 */
-#define SET_TEMPO_DEFAULT 0x07a120
+
+#define SET_TEMPO_DEFAULT 0x07a120 /**< Default tempo: 500,000 */
 
 /**
  * MIDI format
@@ -159,7 +159,7 @@ typedef enum
 } msg_t;
 
 /**
- * Meta Message
+ * Meta Messages
  *
  * See:
  * http://somascape.org/midi/tech/mfile.html#meta
@@ -339,12 +339,10 @@ typedef enum
     GUNSHOT
 } instr_t;
 
-/** Enum containing instrument classes
+/** instr_class_t - Enum containing instrument classes
  *
  *  Instruments are divided in to groups with similar instruments
- *
  */
-
 typedef enum
 {
     PIANO                   = 0x0,
@@ -365,62 +363,57 @@ typedef enum
     SOUND_EFFECTS           = 0xF
 } instr_class_t;
 
-/** Struct containing midi events
- *
- */
-
-typedef struct event_s
+/** event_t - Struct containing midi events */
+typedef struct
 {
-    msg_t   msg;    /**< Event message            */
-    uint8_t chan;   /**< Event channel            */
-    uint8_t byte_1; /**< First data byte          */
-    uint8_t byte_2; /**< Second data byte         */
-    uint32_t delta; /**< Delta ticks              */
-    double time;    /**< Total ticks              */
-    list_t *data;   /**< List for sysex/meta data */
+    msg_t   msg;    /**< Event message             */
+    uint8_t chan;   /**< Event channel             */
+    uint8_t byte_1; /**< First data byte           */
+    uint8_t byte_2; /**< Second data byte          */
+    uint32_t delta; /**< Delta ticks               */
+    double time;    /**< Start time in miliseconds */
+    list_t *data;   /**< List for sysex/meta data  */
 } event_t;
 
-/** Struct containing track data and events
- *
- */
-typedef struct track_s
+/** track_t - Struct containing track data and events */
+typedef struct
 {
     uint32_t bytes;  /**< Track length in bytes */
     list_t *events;  /**< Events list           */
 } track_t;
 
-/** Struct containing data of a midi file
- *
- */
-typedef struct mid_s
+/** mid_t - Struct containing data of a midi file */
+typedef struct
 {
     fmt_t format;       /**< Midi format   */
     uint16_t division;  /**< Time division */
     list_t *tracks;     /**< Tracks list   */
 } mid_t;
 
-/** Opens the midi file */
+/** read_mid - Reads the midi file
+ * @file: Mid file to open
+ */
 mid_t *read_mid(FILE *file);
 
-/** Reads tracks in midi file and loads to track_s struct */
+/** read_tracks - Reads tracks in midi file and loads to track_s struct */
 int read_tracks(list_t *data, uint16_t division, list_t *tracks);
 
-/** Reads events in midi file and loads to event_s struct */
+/** read_events - Reads events in midi file and loads to event_s struct */
 int read_events(list_t *data, uint16_t division, uint32_t start_tempo, list_t *events);
 
-/** Finds start tempo */
+/** find_start_tempo - Finds start tempo */
 uint32_t find_start_tempo(uint8_t *data, uint32_t bytes);
 
-/** counts ammount of events */
+/** count_events - Counts ammount of events */
 uint32_t count_events(uint8_t *data, uint32_t len);
 
-/** Merges tracks to a single track */
+/** merge_tracks - Merges tracks to a single track */
 mid_t *merge_tracks(mid_t *mid);
 
-/** Writes to midi file */
+/** write_mid - Writes to midi file */
 void write_mid(FILE *file, mid_t *mid);
 
-/** Frees midi file from memory */
+/** free_mid - Frees midi file from memory */
 void free_mid(mid_t *mid);
 
 #endif

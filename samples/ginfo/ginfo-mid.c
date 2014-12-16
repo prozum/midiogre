@@ -40,9 +40,9 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
     }
 
     /* Read content */
-    mid = read_mid(mid_file);
+    mid_tmp = read_mid(mid_file);
     fclose(mid_file);
-    //mid = merge_tracks(mid_tmp);
+    mid = merge_tracks(mid_tmp);
 
     /* For each track */
     while ((track = list_next(mid->tracks)) != NULL) {
@@ -210,7 +210,7 @@ int mid_import(GFile *mid_gfile, GtkWidget *notebook)
     }
 
     free_mid(mid);
-    //free_mid(mid_tmp);
+    free_mid(mid_tmp);
 
     return 0;
 }

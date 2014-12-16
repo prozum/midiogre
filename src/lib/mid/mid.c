@@ -72,11 +72,11 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 {
     track_t *track;
 
-    uint32_t events,bytes;
+    uint32_t events;
+    uint32_t bytes;        /**< Var for checking bytes overflow      */
+    uint32_t start_tempo;  /**< Var for start tempo from first track */
 
-    uint32_t start_tempo;
-
-    /* Var for checking bytes overflow */
+    /* Add bytes
     bytes = HEADER_BYTES;
 
     /* Read start tempo from first track */
@@ -95,14 +95,12 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 
         /* Check for bytes overflow */
         if ((bytes += track->bytes + TRACK_BYTES) > data->n) {
-
             fprintf(stderr, "Read tracks: Track bytes value is invalid!\n");
             return -1;
         }
 
         /* Count events */
         if ((events = count_events(data->cur, track->bytes)) == 0) {
-
             fprintf(stderr, "Read tracks: Count events failed!\n");
             return -1;
         }
@@ -112,7 +110,6 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 
         /* Read events */
         if (read_events(data, division, start_tempo, track->events) != 0) {
-
             fprintf(stderr, "Read tracks: Midi events are invalid\n");
             return -1;
         }
@@ -127,8 +124,10 @@ int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 
 uint32_t find_start_tempo(uint8_t *data, uint32_t bytes)
 {
-    uint32_t b = 0;
-    uint32_t tempo,msg,n,i;
+    uint32_t tempo = 0;  /**< Tempo */
+    uint32_t b = 0;      /**< Current byte offset */
+    uint32_t msg,n;
+    uint32_t i;
 
     /* Skip track signature + number of bytes */
     b += 8;
@@ -149,8 +148,8 @@ uint32_t find_start_tempo(uint8_t *data, uint32_t bytes)
                 n = data[b++];
 
                 /* Read and return tempo */
-                tempo = 0;
                 for (i = 0; i < n; i++) {
+
                     tempo += data[b++];
 
                     if (i != n - 1) {
@@ -366,7 +365,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
     return 0;
 }
 
-/** Count events in event data */
+/** Count events in track bytes */
 uint32_t count_events(uint8_t *data, uint32_t bytes)
 {
     uint32_t b,ev,msg;
@@ -457,31 +456,29 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
             default:
                 b++;
         }
-
     }
+
     return ev;
 }
 
 /** Merge tracks from mid to single track */
-mid_t *merge_tracks(mid_t *mid) {
+mid_t *merge_tracks(mid_t *mid)
+{
     mid_t *mid_new;
     track_t *track;
     track_t *track_new;
     event_t *event;
     event_t *event_new;
 
-    double time_min = -1;
-    int first    =  1;
-
-
-    /* Number of events plus 1 (END_OF_TRACK) */
-    int n = 1;
+    double time_min = -1; /**< Minimum time for current events        */
+    int n = 1;            /**< Number of events plus 1 (END_OF_TRACK) */
 
     list_reset(mid->tracks);
     while ((track = list_next(mid->tracks)) != NULL) {
 
         /* Read last message */
         if ((event = list_index(track->events, track->events->n - 1)) == NULL) {
+
             fprintf(stderr, "Merge tracks failed: Track %lu is empty!\n",
                     mid->tracks->i);
             return NULL;
@@ -540,7 +537,7 @@ mid_t *merge_tracks(mid_t *mid) {
             /* Untill only one event is left (1 for END_OF_TRACK) */
             while (track_new->events->i < track_new->events->n - 1) {
 
-                /* Find min time for current events */
+                /* Find minimum time for current events */
                 list_reset(mid->tracks);
                 while ((track = list_next(mid->tracks)) != NULL) {
 
@@ -554,6 +551,7 @@ mid_t *merge_tracks(mid_t *mid) {
                     }
                 }
 
+                /* No more events! */
                 if (time_min == - 1) {
                     fprintf(stderr, "Merge tracks failed!\n");
                     free_mid(mid_new);
@@ -582,25 +580,16 @@ mid_t *merge_tracks(mid_t *mid) {
 
                                     event_new->data = list_copy(event->data);
                                 }
-
-                                list_set(track->events, 1, LIST_FORW, LIST_CUR);
-
-                                /* Only set delta time for first match */
-                                if (!first) {
-                                    event_new->delta = 0;
-                                }
-                                first = 0;
-                            } else {
-
-                                list_set(track->events, 1, LIST_FORW, LIST_CUR);
-
                             }
+
+                            /* Skip event */
+                            list_set(track->events, 1, LIST_FORW, LIST_CUR);
 
                         }
                     }
                 }
 
-                /* Reset vars for next run */
+                /* Reset vars for next events */
                 time_min = -1;
                 first = 1;
 
