@@ -385,9 +385,9 @@ typedef struct
 /** mid_t - Struct containing data of a midi file */
 typedef struct
 {
-    fmt_t format;       /**< Midi format   */
-    uint16_t division;  /**< Time division */
-    list_t *tracks;     /**< Tracks list   */
+    fmt_t format;       /**< Midi format    */
+    uint16_t division;  /**< Time division  */
+    list_t *tracks;     /**< List of tracks */
 } mid_t;
 
 /** read_mid - Reads the midi file
@@ -395,25 +395,47 @@ typedef struct
  */
 mid_t *read_mid(FILE *file);
 
-/** read_tracks - Reads tracks in midi file and loads to track_s struct */
+/** read_tracks - Reads tracks in midi file and loads to track_s struct
+ * @param data: List of bytes in mid file at current position
+ * @param division: Division from header chunk
+ * @param tracks: List with data from tracks
+ */
 int read_tracks(list_t *data, uint16_t division, list_t *tracks);
 
-/** read_events - Reads events in midi file and loads to event_s struct */
+/** read_events - Reads events in midi file and loads to event_s struct
+ * @param data: List of bytes in mid file at current position
+ * @param division: Division from header chunk
+ * @param start_tempo: Start tempo for midi file
+ * @param events: List with data from events
+ */
 int read_events(list_t *data, uint16_t division, uint32_t start_tempo, list_t *events);
 
-/** find_start_tempo - Finds start tempo */
+/** find_start_tempo - Finds start tempo
+ * @param data: List of bytes in mid file at current position
+ * @param bytes: Number of bytes in file, to check byte overflow
+ */
 uint32_t find_start_tempo(uint8_t *data, uint32_t bytes);
 
-/** count_events - Counts ammount of events */
-uint32_t count_events(uint8_t *data, uint32_t len);
+/** count_events - Counts ammount of events
+ * @param data: List of bytes in mid file at current position
+ * @param bytes: Event count
+ */
+uint32_t count_events(uint8_t *data, uint32_t bytes);
 
-/** merge_tracks - Merges tracks to a single track */
+/** merge_tracks - Merges tracks to a single track
+ * @param mid: Mid struct
+ */
 mid_t *merge_tracks(mid_t *mid);
 
-/** write_mid - Writes to midi file */
+/** write_mid - Writes to midi file
+ * @param file: Mid file
+ * @param mid: Mid struct
+ */
 void write_mid(FILE *file, mid_t *mid);
 
-/** free_mid - Frees midi file from memory */
+/** free_mid - Frees midi file from memory
+ * mid: Mid struct
+ */
 void free_mid(mid_t *mid);
 
 #endif
