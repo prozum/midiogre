@@ -47,7 +47,7 @@ struct _SongRowPrivate
 
 GType      song_row_get_type(void) G_GNUC_CONST;
 
-GtkListBox *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func);
+GtkListBox *songbox_new(GtkBox *win_box, char *title, GtkListBoxSortFunc sort_func);
 void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit);
 void songbox_delete_rows(GtkListBox *songbox);
 song_t *song_new(void);

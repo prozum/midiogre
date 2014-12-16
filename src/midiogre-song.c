@@ -88,7 +88,7 @@ void song_row_destroy(SongRow *row)
 }
 
 
-GtkListBox *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_func)
+GtkListBox *songbox_new(GtkBox *win_box, char *title, GtkListBoxSortFunc sort_func)
 {
     GtkListBox *songbox;
     GtkBox *box;
@@ -97,11 +97,11 @@ GtkListBox *songbox_new(GtkBox *winbox, char *title, GtkListBoxSortFunc sort_fun
 
     /* Add seperator */
     separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
-    gtk_box_pack_start(winbox, separator, FALSE, FALSE, 0);
+    gtk_box_pack_start(win_box, separator, FALSE, FALSE, 0);
 
     /* Box for songbox widgets */
     box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 10));
-    gtk_box_pack_start(winbox, GTK_WIDGET(box), TRUE, TRUE, 0);
+    gtk_box_pack_start(win_box, GTK_WIDGET(box), TRUE, TRUE, 0);
 
     /* Add title */
     label = GTK_LABEL(gtk_label_new(NULL));

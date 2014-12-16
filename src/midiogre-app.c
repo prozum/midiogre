@@ -15,11 +15,12 @@ MidiogreApp *midiogre_app_init(void)
     MidiogreApp *app;
 
     GtkWidget *header;
+    GtkWidget *separator;
     GtkWidget *scrolled;
-    GtkBox *box;
     GtkWidget *label,*frame;
     GtkWidget *button;
 
+    GtkBox *box;
     gint i;
 
     /* Allocate app */
@@ -34,9 +35,19 @@ MidiogreApp *midiogre_app_init(void)
 
     /* Setup header bar */
     header = gtk_header_bar_new();
-    gtk_header_bar_set_show_close_button (GTK_HEADER_BAR(header), TRUE);
     gtk_header_bar_set_title (GTK_HEADER_BAR(header), "Midiogre");
     gtk_window_set_titlebar(app->window, header);
+
+    /* Setup close button */
+    button = gtk_button_new();
+    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/window-close-symbolic.symbolic.png"));
+    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
+
+    g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_widget_destroy), app->window);
+
+    /* Add seperator */
+    separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), separator);
 
     /* Setup folder button */
     button = gtk_button_new();
@@ -73,7 +84,7 @@ MidiogreApp *midiogre_app_init(void)
     /* Scroll container for sidepanel */
     scrolled = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    gtk_box_pack_start(app->win_box, scrolled, TRUE, TRUE, 0);
+    gtk_box_pack_start(app->win_box, scrolled, FALSE, FALSE, 0);
 
 
     /* Sidepanel box */
@@ -101,7 +112,7 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_set_border_width(GTK_CONTAINER(box), 10);
 
     app->title_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_box_pack_start(box, GTK_WIDGET(app->title_entry), TRUE, TRUE, 0);
+    gtk_box_pack_start(box, GTK_WIDGET(app->title_entry), FALSE, FALSE, 0);
 
 
     /* Artist entry */
@@ -113,7 +124,7 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_set_border_width(GTK_CONTAINER(box), 10);
 
     app->artist_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_box_pack_start(box, GTK_WIDGET(app->artist_entry), TRUE, TRUE, 0);
+    gtk_box_pack_start(box, GTK_WIDGET(app->artist_entry), FALSE, FALSE, 0);
 
 
     /* Album entry */
@@ -125,7 +136,7 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_set_border_width(GTK_CONTAINER(box), 10);
 
     app->album_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_box_pack_start(box, GTK_WIDGET(app->album_entry), TRUE, TRUE, 0);
+    gtk_box_pack_start(box, GTK_WIDGET(app->album_entry), FALSE, FALSE, 0);
 
 
     /* Instrument class buttons */
@@ -166,8 +177,8 @@ MidiogreApp *midiogre_app_init(void)
 
     /* Result spinbutton */
     app->result_spinbutton = GTK_SPIN_BUTTON(gtk_spin_button_new_with_range(1, 50, 1));
-    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
     gtk_spin_button_set_value(app->result_spinbutton, 8);
+    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
 
     /* Playlist */
     /* TODO */
@@ -177,9 +188,9 @@ MidiogreApp *midiogre_app_init(void)
 
     /* Add song boxes */
     app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_best  = songbox_new(app->win_box, "<span size=\"large\">Best match (All)</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_fprnt = songbox_new(app->win_box, "<span size=\"large\">Best match (Fingerprint)</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_pop   = songbox_new(app->win_box, "<span size=\"large\">Best match (Popularity)</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_best  = songbox_new(app->win_box, "<span size=\"large\">Best match</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_fprnt = songbox_new(app->win_box, "<span size=\"large\">Fingerprint</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_pop   = songbox_new(app->win_box, "<span size=\"large\">Popularity</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_new   = songbox_new(app->win_box, "<span size=\"large\">Newest</span>", (GtkListBoxSortFunc)song_row_sort);
 
     gtk_widget_show_all(GTK_WIDGET(app->window));
