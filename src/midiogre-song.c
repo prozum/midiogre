@@ -23,17 +23,15 @@ static void play_clicked(SongRow *row, GtkButton *button)
 
 #ifdef _WIN32
 	spawnl( P_NOWAIT, "C:/Program Files/Windows Media Player/wmplayer.exe",
-    	"wmplayer.exe", "C:/Users/Test/Documents/GitHub/midiogre/res/mid/bass.mid", NULL );
-	g_app_info_launch_default_for_uri("c:/",
-                                                NULL,
-                                                &error);
+    	"wmplayer.exe", priv->song->addr, NULL );
+	
 #endif
 
 #ifdef __linux
-	g_app_info_launch_default_for_uri("file:///etc/passwd",
+	g_app_info_launch_default_for_uri(priv->song->addr,
                                                 NULL,
                                                 &error);
-	printf("Fucka you");
+
 #endif
 
 }
