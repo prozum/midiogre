@@ -17,14 +17,15 @@
 
 /** song_t - Struct containing song variables from database */
 typedef struct {
-    char artist[ARTIST_MAX_NAME]; /**< Name of artist    */
-    char album[ALBUM_MAX_NAME];   /**< Name of album     */
-    char title[TITLE_MAX_NAME];   /**< Name of song      */
-    uint32_t num;                 /**< Track number      */
-    uint32_t length;              /**< Length of song    */
-    uint32_t plays;               /**< Number of plays   */
-    f_prn_t *finger_prints;      /**< Fingerprint value */
-    uint32_t time_added;          /**< Time when added   */
+    char artist[ARTIST_MAX_NAME]; /**< Name of artist                    */
+    char album[ALBUM_MAX_NAME];   /**< Name of album                     */
+    char title[TITLE_MAX_NAME];   /**< Name of song                      */
+    uint32_t num;                 /**< Track number                      */
+    uint32_t length;              /**< Length of song                    */
+    uint32_t plays;               /**< Number of plays                   */
+    f_prn_t *finger_prints;       /**< Fingerprint value                 */
+    int16_t edit_score;           /**< Score used to sort by fingerprint */
+    uint32_t time_added;          /**< Time when added                   */
 } song_t;
 
 int database_open_error (int rc, sqlite3 *db);

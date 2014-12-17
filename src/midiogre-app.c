@@ -182,6 +182,14 @@ MidiogreApp *midiogre_app_init(void)
     gtk_spin_button_set_value(app->result_spinbutton, 8);
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
 
+    /* Current favorite */
+    app->fav_title_label = gtk_label_new("N/A");
+    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_title_label), FALSE, FALSE, 0);
+    app->fav_artist_label = gtk_label_new("N/A");
+    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_artist_label), FALSE, FALSE, 0);
+    app->fav_album_label = gtk_label_new("N/A");
+    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_album_label), FALSE, FALSE, 0);
+
     /* Playlist */
     /* TODO */
 

@@ -27,18 +27,35 @@ static void playlist_clicked(SongRow *row, GtkButton *button)
 
 static void fav_clicked(SongRow *row, GtkButton *button)
 {
-    SongRowPrivate *priv = row->priv;
+    static int lock = 0;
 
-    priv->song->plays++;
-    app->cur_fav = calloc(1, sizeof(song_t));
-
-    /* TODO COPY fingerprint */
-
-    *app->cur_fav = *priv->song;
+    if (lock != 1) {
+        lock = 1;
+        SongRowPrivate *priv = row->priv;
 
 
-    song_t *cur;
-    cur = app->cur_fav;
+        f_prn_t *prn;
+
+        /* Deallocate last favorite if exist */
+        if (app->cur_fav != NULL) {
+            prn  = app->cur_fav->finger_prints;
+            //free_f_prn(app->cur_fav->finger_prints);
+            g_free(app->cur_fav);
+        }
+
+        app->cur_fav = calloc(1, sizeof(song_t));
+
+        /* Copy finger print */
+        *app->cur_fav = *priv->song;
+        copy_f_prn(app->cur_fav->finger_prints, priv->song->finger_prints);
+
+        gtk_label_set_text(app->fav_title_label, app->cur_fav->title);
+        gtk_label_set_text(app->fav_artist_label, app->cur_fav->artist);
+        gtk_label_set_text(app->fav_album_label, app->cur_fav->album);
+
+        lock = 0;
+    }
+
 }
 
 int song_row_sort(SongRow *a, SongRow *b, gpointer data)

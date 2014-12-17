@@ -128,14 +128,30 @@ int search_db(GQueue *songs, sqlite3 *db, gchar *head, gchar *body, gint limit)
     return 0;
 }
 
-GCompareFunc sort_fprnt(gconstpointer s1, gconstpointer s2, gpointer a)
+gint sort_fprnt(gpointer s1, gpointer s2, gpointer a)
 {
-    const song_t *song1 = s1;
-    const song_t *song2 = s2;
-    MidiogreApp *app = a;
+    song_t *song1 = s1;
+    song_t *song2 = s2;
+    song_t *song_fav = app->cur_fav;
 
 
-    app;
+    if (song1->edit_score == -1) {
+        song1->edit_score = finger_prn_cmp(song1->finger_prints, song_fav->finger_prints);
+    }
+
+    if (song2->edit_score == -1) {
+        song2->edit_score = finger_prn_cmp(song2->finger_prints, song_fav->finger_prints);
+    }
+
+
+
+    if (song1->edit_score > song2->edit_score) {
+        return 1;
+    } else if (song1->edit_score == song2->edit_score) {
+        return 0;
+    } else {
+        return -1;
+    }
 
 
 
@@ -178,8 +194,9 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
     fingerprints[0] = atoi(argv[7]);
     fingerprints[1] = atoi(argv[8]);
     fingerprints[2] = atoi(argv[9]);
-
     song->finger_prints = convert_to_f_prn(fingerprints);
+
+    song->edit_score = -1;
 
     /*song->time_added*/
 
