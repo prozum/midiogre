@@ -5,6 +5,7 @@
   <template class="SongRow" parent="GtkListBoxRow">
     <property name="can_focus">False</property>
     <property name="valign">center</property>
+    <property name="hexpand">True</property>
     <property name="selectable">False</property>
     <child>
       <object class="GtkBox" id="box1">
