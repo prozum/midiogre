@@ -147,7 +147,9 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     f_prns = finger_prn_gen(mid->tracks->ptr);
 
     if (f_prns == NULL) {
+        fprintf(stderr,"Could not generate finger print!\n");
         free(f_prns);
+        free_mid(mid);
         return -1;
     }
 
@@ -161,6 +163,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
         finger_prints[i] += f_prns[i].f_prn[5];
     }
 
+    /* Cleanup */
     free_mid(mid);
     for (i = 0; i < FINGER_PRNS; i++) {
         free(f_prns[i].f_prn);
