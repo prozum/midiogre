@@ -26,12 +26,16 @@ f_prn_t *finger_prn_gen(track_t *track)
 
     finger_prns = malloc(3 * sizeof(f_prn_t));
 
-    for (i = 0; i < FINGER_PRNS; i++) {
-        finger_prns[i].f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
-        for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
-            finger_prns[i].f_prn[j] = abs(f_prn_tmp[i].f_prn[j+1] - f_prn_tmp[i].f_prn[j]);
+    if (f_prn_tmp != NULL) {
+        for (i = 0; i < FINGER_PRNS; i++) {
+            finger_prns[i].f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
+            for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
+                finger_prns[i].f_prn[j] = abs(f_prn_tmp[i].f_prn[j+1] - f_prn_tmp[i].f_prn[j]);
+            }
+            free(f_prn_tmp[i].f_prn);
         }
-        free(f_prn_tmp[i].f_prn);
+    } else {
+        finger_prns = NULL;
     }
 
     free(f_prn_tmp);
@@ -362,7 +366,7 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
     f_prn_ret = malloc(sizeof(f_prn_t) * FINGER_PRNS);
 
     for (i = 0; i < FINGER_PRNS; i++) {
-        f_prn_ret[i].f_prn = calloc(FINGER_PRN_LEN, sizeof(int16_t));
+        f_prn_ret[i].f_prn = calloc(FINGER_PRN_LEN, sizeof(uint8_t));
     }
 
     i = 0;
@@ -370,12 +374,12 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
     k = 0;
 
     /* picking fingerprints */
-    while (k < 3) {
+    while (k < 2) {
         if (f_prns[i]) {
             memcpy((void *)f_prn_ret[k].f_prn, (void *)f_prn[i][j].f_prn, sizeof(uint8_t) * FINGER_PRN_LEN);
             k++;
             i++;
-        } else if (i == 3){
+        } else if (i == 2){
             j++;
             i = 0;
         } else {
