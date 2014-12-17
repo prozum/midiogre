@@ -61,6 +61,8 @@ int main( int argc, char *argv[] )
     
     /* Cleanup */
 
+
+
     for (i = 0; i < FINGER_PRNS; i++) {
         free(finger_prints1[i].f_prn);
         free(finger_prints2[i].f_prn);

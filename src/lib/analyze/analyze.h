@@ -1,20 +1,21 @@
 #ifndef __ANALYZE_H__
 #define __ANALYZE_H__
 
+#include <mid/mid.h>
+
 #define SEMITONES 12
 #define CHANNELS 16
 
-/* semitones per finger_prn */
+/** semitones per finger_prn */
 #define FINGER_PRN_LEN 7
 #define FINGER_PRN_CMP_LEN 6
 
-/* finger_prns per channel */
+/** finger_prns per channel */
 #define FINGER_PRNS 3
 
-/* channels that are to be generated fingerprints from */
+/** Channels that are to be generated fingerprints from */
 #define TOP_CHANNELS 3
 
-#include <mid/mid.h>
 
 /** Histogram type
  *
@@ -84,7 +85,7 @@ void calc_euclid_chan_dist(channel_t *channels);
  */
 f_prn_t *finger_prn_extract(channel_t *channels);
 
-/** Inner function fro finger_prn_extract
+/** Inner function for finger_prn_extract
  * @param note: Array of notes
  * @param notes: Length of notes
  * @param f_prn: Array of arrays with fingerprints

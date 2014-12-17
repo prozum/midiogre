@@ -1,6 +1,7 @@
 #include "db.h"
 
 #include <mid/mid.h>
+#include <analyze/analyze.h>
 #include <ext/ext.h>
 
 #include <glib.h>
@@ -69,7 +70,9 @@ int db_init(sqlite3 *db)
           "`time`                   UNSIGNED INT DEFAULT 0,"                                                \
           "`plays`                      UNSIGNED DEFAULT 0,"                                                \
           "`import_date`               timestamp DEFAULT CURRENT_TIMESTAMP,"                                \
-          "`finger_prints`              CHAR(21) DEFAULT \'\',"   \
+          "`finger_print1`          UNSIGNED INT DEFAULT 0,"   \
+          "`finger_print2`          UNSIGNED INT DEFAULT 0,"   \
+          "`finger_print3`          UNSIGNED INT DEFAULT 0,"   \
           "`addr`                  VARCHAR(1024) DEFAULT \'N/A\');";
 
     /* Execute SQL statement */
@@ -85,9 +88,11 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 {
     FILE * mid_file;
     mid_t *mid, *mid_tmp;
+    f_prn_t *f_prns;
 
     char *sql, *error = 0;
     int rc;
+    int i;
 
     char artist[64];
     char album[64];
@@ -95,6 +100,14 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     unsigned  num;
     int instr_classes;
     double time;
+    unsigned finger_prints[3] = {0,0,0};
+
+    /* Check string for "'" */
+    if (check_sql(mid_addr) == -1) {
+
+        fprintf(stderr,"File contains dangerous character \"\'\"!\nTODO: Proper fix for this.\n");
+        return -1;
+    }
 
     /* Open mid file */
     if ((mid_file = fopen(mid_addr, "rb")) == NULL) {
@@ -127,24 +140,38 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
     /* Mid length (ms) */
     time = extract_time(mid);
-    free_mid(mid);
 
-    /* Check string for "'" */
-    if (check_sql(mid_addr) == -1) {
+    /* Import 3 finger prints */
+    //f_prns = finger_prn_gen(mid->tracks->ptr);
 
-        fprintf(stderr,"File contains dangerous character \"\'\"!\nTODO: Proper fix for this.\n");
-        return -1;
-    }
+    //for (i = 0; i < FINGER_PRNS; i++) {
+    //    finger_prints[i] += f_prns[i].f_prn[0]<<25;
+    //    finger_prints[i] += f_prns[i].f_prn[1]<<20;
+    //    finger_prints[i] += f_prns[i].f_prn[2]<<15;
+    //    finger_prints[i] += f_prns[i].f_prn[3]<<10;
+    //    finger_prints[i] += f_prns[i].f_prn[4]<<5;
+    //    finger_prints[i] += f_prns[i].f_prn[5];
+    //}
+
+    //free_mid(mid);
+    //for (i = 0; i < FINGER_PRNS; i++) {
+    //    free(f_prns[i].f_prn);
+    //}
+    //free(f_prns);
+
 
     /* Exec data import */
     parse_filename(mid_addr, artist, album, &num, title);
-    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, '%s');",
+    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, finger_print1, finger_print2, finger_print3,  addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, %d, %d, %d, %s);",
                           artist,
                           album,
                           num,
                           title,
                           instr_classes,
                           time,
+                          finger_prints[0],
+                          finger_prints[1],
+                          finger_prints[2],
                           mid_addr);
 
     rc = sqlite3_exec(db, sql, NULL, 0, &error);

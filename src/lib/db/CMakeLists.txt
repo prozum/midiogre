@@ -4,6 +4,7 @@ add_library(db
 target_link_libraries(db
 	mid
 	ext
+	analyze
 	${SQLITE3_LIBRARIES}
 	
 )
