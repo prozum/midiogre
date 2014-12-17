@@ -8,14 +8,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef _WIN32
+#include <process.h>
+#endif
 
 G_DEFINE_TYPE_WITH_PRIVATE(SongRow, song_row, GTK_TYPE_LIST_BOX_ROW)
 
 static void play_clicked(SongRow *row, GtkButton *button)
 {
     SongRowPrivate *priv = row->priv;
-
     priv->song->plays++;
+    //priv->song->addr
+    //execv("D:/VirtualMachines/TwoFingerScroll.exe","adr");
+#ifdef _WIN32
+	spawnl( P_NOWAIT, "C:/Program Files/Windows Media Player/wmplayer.exe",
+    	"wmplayer.exe", "C:/Users/Test/Documents/GitHub/midiogre/res/mid/bass.mid", NULL );
+#endif
+
+#ifdef __linux
+	g_app_info_launch_default_for_uri("file:///etc/passwd",
+                                                NULL,
+                                                &error);
+	printf("Fucka you");
+#endif
 
 }
 
