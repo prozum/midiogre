@@ -6,6 +6,7 @@
     <property name="can_focus">False</property>
     <property name="valign">center</property>
     <property name="hexpand">True</property>
+    <property name="border_width">31</property>
     <property name="selectable">False</property>
     <child>
       <object class="GtkGrid" id="grid1">
@@ -38,8 +39,10 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">end</property>
+            <property name="xalign">1</property>
             <property name="xpad">12</property>
             <property name="label" translatable="yes">0</property>
+            <property name="width_chars">5</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -51,8 +54,11 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">end</property>
+            <property name="xalign">1</property>
             <property name="xpad">12</property>
             <property name="label" translatable="yes">0</property>
+            <property name="width_chars">2</property>
+            <property name="max_width_chars">2</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -65,9 +71,12 @@
             <property name="can_focus">False</property>
             <property name="halign">end</property>
             <property name="hexpand">True</property>
+            <property name="xalign">1</property>
             <property name="xpad">12</property>
             <property name="label" translatable="yes">00:00</property>
             <property name="ellipsize">end</property>
+            <property name="width_chars">5</property>
+            <property name="max_width_chars">5</property>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -161,8 +170,12 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
+            <property name="xalign">0</property>
             <property name="xpad">12</property>
-            <property name="label" translatable="yes">Titlesssssssssssssssssssss</property>
+            <property name="label" translatable="yes">Title</property>
+            <property name="ellipsize">end</property>
+            <property name="width_chars">20</property>
+            <property name="max_width_chars">20</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -174,8 +187,11 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
+            <property name="xalign">0</property>
             <property name="xpad">12</property>
             <property name="label" translatable="yes">Artist</property>
+            <property name="width_chars">20</property>
+            <property name="max_width_chars">20</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -187,8 +203,11 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">start</property>
+            <property name="xalign">0</property>
             <property name="xpad">12</property>
             <property name="label" translatable="yes">Album</property>
+            <property name="width_chars">20</property>
+            <property name="max_width_chars">20</property>
           </object>
           <packing>
             <property name="left_attach">0</property>

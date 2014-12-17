@@ -2,6 +2,7 @@
 <gresources>
     <gresource prefix="/org/prozum/midiogre">
         <file preprocess="xml-stripblanks">ui/songbox.ui</file>
+        <file alias="midiogre_logo.png" preprocess="to-pixdata">icons/midiogre_logo.png</file>
         <file alias="window-close-symbolic.symbolic.png" preprocess="to-pixdata">icons/window-close-symbolic.symbolic.png</file>
         <file alias="document-open-symbolic.symbolic.png" preprocess="to-pixdata">icons/document-open-symbolic.symbolic.png</file>
         <file alias="list-add-symbolic.symbolic.png" preprocess="to-pixdata">icons/list-add-symbolic.symbolic.png</file>

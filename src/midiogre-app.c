@@ -21,9 +21,10 @@ MidiogreApp *midiogre_app_init(void)
     GtkWidget *scrolled;
     GtkWidget *label,*frame;
     GtkWidget *button;
-
     GtkBox *box;
+
     gint i;
+    GError *err;
 
     /* Allocate app */
     app = calloc(1, sizeof(MidiogreApp));
@@ -34,6 +35,14 @@ MidiogreApp *midiogre_app_init(void)
     gtk_window_set_default_size(GTK_WINDOW(app->window), 600, 400);
     g_signal_connect(app->window, "destroy",
                       G_CALLBACK(gtk_widget_destroyed), &app->window);
+
+    gtk_window_set_icon(app->window,gdk_pixbuf_new_from_resource("/org/prozum/midiogre/midiogre_logo.png",&err));
+
+
+
+
+
+
 
     /* Setup header bar */
     header = gtk_header_bar_new();
@@ -180,10 +189,16 @@ MidiogreApp *midiogre_app_init(void)
 
     /* Current favorite */
     app->fav_title_label = GTK_LABEL(gtk_label_new("N/A"));
+    gtk_label_set_max_width_chars(app->fav_title_label, 20);
+    gtk_label_set_width_chars(app->fav_title_label, 20);
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_title_label), FALSE, FALSE, 0);
     app->fav_artist_label = GTK_LABEL(gtk_label_new("N/A"));
+    gtk_label_set_max_width_chars(app->fav_artist_label, 20);
+    gtk_label_set_width_chars(app->fav_artist_label, 20);
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_artist_label), FALSE, FALSE, 0);
     app->fav_album_label = GTK_LABEL(gtk_label_new("N/A"));
+    gtk_label_set_max_width_chars(app->fav_album_label, 20);
+    gtk_label_set_width_chars(app->fav_album_label, 20);
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_album_label), FALSE, FALSE, 0);
 
     /* Playlist */
