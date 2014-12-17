@@ -167,6 +167,6 @@ f_prn_t *convert_to_f_prn(const uint32_t *finger_prints);
 
 void free_f_prn(f_prn_t *f_prn);
 
-void copy_f_prn()f_prn_t *f_prn1, const f_prn_t *f_prn2;
+void copy_f_prn(f_prn_t *f_prn1, const f_prn_t *f_prn2);
 
 #endif
