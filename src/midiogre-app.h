@@ -6,6 +6,7 @@
 
 #include <gtk/gtk.h>
 
+
 /** MidiogreApp - Struct containing app vars */
 typedef struct {
 
@@ -46,6 +47,8 @@ typedef struct {
     GQueue *playlist;          /**< Song playlist                        */
 
 } MidiogreApp;
+
+extern MidiogreApp *app; /**< Instance of MidiogreApp */
 
 GtkWidget *window_init(void);
 MidiogreApp *midiogre_app_init(void);

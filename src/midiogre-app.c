@@ -10,6 +10,8 @@
 
 #include <string.h>
 
+MidiogreApp *app;
+
 MidiogreApp *midiogre_app_init(void)
 {
     MidiogreApp *app;

@@ -14,6 +14,7 @@ static void play_clicked(SongRow *row, GtkButton *button)
     SongRowPrivate *priv = row->priv;
 
     priv->song->plays++;
+
 }
 
 static void playlist_clicked(SongRow *row, GtkButton *button)
@@ -27,6 +28,14 @@ static void fav_clicked(SongRow *row, GtkButton *button)
     SongRowPrivate *priv = row->priv;
 
     priv->song->plays++;
+    app->cur_fav = calloc(1, sizeof(song_t));
+
+    /* TODO COPY fingerprint */
+
+    *app->cur_fav = *priv->song;
+
+    song_t *cur;
+    cur = app->cur_fav;
 }
 
 int song_row_sort(SongRow *a, SongRow *b, gpointer data)
@@ -81,6 +90,7 @@ static void song_row_init(SongRow *row)
 
 void song_row_destroy(SongRow *row)
 {
+    /* TODO deallocate fingerprint */
     g_free(row->priv->song);
 
     gtk_widget_destroy(GTK_WIDGET(row));

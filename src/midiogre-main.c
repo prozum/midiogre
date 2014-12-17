@@ -5,7 +5,6 @@
 
 int main(int argc, char *argv[])
 {
-    MidiogreApp *app;
 
     gtk_init(&argc, &argv);
 
