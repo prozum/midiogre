@@ -75,9 +75,9 @@ int main( int argc, char *argv[] )
     free(finger_prints1);
     free(finger_prints2);
     free_mid(tmp_mid1);
-    free_mid(tmp_mid2);
+    /* free_mid(tmp_mid2); */
     free_mid(mid1);
-    free_mid(mid2);
+    /* free_mid(mid2); */
 
     putchar('\n');
     return 0;
