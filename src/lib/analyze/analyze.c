@@ -571,42 +571,6 @@ int skyline_compar(const void *a, const void *b)
     return note1->onset - note2->onset;
 }
 
-uint8_t finger_prn_arr_cmp(const uint32_t f_prn1, const uint32_t f_prn2)
-{
-    uint8_t i, j;
-    uint8_t dist;
-
-    f_prn_t *f_prn1;
-    f_prn_t *f_prn2;
-
-    f_prn1 = malloc(sizeof(f_prn_t) * FINGER_PRNS);
-    f_prn2 = malloc(sizeof(f_prn_t) * FINGER_PRNS);
-
-    for (i = 0; i < FINGER_PRNS; i+=FINGER_PRN_CMP_LEN) {
-        f_prn1->f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
-        f_prn2->f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
-
-        for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
-            f_prn1->f_prn[j + i] = finger_prn1[j + i];
-            f_prn2->f_prn[j + i] = finger_prn2[j + i];
-        }
-    }
-
-    dist = finger_prn_cmp(f_prn1, f_prn2);
-
-    for (i = 0; i < FINGER_PRNS; i++) {
-        for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
-            free(f_prn1[i].f_prn);
-            free(f_prn2[i].f_prn);
-        }
-    }
-
-    free(f_prn1);
-    free(f_prn2);
-
-    return dist;
-}
-
 f_prn_t *convert_to_f_prn(const uint32_t *finger_prints)
 {
     f_prn_t *ret_f_prn;

@@ -3,6 +3,8 @@
 #ifndef __DB_H__
 #define __DB_H__
 
+#include <analyze/analyze.h>
+
 #include <sqlite3.h>
 
 #include <stdlib.h>
@@ -21,7 +23,7 @@ typedef struct {
     uint32_t num;                 /**< Track number      */
     uint32_t length;              /**< Length of song    */
     uint32_t plays;               /**< Number of plays   */
-    uint8_t fingerprint[21];      /**< Fingerprint value */
+    f_prn_t *finger_prints;      /**< Fingerprint value */
     uint32_t time_added;          /**< Time when added   */
 } song_t;
 

@@ -47,7 +47,7 @@ gint search_event(MidiogreApp *app)
         return -1;
     }
 
-    sql_head = g_strdup_printf("SELECT artist,album,num,title,time,plays,strftime('%%s', import_date)  FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
+    sql_head = g_strdup_printf("SELECT artist,album,num,title,time,plays,strftime('%%s', import_date),fingerprint1,fingerprint2,fingerprint3 FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
                                artist_value,
                                album_value,
                                title_value,
@@ -123,7 +123,7 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
 {
     song_t *song;
     GQueue *songs = s;
-
+    uint32_t fingerprints[3];
     song = calloc(1, sizeof(song_t));
 
     /* Load columns for song row */
@@ -147,6 +147,12 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
     song->plays = atoi(argv[5]);
 
     song->time_added = atoi(argv[6]);
+
+    fingerprints[0] = atoi(argv[7]);
+    fingerprints[1] = atoi(argv[8]);
+    fingerprints[2] = atoi(argv[9]);
+
+    song->finger_prints = convert_to_f_prn(fingerprints);
 
     /*song->time_added*/
 

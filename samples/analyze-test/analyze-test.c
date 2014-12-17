@@ -15,39 +15,43 @@ int main( int argc, char *argv[] )
     f_prn_t *finger_prints1, *finger_prints2;
     uint8_t i, j;
 
+    uint32_t fprints[3] = {2256978, 7500297, 0};
+
     /* Open file */
     if((mid_file1 = fopen(argv[1], "rb")) == NULL ) {
         perror(argv[1]);
         return -1;
     }
 
-
+/*
     if ((mid_file2 = fopen(argv[2], "rb")) == NULL) {
         perror(argv[2]);
         return -1;
     }
-
+*/
     /* Read mid */
     tmp_mid1 = read_mid(mid_file1);
-    tmp_mid2 = read_mid(mid_file2);
+  //  tmp_mid2 = read_mid(mid_file2);
 
     fclose(mid_file1);
-    fclose(mid_file2);
+ //   fclose(mid_file2);
 
     mid1 = merge_tracks(tmp_mid1);
-    mid2 = merge_tracks(tmp_mid2);
+//    mid2 = merge_tracks(tmp_mid2);
 
     /* Extract channels */
     finger_prints1 = finger_prn_gen(mid1->tracks->ptr);
-    finger_prints2 = finger_prn_gen(mid2->tracks->ptr);
+    finger_prints2 = convert_to_f_prn(fprints);
+ //   finger_prints2 = finger_prn_gen(mid2->tracks->ptr);
 
-    i = finger_prn_cmp(finger_prints1, finger_prints2);
+  //  i = finger_prn_cmp(finger_prints1, finger_prints2);
 
-    printf("TEST RESULTS:\n%d\nFingerprints for first argument\n\n", i);
+    //printf("TEST RESULTS:\n%d\nFingerprints for first argument\n\n", i);
 
     for (i = 0; i < FINGER_PRNS; i++) {
-        for (j = 0; j < FINGER_PRN_LEN; j++) {
-            printf("%d ", finger_prints2[i].f_prn[j]);
+        for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
+            printf("%d ", finger_prints1[i].f_prn[j]);
+            printf("%d  ", finger_prints2[i].f_prn[j]);
         }
 
         printf("\n");
