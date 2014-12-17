@@ -17,6 +17,7 @@ G_DEFINE_TYPE_WITH_PRIVATE(SongRow, song_row, GTK_TYPE_LIST_BOX_ROW)
 static void play_clicked(SongRow *row, GtkButton *button)
 {
     GError *err = NULL;
+    gchar *tmp;
     SongRowPrivate *priv = row->priv;
     priv->song->plays++;
     //priv->song->addr
@@ -28,9 +29,12 @@ static void play_clicked(SongRow *row, GtkButton *button)
 #endif
 
 #ifdef __linux
-	g_app_info_launch_default_for_uri(priv->song->addr,
+
+    tmp = g_strdup_printf("file://%s",priv->song->addr);
+    g_app_info_launch_default_for_uri(tmp,
                                       NULL,
                                       &err);
+    g_free(tmp);
 
 #endif
 
