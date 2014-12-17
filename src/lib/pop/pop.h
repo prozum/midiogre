@@ -21,4 +21,5 @@ int song_compare_pop(const void *p1, const void *p2);
 
 int song_compare_fingerprint(const void *p1, const void *p2);
 
+int compare_song_score(song_t *song_original, song_t *song1, song_t *song2);
 #endif
