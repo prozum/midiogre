@@ -162,7 +162,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
     /* Exec data import */
     parse_filename(mid_addr, artist, album, &num, title);
-    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, finger_print1, finger_print2, finger_print3,  addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, %d, %d, %d, %s);",
+    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, finger_print1, finger_print2, finger_print3,  addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, %d, %d, %d, '%s');",
                           artist,
                           album,
                           num,
