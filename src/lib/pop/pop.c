@@ -63,7 +63,24 @@ double song_score_play(unsigned int plays, unsigned int upload_time)
     return score;
 
 }
+/*
+int compare_song_score(song_t *song_original, song_t *song1, song_t *song2)
+{
+    double song1_score = 0, song2_score = 0;
 
+    song1_score = song_score_all(song1->plays, song1->time_added, finger_prn_arr_cmp(song_original->fingerprint, song1->fingerprint));
+    song2_score = song_score_all(song2->plays, song2->time_added, finger_prn_arr_cmp(song_original->fingerprint, song2->fingerprint));
+
+    if( song1_score > song2_score) {
+        return 1;
+    } else if(song1_score < song2_score) {
+        return -1;
+    } else {
+        return 0;
+    }
+}
+*/
+/*
 int song_compare_all(const void *s1, const void *s2)
 {
     const song_t *song1 = s1;
@@ -82,7 +99,7 @@ int song_compare_all(const void *s1, const void *s2)
         return 0;
     }
 }
-
+*/
 int song_compare_pop(const void *s1, const void *s2) {
     const song_t *song1 = s1;
     const song_t *song2 = s2;
@@ -100,7 +117,7 @@ int song_compare_pop(const void *s1, const void *s2) {
         return 0;
     }
 }
-
+/*
 int song_compare_fingerprint(const void *s1, const void *s2) {
     const song_t *song1 = s1;
     const song_t *song2 = s2;
@@ -113,3 +130,4 @@ int song_compare_fingerprint(const void *s1, const void *s2) {
         return 0;
     }
 }
+*/
