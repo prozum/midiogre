@@ -88,11 +88,11 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 {
     FILE * mid_file;
     mid_t *mid, *mid_tmp;
-    //f_prn_t *f_prns;
+    f_prn_t *f_prns;
 
     char *sql, *error = 0;
     int rc;
-    //int i;
+    int i;
 
     char artist[64];
     char album[64];
