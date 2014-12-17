@@ -183,23 +183,20 @@ MidiogreApp *midiogre_app_init(void)
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
 
     /* Current favorite */
-    app->fav_title_label = gtk_label_new("N/A");
+    app->fav_title_label = GTK_LABEL(gtk_label_new("N/A"));
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_title_label), FALSE, FALSE, 0);
-    app->fav_artist_label = gtk_label_new("N/A");
+    app->fav_artist_label = GTK_LABEL(gtk_label_new("N/A"));
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_artist_label), FALSE, FALSE, 0);
-    app->fav_album_label = gtk_label_new("N/A");
+    app->fav_album_label = GTK_LABEL(gtk_label_new("N/A"));
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_album_label), FALSE, FALSE, 0);
 
     /* Playlist */
     /* TODO */
 
-    /* Favorites */
-    /* TODO */
-
     /* Add song boxes */
     app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical</span>", (GtkListBoxSortFunc)song_row_sort);
-    //app->songbox_best  = songbox_new(app->win_box, "<span size=\"large\">Best match</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_fprnt = songbox_new(app->win_box, "<span size=\"large\">Fingerprint</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_best  = songbox_new(app->win_box, "<span size=\"large\">Best match</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_pop   = songbox_new(app->win_box, "<span size=\"large\">Popularity</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_new   = songbox_new(app->win_box, "<span size=\"large\">Newest</span>", (GtkListBoxSortFunc)song_row_sort);
 

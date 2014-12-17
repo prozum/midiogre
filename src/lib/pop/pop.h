@@ -7,11 +7,13 @@
 
 #include <stdint.h>
 
+#define MAX_EDITDIST 10
+#define MAX_PLAYS 10000
 #define TIMECONSTANT 45000
 #define BASETIME 1416174518 /*Added 22:48 16/11/2014*/
 
 /** Alt time calculator based on the actual model used på reddit as found here: amix.dk/blog/post/19588*/
-unsigned int calcAge(unsigned int upload_time);
+unsigned int delta_time(unsigned int upload_time);
 
 double song_score_all(unsigned int plays, unsigned int upload_time, uint8_t fingerprint);
 int song_compare_all(const void *s1, const void *s2);

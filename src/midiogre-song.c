@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef _WIN32
+#ifdef WIN32
 #include <process.h>
 #endif
 
@@ -19,16 +19,12 @@ static void play_clicked(SongRow *row, GtkButton *button)
     GError *err = NULL;
     gchar *tmp;
     SongRowPrivate *priv = row->priv;
-    priv->song->plays++;
-    //priv->song->addr
 
-#ifdef _WIN32
+#ifdef WIN32
 	spawnl( P_NOWAIT, "C:/Program Files/Windows Media Player/wmplayer.exe",
     	"wmplayer.exe", priv->song->addr, NULL );
 	
-#endif
-
-#ifdef __linux
+#else
 
     tmp = g_strdup_printf("file://%s",priv->song->addr);
     g_app_info_launch_default_for_uri(tmp,
@@ -37,6 +33,11 @@ static void play_clicked(SongRow *row, GtkButton *button)
     g_free(tmp);
 
 #endif
+
+    tmp = g_strdup_printf("%d", ++priv->song->plays);
+    gtk_label_set_text(priv->plays_label, tmp);
+    g_free(tmp);
+
 
 }
 
@@ -101,6 +102,15 @@ static void song_row_update(SongRow *row)
     gtk_label_set_text(priv->title_label, priv->song->title);
     gtk_label_set_text(priv->album_label, priv->song->album);
     gtk_label_set_text(priv->artist_label, priv->song->artist);
+
+
+    tmp = g_strdup_printf("%d", priv->song->edit_score);
+    gtk_label_set_text(priv->edit_dist_label, tmp);
+    g_free(tmp);
+
+    tmp = g_strdup_printf("%d", priv->song->plays);
+    gtk_label_set_text(priv->plays_label, tmp);
+    g_free(tmp);
 }
 
 static void song_row_class_init(SongRowClass *klass)
@@ -113,6 +123,9 @@ static void song_row_class_init(SongRowClass *klass)
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, artist_label);
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, album_label);
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, time_label);
+
+    gtk_widget_class_bind_template_child_private(widget_class, SongRow, edit_dist_label);
+    gtk_widget_class_bind_template_child_private(widget_class, SongRow, plays_label);
 
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, play_button);
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, playlist_button);
