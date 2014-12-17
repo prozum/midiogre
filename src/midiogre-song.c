@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <process.h>
 #endif
 
@@ -20,15 +20,16 @@ static void play_clicked(SongRow *row, GtkButton *button)
     priv->song->plays++;
     //priv->song->addr
     //execv("D:/VirtualMachines/TwoFingerScroll.exe","adr");
-#ifdef WIN32
+#ifdef _WIN32
 	spawnl( P_NOWAIT, "C:/Program Files/Windows Media Player/wmplayer.exe",
     	"wmplayer.exe", "C:/Users/Test/Documents/GitHub/midiogre/res/mid/bass.mid", NULL );
 #endif
 
-#ifdef LINUX
+#ifdef __linux
 	g_app_info_launch_default_for_uri("file:///etc/passwd",
                                                 NULL,
                                                 &error);
+	printf("Fucka you");
 #endif
 
 }
