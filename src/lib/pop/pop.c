@@ -93,9 +93,9 @@ int song_compare_pop(const void *s1, const void *s2) {
     song2_score = song_score_play(song2->plays,song2->time_added);
 
     if(song1_score > song2_score) {
-        return 1;
-    } else if(song2_score < song2_score) {
         return -1;
+    } else if(song2_score < song2_score) {
+        return 1;
     } else {
         return 0;
     }

@@ -70,6 +70,10 @@ gint search_event(MidiogreApp *app)
 
     g_queue_sort(app->songs_pop, (GCompareDataFunc)song_compare_pop, NULL);
 
+    while(app->songs_pop->length > limit) {
+        g_queue_pop_tail(app->songs_pop);
+    }
+
     //search_best(app,sql);
     //search_finger(app,sql);
     //search_pop(app,sql);

@@ -20,7 +20,6 @@ static void playlist_clicked(SongRow *row, GtkButton *button)
 {
     SongRowPrivate *priv = row->priv;
 
-    priv->song->plays++;
 }
 
 static void fav_clicked(SongRow *row, GtkButton *button)
