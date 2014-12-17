@@ -24,6 +24,7 @@ if(MAIN)
     # Link
     target_link_libraries(midiogre
                           mid
+                          analyze
                           db
                           pop
                           ${GTK3_LIBRARIES})

@@ -1,6 +1,8 @@
 #include "midiogre-song.h"
 #include "midiogre-app.h"
 
+#include <analyze/analyze.h>
+
 #include <gtk/gtk.h>
 
 #include <stdlib.h>
@@ -33,6 +35,7 @@ static void fav_clicked(SongRow *row, GtkButton *button)
     /* TODO COPY fingerprint */
 
     *app->cur_fav = *priv->song;
+
 
     song_t *cur;
     cur = app->cur_fav;
