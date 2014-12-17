@@ -121,6 +121,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
         fprintf(stderr,"Could not read mid!\n");
         fclose(mid_file);
+        free_mid(mid_tmp);
         return -1;
     }
     fclose(mid_file);
@@ -129,7 +130,8 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     if ((mid = merge_tracks(mid_tmp)) == NULL) {
 
         fprintf(stderr,"Could not merge tracks!\n");
-        free(mid_tmp);
+        free_mid(mid_tmp);
+        free_mid(mid);
         return -1;
 
     }
@@ -142,22 +144,28 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     time = extract_time(mid);
 
     /* Import 3 finger prints */
-    //f_prns = finger_prn_gen(mid->tracks->ptr);
+    f_prns = finger_prn_gen(mid->tracks->ptr);
 
-    //for (i = 0; i < FINGER_PRNS; i++) {
-    //    finger_prints[i] += f_prns[i].f_prn[0]<<25;
-    //    finger_prints[i] += f_prns[i].f_prn[1]<<20;
-    //    finger_prints[i] += f_prns[i].f_prn[2]<<15;
-    //    finger_prints[i] += f_prns[i].f_prn[3]<<10;
-    //    finger_prints[i] += f_prns[i].f_prn[4]<<5;
-    //    finger_prints[i] += f_prns[i].f_prn[5];
-    //}
+    if (f_prns == NULL) {
+        free(f_prns);
+        return -1;
+    }
 
-    //free_mid(mid);
-    //for (i = 0; i < FINGER_PRNS; i++) {
-    //    free(f_prns[i].f_prn);
-    //}
-    //free(f_prns);
+
+    for (i = 0; i < FINGER_PRNS; i++) {
+        finger_prints[i] += f_prns[i].f_prn[0]<<25;
+        finger_prints[i] += f_prns[i].f_prn[1]<<20;
+        finger_prints[i] += f_prns[i].f_prn[2]<<15;
+        finger_prints[i] += f_prns[i].f_prn[3]<<10;
+        finger_prints[i] += f_prns[i].f_prn[4]<<5;
+        finger_prints[i] += f_prns[i].f_prn[5];
+    }
+
+    free_mid(mid);
+    for (i = 0; i < FINGER_PRNS; i++) {
+        free(f_prns[i].f_prn);
+    }
+    free(f_prns);
 
 
     /* Exec data import */
