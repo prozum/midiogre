@@ -60,7 +60,8 @@ static void fav_clicked(SongRow *row, GtkButton *button)
 
 int song_row_sort(SongRow *a, SongRow *b, gpointer data)
 {
-    return a->priv->song->time_added - b->priv->song->time_added;
+    //return a->priv->song->time_added - b->priv->song->time_added;
+    return 0;
 }
 
 
