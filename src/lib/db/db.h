@@ -26,6 +26,7 @@ typedef struct {
     f_prn_t *finger_prints;       /**< Fingerprint value                 */
     int16_t edit_score;           /**< Score used to sort by fingerprint */
     uint32_t time_added;          /**< Time when added                   */
+    char *addr;                   /**< Song file addr                    */
 } song_t;
 
 int database_open_error (int rc, sqlite3 *db);

@@ -112,6 +112,7 @@ static void song_row_init(SongRow *row)
 void song_row_destroy(SongRow *row)
 {
     /* TODO deallocate fingerprint */
+    g_free(row->priv->song->addr);
     g_free(row->priv->song);
 
     gtk_widget_destroy(GTK_WIDGET(row));

@@ -47,7 +47,7 @@ gint search_event(MidiogreApp *app)
         return -1;
     }
 
-    sql_head = g_strdup_printf("SELECT artist,album,num,title,time,plays,strftime('%%s', import_date),finger_print1,finger_print2,finger_print3 FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
+    sql_head = g_strdup_printf("SELECT artist,album,num,title,time,plays,strftime('%%s', import_date),finger_print1,finger_print2,finger_print3,addr FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
                                artist_value,
                                album_value,
                                title_value,
@@ -195,6 +195,9 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
     fingerprints[1] = atoi(argv[8]);
     fingerprints[2] = atoi(argv[9]);
     song->finger_prints = convert_to_f_prn(fingerprints);
+
+    song->addr = malloc(strlen(argv[10])+1);
+    strcpy(song->addr,argv[10]);
 
     song->edit_score = -1;
 
