@@ -582,11 +582,11 @@ f_prn_t *convert_to_f_prn(const uint32_t *finger_prints)
         ret_f_prn[i].f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
 
         ret_f_prn[i].f_prn[0] += (finger_prints[i] >> 20) & 0x0F;
-        ret_f_prn[i].f_prn[0] += (finger_prints[i] >> 16) & 0x0F;
-        ret_f_prn[i].f_prn[0] += (finger_prints[i] >> 12) & 0x0F;
-        ret_f_prn[i].f_prn[0] += (finger_prints[i] >>  8) & 0x0F;
-        ret_f_prn[i].f_prn[0] += (finger_prints[i] >>  4) & 0x0F;
-        ret_f_prn[i].f_prn[0] += (finger_prints[i])       & 0x0F;
+        ret_f_prn[i].f_prn[1] += (finger_prints[i] >> 16) & 0x0F;
+        ret_f_prn[i].f_prn[2] += (finger_prints[i] >> 12) & 0x0F;
+        ret_f_prn[i].f_prn[3] += (finger_prints[i] >>  8) & 0x0F;
+        ret_f_prn[i].f_prn[4] += (finger_prints[i] >>  4) & 0x0F;
+        ret_f_prn[i].f_prn[5] += (finger_prints[i])       & 0x0F;
     }
 
     return ret_f_prn;
