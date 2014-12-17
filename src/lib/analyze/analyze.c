@@ -382,6 +382,7 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
     /* picking fingerprints */
     while (k < 2) {
         if (f_prns[i]) {
+            printf("%d\n", f_prns[i]);
             memcpy((void *)f_prn_ret[k].f_prn, (void *)f_prn[i][j].f_prn, sizeof(uint8_t) * FINGER_PRN_LEN);
             k++;
             i++;
