@@ -121,6 +121,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
         fprintf(stderr,"Could not read mid!\n");
         fclose(mid_file);
+        free_mid(mid_tmp);
         return -1;
     }
     fclose(mid_file);
@@ -129,7 +130,8 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     if ((mid = merge_tracks(mid_tmp)) == NULL) {
 
         fprintf(stderr,"Could not merge tracks!\n");
-        free(mid_tmp);
+        free_mid(mid_tmp);
+        free_mid(mid);
         return -1;
 
     }
