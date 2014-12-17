@@ -171,7 +171,7 @@ f_prn_t *finger_prn_extract(channel_t *channels)
 
     /* find how many fingerprints for each top channel and extract the fingerprints */
     for (i = 0; i < TOP_CHANNELS; i++) {
-        if (channels[i].notes > FINGER_PRN_LEN) {
+        if (channels[i].notes >= FINGER_PRN_LEN) {
             f_prns[i] = finger_prn_extract_inner(channels[i].note, channels[i].notes, f_prn, i);
         } else {
             f_prns[i] = 0;
