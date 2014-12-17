@@ -197,7 +197,7 @@ int check_sql(const char *sql)
 
     while (sql[i] != '\0') {
 
-        if (sql[i] == '\'' || sql[i] == '\"') {
+        if (sql[i] == '\'' || sql[i] == '\"' || sql[i] == ';') {
 
             return -1;
         }
