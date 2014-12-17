@@ -153,7 +153,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
 
     for (i = 0; i < FINGER_PRNS; i++) {
-        finger_prints[i] += f_prns[i].f_prn[0]<<24;
+        finger_prints[i] += f_prns[i].f_prn[0]<<20;
         finger_prints[i] += f_prns[i].f_prn[1]<<16;
         finger_prints[i] += f_prns[i].f_prn[2]<<12;
         finger_prints[i] += f_prns[i].f_prn[3]<<8;
