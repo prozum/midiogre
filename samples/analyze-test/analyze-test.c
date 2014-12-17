@@ -44,7 +44,7 @@ int main( int argc, char *argv[] )
     finger_prints2 = convert_to_f_prn(fprints);
  //   finger_prints2 = finger_prn_gen(mid2->tracks->ptr);
 
-  //  i = finger_prn_cmp(finger_prints1, finger_prints2);
+    i = finger_prn_cmp(finger_prints1, finger_prints2);
 
     //printf("TEST RESULTS:\n%d\nFingerprints for first argument\n\n", i);
 

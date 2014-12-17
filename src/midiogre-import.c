@@ -119,43 +119,43 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
    if ((directory = opendir(folder_addr)) == NULL) {
 
        return -1;
-   }
+    }
 
-   while ((file = readdir(directory)) != NULL) {
+    while ((file = readdir(directory)) != NULL) {
 
-       /* Don't try to open hidden or previous folders */
-       if (file->d_name[0] != '.') {
+        /* Don't try to open hidden or previous folders */
+        if (file->d_name[0] != '.') {
 
-           /* If folder */
-           if (file->d_type == DT_DIR) {
+            /* If folder */
+            if (file->d_type == DT_DIR) {
 
-               tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
-               g_print("unix: next folder: %s\n", tmp);
+                tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
+                g_print("unix: next folder: %s\n", tmp);
 
-               folder_handler(tmp, mid_addrs);
-               g_free(tmp);
+                folder_handler(tmp, mid_addrs);
+                g_free(tmp);
 
-               g_print("unix: back folder: %s\n",folder_addr);
+                g_print("unix: back folder: %s\n",folder_addr);
 
-           /* If file with ".mid" extention */
-           } else if (g_ascii_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0 ||
-                      g_ascii_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".kar") == 0) {
+            /* If file with ".mid" extention */
+            } else if (g_ascii_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0 ||
+                       g_ascii_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".kar") == 0) {
 
-               tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
+                tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
 
-               /* Add address to mid_addr */
-               g_queue_push_tail(mid_addrs, tmp);
+                /* Add address to mid_addr */
+                g_queue_push_tail(mid_addrs, tmp);
 
-           }
-       }
-   }
+            }
+        }
+    }
 
-   if (closedir(directory) < 0) {
+    if (closedir(directory) < 0) {
 
-       return -1;
-   }
+        return -1;
+    }
 
-   return 0;
+    return 0;
 }
 #endif
 
