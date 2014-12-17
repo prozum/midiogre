@@ -269,6 +269,10 @@ void folder_chooser(GtkWindow *window)
         /* Import mid files */
         g_thread_new("mid_import", mid_import, status);
 
+    } else  {
+      
+        gtk_widget_destroy(dialog);
+
     }
 
 }
