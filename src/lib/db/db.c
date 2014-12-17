@@ -90,9 +90,10 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     mid_t *mid, *mid_tmp;
     f_prn_t *f_prns;
 
-    char *sql, *error = 0;
+    char *sql, *tmp, *error = 0;
     int rc;
     int i;
+
 
     char artist[64];
     char album[64];
@@ -169,7 +170,10 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
 
     /* Exec data import */
-    parse_filename(mid_addr, artist, album, &num, title);
+    tmp = g_strdup(mid_addr);
+    parse_filename(tmp, artist, album, &num, title);
+    free(tmp);
+
     sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, finger_print1, finger_print2, finger_print3, addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, %d, %d, %d, '%s');",
                           artist,
                           album,
@@ -218,7 +222,7 @@ void parse_filename (char *file_name, char *artist, char *album, unsigned *num, 
     /* Removes file extension from last string */
     file_pnt[strlen(file_pnt)-4] = '\0';
 
-    if (4 != sscanf(file_pnt, "%[^-]- %[^-]- %u- %s",
+    if (4 != sscanf(file_pnt, "%[^-]- %[^-]- %u- %[^.]",
                     artist,
                     album,
                     num,
