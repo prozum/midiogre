@@ -7,7 +7,10 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef WIN32
 #include <process.h>
+#endif
 
 G_DEFINE_TYPE_WITH_PRIVATE(SongRow, song_row, GTK_TYPE_LIST_BOX_ROW)
 
