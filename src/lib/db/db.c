@@ -121,7 +121,6 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
         fprintf(stderr,"Could not read mid!\n");
         fclose(mid_file);
-        free_mid(mid_tmp);
         return -1;
     }
     fclose(mid_file);
@@ -131,7 +130,6 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
         fprintf(stderr,"Could not merge tracks!\n");
         free_mid(mid_tmp);
-        free_mid(mid);
         return -1;
 
     }
@@ -148,7 +146,6 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
     if (f_prns == NULL) {
         fprintf(stderr,"Could not generate finger print!\n");
-        free(f_prns);
         free_mid(mid);
         return -1;
     }
