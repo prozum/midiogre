@@ -165,4 +165,6 @@ int skyline_compar(const void *a, const void *b);
 
 uint8_t finger_prn_arr_cmp(const uint8_t finger_prn1[], const uint8_t finger_prn2[]);
 
+f_prn_t *convert_to_f_prn(const uint32_t *finger_prints);
+
 #endif
