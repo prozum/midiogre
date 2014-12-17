@@ -39,6 +39,8 @@ static void play_clicked(SongRow *row, GtkButton *button)
     g_free(tmp);
 
 
+
+
 }
 
 static void playlist_clicked(SongRow *row, GtkButton *button)
