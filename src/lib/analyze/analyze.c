@@ -587,3 +587,23 @@ f_prn_t *convert_to_f_prn(const uint32_t *finger_prints)
 
     return ret_f_prn;
 }
+
+void free_f_prn(f_prn_t *f_prn)
+{
+    uint8_t i;
+
+    for (i = 0; i < FINGER_PRNS; i++) {
+        free(f_prn[i].f_prn);
+    }
+
+    free(f_prn);
+}
+
+void copy_f_prn(f_prn_t *f_prn1, const f_prn_t *f_prn2)
+{
+    uint8_t i;
+
+    for (i = 0; i < FINGER_PRNS; i++) {
+        memcpy((void *)f_prn1[i].f_prn, f_prn2[i].f_prn, sizeof(uint8_t) * FINGER_PRN_CMP_LEN);
+    }
+}
