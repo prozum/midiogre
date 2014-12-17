@@ -32,12 +32,6 @@ f_prn_t *finger_prn_gen(track_t *track)
             for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
                 finger_prns[i].f_prn[j] = abs(f_prn_tmp[i].f_prn[j+1] - f_prn_tmp[i].f_prn[j]);
             }
-            for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
-                printf("%d ", finger_prns[i].f_prn[j]);
-            }
-
-            printf("\n");
-
             free(f_prn_tmp[i].f_prn);
         }
     } else {
@@ -176,6 +170,8 @@ f_prn_t *finger_prn_extract(channel_t *channels)
         } else {
             f_prns[i] = 0;
         }
+
+        printf("%d\n", f_prns[i]);
     }
 
     /* if there are more than 3 fingerprints, pick them, else return NULL */
@@ -381,12 +377,11 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
 
     /* picking fingerprints */
     while (k < 2) {
-        if (f_prns[i]) {
-            printf("%d\n", f_prns[i]);
+        if (f_prns[i] && i < 3) {
             memcpy((void *)f_prn_ret[k].f_prn, (void *)f_prn[i][j].f_prn, sizeof(uint8_t) * FINGER_PRN_LEN);
             k++;
             i++;
-        } else if (i == 2){
+        } else if (i >= 2){
             j++;
             i = 0;
         } else {
