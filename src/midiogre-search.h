@@ -9,7 +9,8 @@ gint search_event(MidiogreApp *app);
 
 int search_db(GQueue *songs, sqlite3 *db, gchar *base, gchar *body, gint limit);
 
-GCompareFunc *sort_pop(gconstpointer a, gconstpointer b, gpointer data);
+GCompareFunc sort_fprnt(gconstpointer s1, gconstpointer s2, gpointer a);
+GCompareFunc sort_pop(gconstpointer s1, gconstpointer s2, gpointer a);
 
 gint search_handler(void *a, int argc, char **argv, char **col_name);
 

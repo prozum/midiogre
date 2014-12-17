@@ -47,7 +47,7 @@ gint search_event(MidiogreApp *app)
         return -1;
     }
 
-    sql_head = g_strdup_printf("SELECT artist,album,num,title,time,plays,strftime('%%s', import_date),fingerprint1,fingerprint2,fingerprint3 FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
+    sql_head = g_strdup_printf("SELECT artist,album,num,title,time,plays,strftime('%%s', import_date),finger_print1,finger_print2,finger_print3 FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
                                artist_value,
                                album_value,
                                title_value,
@@ -68,19 +68,32 @@ gint search_event(MidiogreApp *app)
     search_db(app->songs_pop, db, sql_head, "%s ORDER BY title,album,artist;", 0);
 
 
-    g_queue_sort(app->songs_pop, (GCompareDataFunc)song_compare_pop, NULL);
+    /* Only add songs to fingerprint songbox if a favorite song is chosen. */
+    if (app->cur_fav != NULL) {
+        search_db(app->songs_fprnt, db, sql_head, "%s ORDER BY title,album,artist;", 0);
+        g_queue_sort(app->songs_fprnt, (GCompareDataFunc)sort_fprnt, app);
 
+        while(app->songs_fprnt->length > limit) {
+            g_queue_pop_tail(app->songs_fprnt);
+        }
+    }
+
+    g_queue_sort(app->songs_pop, (GCompareDataFunc)song_compare_pop, NULL);
     while(app->songs_pop->length > limit) {
         g_queue_pop_tail(app->songs_pop);
     }
+
+
+    g_free(sql_head);
+    sqlite3_close(db);
+
+
 
     //search_best(app,sql);
     //search_finger(app,sql);
     //search_pop(app,sql);
     //search_date(app,sql);
 
-    g_free(sql_head);
-    sqlite3_close(db);
 
 
 
@@ -89,6 +102,7 @@ gint search_event(MidiogreApp *app)
     songbox_update(app->songbox_alpha, app->songs_alpha, limit);
     songbox_update(app->songbox_new, app->songs_new, limit);
     songbox_update(app->songbox_pop, app->songs_pop, limit);
+    songbox_update(app->songbox_fprnt, app->songs_fprnt, limit);
 
     return 0;
 }
@@ -114,9 +128,22 @@ int search_db(GQueue *songs, sqlite3 *db, gchar *head, gchar *body, gint limit)
     return 0;
 }
 
-GCompareFunc *sort_pop(gconstpointer a, gconstpointer b, gpointer data)
+GCompareFunc sort_fprnt(gconstpointer s1, gconstpointer s2, gpointer a)
 {
-    return song_compare_pop(a,b);
+    const song_t *song1 = s1;
+    const song_t *song2 = s2;
+    MidiogreApp *app = a;
+
+
+    app;
+
+
+
+    //return song_compare_pop(a,b);
+}
+GCompareFunc sort_pop(gconstpointer s1, gconstpointer s2, gpointer a)
+{
+    return song_compare_pop(s1,s2);
 }
 
 gint search_handler(void *s, int argc, char **argv, char **col_name)
