@@ -17,7 +17,7 @@ double song_score_all(unsigned int plays, unsigned int upload_time, uint8_t fing
 int song_compare_all(const void *s1, const void *s2);
 
 double song_score_play(unsigned int plays, unsigned int upload_time);
-int song_compare_play(const void *p1, const void *p2);
+int song_compare_pop(const void *p1, const void *p2);
 
 int song_compare_fingerprint(const void *p1, const void *p2);
 

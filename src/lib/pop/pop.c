@@ -83,7 +83,7 @@ int song_compare_all(const void *s1, const void *s2)
     }
 }
 
-int song_compare_play(const void *s1, const void *s2) {
+int song_compare_pop(const void *s1, const void *s2) {
     const song_t *song1 = s1;
     const song_t *song2 = s2;
 

@@ -1,4 +1,8 @@
 /** @db.h*/
+
+#ifndef __DB_H__
+#define __DB_H__
+
 #include <sqlite3.h>
 
 #include <stdlib.h>
@@ -36,3 +40,5 @@ int db_read_songs(sqlite3 *db, song_t *songs);
 int check_sql(const char *sql);
 
 void parse_filename (char *file_name, char *artist, char *album, unsigned *num, char *title);
+
+#endif

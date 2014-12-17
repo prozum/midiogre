@@ -2,6 +2,8 @@
 #include "midiogre-app.h"
 #include "midiogre-song.h"
 
+#include <pop/pop.h>
+
 #include <gtk/gtk.h>
 
 #include <string.h>
@@ -45,7 +47,7 @@ gint search_event(MidiogreApp *app)
         return -1;
     }
 
-    sql_head = g_strdup_printf("SELECT * FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
+    sql_head = g_strdup_printf("SELECT artist,album,num,title,time,plays,strftime('%%s', import_date)  FROM songs WHERE artist LIKE '%%%s%%' AND album LIKE '%%%s%%' AND title LIKE '%%%s%%' AND (%d & instr_classes) = %d",
                                artist_value,
                                album_value,
                                title_value,
@@ -63,7 +65,11 @@ gint search_event(MidiogreApp *app)
 
     search_db(app->songs_alpha, db, sql_head, "%s ORDER BY title,album,artist LIMIT %d;", limit);
     search_db(app->songs_new, db, sql_head, "%s ORDER BY import_date DESC LIMIT %d;", limit);
-    //search_db(app->songs_pop, db, sql_head, "%s ORDER BY title,album,artist;", 0);
+    search_db(app->songs_pop, db, sql_head, "%s ORDER BY title,album,artist;", 0);
+
+
+    g_queue_sort(app->songs_pop, (GCompareDataFunc)song_compare_pop, NULL);
+
     //search_best(app,sql);
     //search_finger(app,sql);
     //search_pop(app,sql);
@@ -78,6 +84,7 @@ gint search_event(MidiogreApp *app)
 
     songbox_update(app->songbox_alpha, app->songs_alpha, limit);
     songbox_update(app->songbox_new, app->songs_new, limit);
+    songbox_update(app->songbox_pop, app->songs_pop, limit);
 
     return 0;
 }
@@ -103,27 +110,10 @@ int search_db(GQueue *songs, sqlite3 *db, gchar *head, gchar *body, gint limit)
     return 0;
 }
 
-int search_new(MidiogreApp *app, sqlite3 *db, gchar *base_sql, gint limit)
+GCompareFunc *sort_pop(gconstpointer a, gconstpointer b, gpointer data)
 {
-    char *error = 0;
-
-    gchar *sql;
-
-    sql = g_strdup_printf("%s ORDER BY LIMIT %d",
-                          base_sql,
-                          limit);
-
-
-    sqlite3_exec(db, sql, search_handler, app->songs_new, &error);
-
-    free(sql);
-
-    return 0;
+    return song_compare_pop(a,b);
 }
-
-int search_finger(MidiogreApp app, gchar base_sql);
-int search_pop(MidiogreApp app, gchar base_sql);
-int search_date(MidiogreApp app, gchar base_sql);
 
 gint search_handler(void *s, int argc, char **argv, char **col_name)
 {
@@ -148,9 +138,13 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
     argv[1][ALBUM_MAX_NAME] = '\0';
     strcpy(song->title,  argv[3]);
 
-    song->length = atoi(argv[5]);
+    song->length = atoi(argv[4]);
 
-    song->plays = atoi(argv[6]);
+    song->plays = atoi(argv[5]);
+
+    song->time_added = atoi(argv[6]);
+
+    /*song->time_added*/
 
     /* Push column to queue */
     g_queue_push_tail(songs, song);

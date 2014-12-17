@@ -131,7 +131,6 @@ void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
 
     guint i = 0;
 
-    //songbox_delete_rows(songbox);
     gtk_container_foreach(GTK_CONTAINER(songbox), song_row_destroy, NULL);
 
     while ((song = g_queue_pop_head(songs)) != NULL) {
@@ -146,24 +145,6 @@ void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
         gtk_list_box_prepend(songbox, GTK_WIDGET(row));
 
     }
-}
-
-song_t *song_new(void)
-{
-    song_t *song;
-
-    song = calloc(1, sizeof(song_t));
-
-    strcpy(song->album, "Best Album");
-    strcpy(song->artist, "Worst Artist");
-    song->num = 1;
-    strcpy(song->title, "\"Midiogre\" Title");
-    song->length = 400;
-    /*song->fingerprint = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; */
-    song->plays =500;
-    song->time_added = 100000;
-
-    return song;
 }
 
 SongRow *song_row_new(song_t *song)
