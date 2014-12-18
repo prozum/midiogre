@@ -170,8 +170,6 @@ f_prn_t *finger_prn_extract(channel_t *channels)
         } else {
             f_prns[i] = 0;
         }
-
-        printf("%d\n", f_prns[i]);
     }
 
     /* if there are more than 3 fingerprints, pick them, else return NULL */
@@ -606,4 +604,18 @@ void copy_f_prn(f_prn_t *f_prn1, const f_prn_t *f_prn2)
     for (i = 0; i < FINGER_PRNS; i++) {
         memcpy((void *)f_prn1[i].f_prn, f_prn2[i].f_prn, sizeof(uint8_t) * FINGER_PRN_CMP_LEN);
     }
+}
+
+f_prn_t *create_f_prn(void)
+{
+    int i;
+    f_prn_t *finger_prints;
+
+    finger_prints = malloc(sizeof(f_prn_t) * FINGER_PRNS);
+
+    for (i = 0; i < FINGER_PRNS; i++) {
+        finger_prints[i].f_prn = calloc(FINGER_PRN_CMP_LEN, sizeof(uint8_t));
+    }
+
+    return finger_prints;
 }
