@@ -163,10 +163,13 @@ void skyline(channel_t *channels);
 /** Quicksort compare function that puts empty notes in the back of a channel */
 int skyline_compar(const void *a, const void *b);
 
+/** Converts an array with 3 uint32_t to a f_prn_t* type */
 f_prn_t *convert_to_f_prn(const uint32_t *finger_prints);
 
+/** Function to free an f_prn_t array */
 void free_f_prn(f_prn_t *f_prn);
 
+/** Copy the content from f_prn2 into f_prn1 */
 void copy_f_prn(f_prn_t *f_prn1, const f_prn_t *f_prn2);
 
 #endif
