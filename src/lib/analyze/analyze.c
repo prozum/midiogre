@@ -170,8 +170,6 @@ f_prn_t *finger_prn_extract(channel_t *channels)
         } else {
             f_prns[i] = 0;
         }
-
-        printf("%d\n", f_prns[i]);
     }
 
     /* if there are more than 3 fingerprints, pick them, else return NULL */
