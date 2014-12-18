@@ -172,4 +172,6 @@ void free_f_prn(f_prn_t *f_prn);
 /** Copy the content from f_prn2 into f_prn1 */
 void copy_f_prn(f_prn_t *f_prn1, const f_prn_t *f_prn2);
 
+f_prn_t *create_f_prn(void);
+
 #endif
