@@ -59,11 +59,9 @@ static void fav_clicked(SongRow *row, GtkButton *button)
     if (lock != 1) {
         lock = 1;
 
-
-
         /* Deallocate last favorite if exist */
         if (app->cur_fav != NULL) {
-            //free_f_prn(app->cur_fav->finger_prints);
+            song_free(app->cur_fav);
             g_free(app->cur_fav);
         }
 
@@ -138,22 +136,36 @@ static void song_row_init(SongRow *row)
     gtk_widget_init_template(GTK_WIDGET(row));
 }
 
+SongRow *song_row_new(song_t *song)
+{
+    SongRow *row;
+
+    row = g_object_new(song_row_get_type(), NULL);
+    row->priv->song = song;
+    song_row_update(row);
+
+    return row;
+}
+
 void song_row_destroy(SongRow *row)
 {
-    /* TODO deallocate fingerprint */
-    g_free(row->priv->song->addr);
-    g_free(row->priv->song);
+    song_free(row->priv->song);
 
     gtk_widget_destroy(GTK_WIDGET(row));
 }
 
+void song_free(song_t *song)
+{
+    g_free(song->addr);
+    g_free(song);
+    free_f_prn(song->finger_prints);
+}
 
 GtkListBox *songbox_new(GtkNotebook *notebook, char *title)
 {
     GtkListBox *songbox;
-    GtkBox *box;
     GtkLabel *label;
-    GtkWidget *separator, *scrolled;
+    GtkWidget *scrolled;
 
     /* Add title */
     label = GTK_LABEL(gtk_label_new(NULL));
@@ -168,7 +180,7 @@ GtkListBox *songbox_new(GtkNotebook *notebook, char *title)
 
     /* Add listbox to scroll container */
     gtk_container_add(GTK_CONTAINER(scrolled), GTK_WIDGET(songbox));
-    gtk_notebook_append_page(notebook, GTK_WIDGET(scrolled), label);
+    gtk_notebook_append_page(notebook, GTK_WIDGET(scrolled), GTK_WIDGET(label));
 
     return songbox;
 }
@@ -180,7 +192,8 @@ void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
 
     guint i = 0;
 
-    gtk_container_foreach(GTK_CONTAINER(songbox), song_row_destroy, NULL);
+    /* Destroy all rows in songbox */
+    gtk_container_foreach(GTK_CONTAINER(songbox), (GtkCallback)song_row_destroy, NULL);
 
     while ((song = g_queue_pop_head(songs)) != NULL) {
 
@@ -192,17 +205,5 @@ void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
         row = song_row_new(song);
         gtk_widget_show(GTK_WIDGET(row));
         gtk_list_box_prepend(songbox, GTK_WIDGET(row));
-
     }
-}
-
-SongRow *song_row_new(song_t *song)
-{
-    SongRow *row;
-
-    row = g_object_new(song_row_get_type(), NULL);
-    row->priv->song = song;
-    song_row_update(row);
-
-    return row;
 }
