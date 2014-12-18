@@ -53,31 +53,23 @@ static void delete_clicked(SongRow *row, GtkButton *button)
 
 static void fav_clicked(SongRow *row, GtkButton *button)
 {
-    static int lock = 0;
     SongRowPrivate *priv = row->priv;
 
-    if (lock != 1) {
-        lock = 1;
-
-        /* Deallocate last favorite if exist */
-        if (app->cur_fav != NULL) {
-            song_free(app->cur_fav);
-            g_free(app->cur_fav);
-        }
-
-        app->cur_fav = calloc(1, sizeof(song_t));
-
-        /* Copy finger print */
-        *app->cur_fav = *priv->song;
-        copy_f_prn(app->cur_fav->finger_prints, priv->song->finger_prints);
-
-        gtk_label_set_text(app->fav_title_label, app->cur_fav->title);
-        gtk_label_set_text(app->fav_artist_label, app->cur_fav->artist);
-        gtk_label_set_text(app->fav_album_label, app->cur_fav->album);
-
-        lock = 0;
+    /* Deallocate last favorite if exist */
+    if (app->cur_fav != NULL) {
+        song_free(app->cur_fav);
     }
 
+    app->cur_fav = calloc(1, sizeof(song_t));
+
+    /* Copy finger print */
+    *app->cur_fav = *priv->song;
+
+    copy_f_prn(app->cur_fav->finger_prints, priv->song->finger_prints);
+
+    gtk_label_set_text(app->fav_title_label, app->cur_fav->title);
+    gtk_label_set_text(app->fav_artist_label, app->cur_fav->artist);
+    gtk_label_set_text(app->fav_album_label, app->cur_fav->album);
 }
 
 static void song_row_update(SongRow *row)
@@ -157,8 +149,8 @@ void song_row_destroy(SongRow *row)
 void song_free(song_t *song)
 {
     g_free(song->addr);
-    g_free(song);
     free_f_prn(song->finger_prints);
+    g_free(song);
 }
 
 GtkListBox *songbox_new(GtkNotebook *notebook, char *title)
