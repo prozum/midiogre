@@ -35,7 +35,9 @@ MidiogreApp *midiogre_app_init(void)
     gtk_window_set_default_size(GTK_WINDOW(app->window), 600, 400);
     g_signal_connect(app->window, "destroy",
                       G_CALLBACK(gtk_widget_destroyed), &app->window);
+    g_signal_connect(app->window, "key-release-event", G_CALLBACK(key_event), NULL);
     gtk_window_set_icon(app->window,gdk_pixbuf_new_from_resource("/org/prozum/midiogre/midiogre_logo.png",&err));
+
 
     /* Setup header bar */
     header = gtk_header_bar_new();
@@ -49,9 +51,11 @@ MidiogreApp *midiogre_app_init(void)
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
     g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_widget_destroy), app->window);
 
+
     /* Add seperator */
     separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), separator);
+
 
     /* Setup folder button */
     button = gtk_button_new();
@@ -65,9 +69,11 @@ MidiogreApp *midiogre_app_init(void)
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
     g_signal_connect_swapped(button, "clicked", G_CALLBACK(folder_chooser), app->window);
 
+
     /* Add seperator */
     separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), separator);
+
 
     /* Setup close button */
     button = gtk_button_new();
@@ -92,11 +98,13 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_add(GTK_CONTAINER (scrolled), GTK_WIDGET(app->panel_box));
     gtk_container_set_border_width(GTK_CONTAINER(app->panel_box), 10);
 
+
     /* Frame with favorit info */
     frame = gtk_frame_new("Favorite");
     gtk_box_pack_start(app->panel_box, frame, FALSE, FALSE, 0);
     app->fav_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
     gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(app->fav_box));
+
 
     /* Current favorite */
     app->fav_title_label = GTK_LABEL(gtk_label_new(""));
@@ -111,6 +119,7 @@ MidiogreApp *midiogre_app_init(void)
     gtk_label_set_max_width_chars(app->fav_album_label, 20);
     gtk_label_set_width_chars(app->fav_album_label, 20);
     gtk_box_pack_start(app->fav_box, GTK_WIDGET(app->fav_album_label), FALSE, FALSE, 0);
+
 
     /* Frame with search criteria widgets */
     frame = gtk_frame_new("Search");
@@ -131,19 +140,20 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_set_border_width(GTK_CONTAINER(box), 10);
 
     app->title_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_box_pack_start(box, GTK_WIDGET(app->title_entry), FALSE, FALSE, 0);
+    gtk_box_pack_start(box, GTK_WIDGET(app->title_entry), TRUE, FALSE, 0);
 
 
     /* Artist entry */
     frame = gtk_frame_new("Artist");
     gtk_box_pack_start(app->search_box, frame, FALSE, FALSE, 0);
+    gtk_container_set_border_width(GTK_CONTAINER(box), 10);
 
     box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
     gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(box));
     gtk_container_set_border_width(GTK_CONTAINER(box), 10);
 
     app->artist_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_box_pack_start(box, GTK_WIDGET(app->artist_entry), FALSE, FALSE, 0);
+    gtk_box_pack_start(box, GTK_WIDGET(app->artist_entry), TRUE, FALSE, 0);
 
 
     /* Album entry */
@@ -155,7 +165,7 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_set_border_width(GTK_CONTAINER(box), 10);
 
     app->album_entry = GTK_ENTRY(gtk_entry_new());
-    gtk_box_pack_start(box, GTK_WIDGET(app->album_entry), FALSE, FALSE, 0);
+    gtk_box_pack_start(box, GTK_WIDGET(app->album_entry), TRUE, FALSE, 0);
 
 
     /* Instrument class buttons */
@@ -184,9 +194,22 @@ MidiogreApp *midiogre_app_init(void)
 
         app->instr_buttons[i] = GTK_CHECK_BUTTON(gtk_check_button_new());
         gtk_widget_set_halign(GTK_WIDGET(app->instr_buttons[i]),GTK_ALIGN_END);
-        //gtk_widget_set_hexpand(GTK_WIDGET(app->instr_buttons[i]),TRUE);
         gtk_grid_attach(app->instr_grid, GTK_WIDGET(app->instr_buttons[i]), 2, i + 1, 1, 1);
     }
+
+
+    /* Result spinbutton */
+    frame = gtk_frame_new("Max result");
+    gtk_box_pack_start(app->search_box, frame, FALSE, FALSE, 0);
+
+    box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
+    gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(box));
+    gtk_container_set_border_width(GTK_CONTAINER(box), 10);
+
+    app->result_spinbutton = GTK_SPIN_BUTTON(gtk_spin_button_new_with_range(1, 100, 1));
+    gtk_spin_button_set_value(app->result_spinbutton, 25);
+
+    gtk_box_pack_start(box, GTK_WIDGET(app->result_spinbutton), TRUE, TRUE, 0);
 
 
     /* Search button */
@@ -194,16 +217,8 @@ MidiogreApp *midiogre_app_init(void)
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->search_button), FALSE, FALSE, 0);
     g_signal_connect_swapped(app->search_button, "clicked", G_CALLBACK(search_event), app);
 
-    /* Result spinbutton */
-    app->result_spinbutton = GTK_SPIN_BUTTON(gtk_spin_button_new_with_range(1, 50, 1));
-    gtk_spin_button_set_value(app->result_spinbutton, 8);
-    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
 
-
-
-    /* Playlist */
-    /* TODO */
-
+    /* Songboxes notebook (Tabsview) */
     app->song_notebook = GTK_NOTEBOOK(gtk_notebook_new());
     gtk_widget_set_hexpand(GTK_WIDGET(app->song_notebook), TRUE);
     gtk_box_pack_start(app->win_box, GTK_WIDGET(app->song_notebook), TRUE, TRUE, 0);
@@ -215,6 +230,8 @@ MidiogreApp *midiogre_app_init(void)
     app->songbox_pop   = songbox_new(app->song_notebook, "Popularity");
     app->songbox_new   = songbox_new(app->song_notebook, "Newest");
 
+
+    /* Show all widgets */
     gtk_widget_show_all(GTK_WIDGET(app->window));
 
 
@@ -227,4 +244,14 @@ MidiogreApp *midiogre_app_init(void)
 
 
     return app;
+}
+
+gboolean key_event(GtkWidget *widget, GdkEventKey *event)
+{
+    /* Activate search button with return key */
+    if (event->keyval == GDK_KEY_Return) {
+        gtk_button_clicked(app->search_button);
+    }
+
+    return FALSE;
 }

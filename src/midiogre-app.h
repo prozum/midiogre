@@ -57,7 +57,7 @@ typedef struct {
 
 extern MidiogreApp *app; /**< Instance of MidiogreApp */
 
-GtkWidget *window_init(void);
 MidiogreApp *midiogre_app_init(void);
+gboolean key_event(GtkWidget *widget, GdkEventKey *event);
 
 #endif
