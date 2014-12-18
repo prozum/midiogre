@@ -84,6 +84,7 @@ gint search_event(void)
         g_queue_sort(app->songs_best, (GCompareDataFunc)sort_best, app);
 
         while(app->songs_best->length > limit) {
+
             g_queue_pop_tail(app->songs_best);
         }
     }

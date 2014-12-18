@@ -82,13 +82,6 @@ static void fav_clicked(SongRow *row, GtkButton *button)
 
 }
 
-int song_row_sort(SongRow *a, SongRow *b, gpointer data)
-{
-    //return a->priv->song->time_added - b->priv->song->time_added;
-    return 0;
-}
-
-
 static void song_row_update(SongRow *row)
 {
     SongRowPrivate *priv = row->priv;
@@ -155,26 +148,16 @@ void song_row_destroy(SongRow *row)
 }
 
 
-GtkListBox *songbox_new(GtkBox *win_box, char *title, GtkListBoxSortFunc sort_func)
+GtkListBox *songbox_new(GtkNotebook *notebook, char *title)
 {
     GtkListBox *songbox;
     GtkBox *box;
     GtkLabel *label;
     GtkWidget *separator, *scrolled;
 
-    /* Add seperator */
-    separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
-    gtk_box_pack_start(win_box, separator, FALSE, FALSE, 0);
-
-    /* Box for songbox widgets */
-    box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 10));
-    gtk_box_pack_start(win_box, GTK_WIDGET(box), TRUE, TRUE, 0);
-
     /* Add title */
     label = GTK_LABEL(gtk_label_new(NULL));
     gtk_label_set_markup(label, title);
-    gtk_widget_set_margin_top(GTK_WIDGET(label), 10);
-    gtk_box_pack_start(box, GTK_WIDGET(label), FALSE, FALSE, 0);
 
     /* Add scroll container */
     scrolled = gtk_scrolled_window_new(NULL, NULL);
@@ -182,11 +165,10 @@ GtkListBox *songbox_new(GtkBox *win_box, char *title, GtkListBoxSortFunc sort_fu
 
     /* Setup songbox */
     songbox = GTK_LIST_BOX(gtk_list_box_new());
-    gtk_list_box_set_sort_func(songbox, sort_func, songbox, NULL);
 
     /* Add listbox to scroll container */
     gtk_container_add(GTK_CONTAINER(scrolled), GTK_WIDGET(songbox));
-    gtk_box_pack_start(box, scrolled, TRUE, TRUE, 0);
+    gtk_notebook_append_page(notebook, GTK_WIDGET(scrolled), label);
 
     return songbox;
 }

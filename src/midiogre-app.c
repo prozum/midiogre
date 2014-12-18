@@ -92,6 +92,25 @@ MidiogreApp *midiogre_app_init(void)
     gtk_container_add(GTK_CONTAINER (scrolled), GTK_WIDGET(app->panel_box));
     gtk_container_set_border_width(GTK_CONTAINER(app->panel_box), 10);
 
+    /* Frame with favorit info */
+    frame = gtk_frame_new("Favorite");
+    gtk_box_pack_start(app->panel_box, frame, FALSE, FALSE, 0);
+    app->fav_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 0));
+    gtk_container_add(GTK_CONTAINER(frame), GTK_WIDGET(app->fav_box));
+
+    /* Current favorite */
+    app->fav_title_label = GTK_LABEL(gtk_label_new(""));
+    gtk_label_set_max_width_chars(app->fav_title_label, 20);
+    gtk_label_set_width_chars(app->fav_title_label, 20);
+    gtk_box_pack_start(app->fav_box, GTK_WIDGET(app->fav_title_label), FALSE, FALSE, 0);
+    app->fav_artist_label = GTK_LABEL(gtk_label_new("No favorite selected!"));
+    gtk_label_set_max_width_chars(app->fav_artist_label, 20);
+    gtk_label_set_width_chars(app->fav_artist_label, 20);
+    gtk_box_pack_start(app->fav_box, GTK_WIDGET(app->fav_artist_label), FALSE, FALSE, 0);
+    app->fav_album_label = GTK_LABEL(gtk_label_new(""));
+    gtk_label_set_max_width_chars(app->fav_album_label, 20);
+    gtk_label_set_width_chars(app->fav_album_label, 20);
+    gtk_box_pack_start(app->fav_box, GTK_WIDGET(app->fav_album_label), FALSE, FALSE, 0);
 
     /* Frame with search criteria widgets */
     frame = gtk_frame_new("Search");
@@ -165,7 +184,7 @@ MidiogreApp *midiogre_app_init(void)
 
         app->instr_buttons[i] = GTK_CHECK_BUTTON(gtk_check_button_new());
         gtk_widget_set_halign(GTK_WIDGET(app->instr_buttons[i]),GTK_ALIGN_END);
-        gtk_widget_set_hexpand(GTK_WIDGET(app->instr_buttons[i]),TRUE);
+        //gtk_widget_set_hexpand(GTK_WIDGET(app->instr_buttons[i]),TRUE);
         gtk_grid_attach(app->instr_grid, GTK_WIDGET(app->instr_buttons[i]), 2, i + 1, 1, 1);
     }
 
@@ -180,29 +199,21 @@ MidiogreApp *midiogre_app_init(void)
     gtk_spin_button_set_value(app->result_spinbutton, 8);
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
 
-    /* Current favorite */
-    app->fav_title_label = GTK_LABEL(gtk_label_new("N/A"));
-    gtk_label_set_max_width_chars(app->fav_title_label, 20);
-    gtk_label_set_width_chars(app->fav_title_label, 20);
-    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_title_label), FALSE, FALSE, 0);
-    app->fav_artist_label = GTK_LABEL(gtk_label_new("N/A"));
-    gtk_label_set_max_width_chars(app->fav_artist_label, 20);
-    gtk_label_set_width_chars(app->fav_artist_label, 20);
-    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_artist_label), FALSE, FALSE, 0);
-    app->fav_album_label = GTK_LABEL(gtk_label_new("N/A"));
-    gtk_label_set_max_width_chars(app->fav_album_label, 20);
-    gtk_label_set_width_chars(app->fav_album_label, 20);
-    gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_album_label), FALSE, FALSE, 0);
+
 
     /* Playlist */
     /* TODO */
 
+    app->song_notebook = GTK_NOTEBOOK(gtk_notebook_new());
+    gtk_widget_set_hexpand(GTK_WIDGET(app->song_notebook), TRUE);
+    gtk_box_pack_start(app->win_box, GTK_WIDGET(app->song_notebook), TRUE, TRUE, 0);
+
     /* Add song boxes */
-    app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_fprnt = songbox_new(app->win_box, "<span size=\"large\">Fingerprint</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_best  = songbox_new(app->win_box, "<span size=\"large\">Best match</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_pop   = songbox_new(app->win_box, "<span size=\"large\">Popularity</span>", (GtkListBoxSortFunc)song_row_sort);
-    app->songbox_new   = songbox_new(app->win_box, "<span size=\"large\">Newest</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_alpha = songbox_new(app->song_notebook, "Alphabetical");
+    app->songbox_fprnt = songbox_new(app->song_notebook, "Fingerprint");
+    app->songbox_best  = songbox_new(app->song_notebook, "Best match");
+    app->songbox_pop   = songbox_new(app->song_notebook, "Popularity");
+    app->songbox_new   = songbox_new(app->song_notebook, "Newest");
 
     gtk_widget_show_all(GTK_WIDGET(app->window));
 

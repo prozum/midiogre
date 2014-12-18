@@ -50,13 +50,10 @@ struct _SongRowPrivate
 
 GType      song_row_get_type(void) G_GNUC_CONST;
 
-GtkListBox *songbox_new(GtkBox *win_box, char *title, GtkListBoxSortFunc sort_func);
+GtkListBox *songbox_new(GtkNotebook *notebook, char *title);
 void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit);
 void songbox_delete_rows(GtkListBox *songbox);
 SongRow *song_row_new(song_t *song);
-
-int song_row_sort(SongRow *a, SongRow *b, gpointer data);
-
 
 
 #endif

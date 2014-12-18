@@ -15,6 +15,7 @@ typedef struct {
 
     GtkBox *win_box;           /**< Window box containing window widgets            */
     GtkBox *panel_box;         /**< Sidepanel box containing sidepanel widgets      */
+    GtkBox *fav_box;           /**< Favorite box containing favorite widgets        */
     GtkBox *search_box;        /**< Search box containing search widgets            */
 
     GtkGrid *instr_grid;       /**< Instrument grid containing instrument checkboxes */
@@ -28,6 +29,8 @@ typedef struct {
     GtkSpinButton *result_spinbutton; /**< Button to specify number of result */
 
     GtkButton *search_button;  /**< Search button */
+
+    GtkNotebook *song_notebook; /**< Tabs widget for songboxes */
 
     GtkListBox *songbox_alpha; /**< SongBox sorting songs by alphabetical order */
     GtkListBox *songbox_best;  /**< SongBox sorting songs by best match         */
