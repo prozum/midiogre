@@ -35,14 +35,7 @@ MidiogreApp *midiogre_app_init(void)
     gtk_window_set_default_size(GTK_WINDOW(app->window), 600, 400);
     g_signal_connect(app->window, "destroy",
                       G_CALLBACK(gtk_widget_destroyed), &app->window);
-
     gtk_window_set_icon(app->window,gdk_pixbuf_new_from_resource("/org/prozum/midiogre/midiogre_logo.png",&err));
-
-
-
-
-
-
 
     /* Setup header bar */
     header = gtk_header_bar_new();

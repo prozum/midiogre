@@ -11,5 +11,6 @@
         <file alias="media-skip-backward-symbolic.symbolic.png" preprocess="to-pixdata">icons/media-skip-backward-symbolic.symbolic.png</file>
         <file alias="media-skip-forward-symbolic.symbolic.png" preprocess="to-pixdata">icons/media-skip-forward-symbolic.symbolic.png</file>
         <file alias="star-new-symbolic.symbolic.png" preprocess="to-pixdata">icons/star-new-symbolic.symbolic.png</file>
+        <file alias="edit-delete-symbolic.symbolic.png" preprocess="to-pixdata">icons/edit-delete-symbolic.symbolic.png</file>
     </gresource>
 </gresources>

@@ -6,7 +6,6 @@
     <property name="can_focus">False</property>
     <property name="valign">center</property>
     <property name="hexpand">True</property>
-    <property name="border_width">31</property>
     <property name="selectable">False</property>
     <child>
       <object class="GtkGrid" id="grid1">
@@ -114,17 +113,17 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="playlist_button">
+              <object class="GtkButton" id="delete_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="playlist_clicked" swapped="yes"/>
+                <signal name="clicked" handler="delete_clicked" swapped="yes"/>
                 <child>
                   <object class="GtkImage" id="image2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="pixel_size">32</property>
-                    <property name="resource">/org/prozum/midiogre/list-add-symbolic.symbolic.png</property>
+                    <property name="resource">/org/prozum/midiogre/edit-delete-symbolic.symbolic.png</property>
                   </object>
                 </child>
               </object>

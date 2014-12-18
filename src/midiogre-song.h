@@ -44,7 +44,7 @@ struct _SongRowPrivate
     GtkLabel *plays_label;     /**< Plays     label */
 
     GtkButton *play_button;     /**< Song play button     */
-    GtkButton *playlist_button; /**< Song playlist button */
+    GtkButton *delete_button;   /**< Song playlist button */
     GtkButton *fav_button;      /**< Song favorite button */
 };
 

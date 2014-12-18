@@ -38,31 +38,31 @@ static void play_clicked(SongRow *row, GtkButton *button)
     gtk_label_set_text(priv->plays_label, tmp);
     g_free(tmp);
 
-
+    db_increment_plays(priv->song->id);
 
 
 }
 
-static void playlist_clicked(SongRow *row, GtkButton *button)
+static void delete_clicked(SongRow *row, GtkButton *button)
 {
     SongRowPrivate *priv = row->priv;
 
+    db_delete_song(priv->song->id);
+    song_row_destroy(row);
 }
 
 static void fav_clicked(SongRow *row, GtkButton *button)
 {
     static int lock = 0;
+    SongRowPrivate *priv = row->priv;
 
     if (lock != 1) {
         lock = 1;
-        SongRowPrivate *priv = row->priv;
 
 
-        f_prn_t *prn;
 
         /* Deallocate last favorite if exist */
         if (app->cur_fav != NULL) {
-            prn  = app->cur_fav->finger_prints;
             //free_f_prn(app->cur_fav->finger_prints);
             g_free(app->cur_fav);
         }
@@ -130,11 +130,11 @@ static void song_row_class_init(SongRowClass *klass)
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, plays_label);
 
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, play_button);
-    gtk_widget_class_bind_template_child_private(widget_class, SongRow, playlist_button);
+    gtk_widget_class_bind_template_child_private(widget_class, SongRow, delete_button);
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, fav_button);
 
     gtk_widget_class_bind_template_callback(widget_class, play_clicked);
-    gtk_widget_class_bind_template_callback(widget_class, playlist_clicked);
+    gtk_widget_class_bind_template_callback(widget_class, delete_clicked);
     gtk_widget_class_bind_template_callback(widget_class, fav_clicked);
 }
 

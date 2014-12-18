@@ -41,9 +41,9 @@ typedef struct {
     GQueue *songs_pop;         /**< Used to store and sort songs from db */
     GQueue *songs_new;         /**< Used to store and sort songs from db */
 
-    GtkLabel *fav_title_label;
-    GtkLabel *fav_artist_label;
-    GtkLabel *fav_album_label;
+    GtkLabel *fav_title_label; /**< Favorite song title name  */
+    GtkLabel *fav_artist_label;/**< Favorite song artist name */
+    GtkLabel *fav_album_label; /**< Favorite song album name  */
 
     /* App vars */
     song_t *cur_play;          /**< Current played song                  */
