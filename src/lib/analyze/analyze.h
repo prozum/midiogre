@@ -5,11 +5,16 @@
 
 #include <mid/mid.h>
 
+/** A semitone is a half tone. There are 6 tones, and therefore 12 semitones */
 #define SEMITONES 12
+
+/** There are 16 channels in the midi spec */
 #define CHANNELS 16
 
 /** semitones per finger_prn */
 #define FINGER_PRN_LEN 7
+
+/** The fingerprints being compares are 6 long */
 #define FINGER_PRN_CMP_LEN 6
 
 /** finger_prns per channel */
@@ -174,6 +179,7 @@ void free_f_prn(f_prn_t *f_prn);
 /** Copy the content from f_prn2 into f_prn1 */
 void copy_f_prn(f_prn_t *f_prn1, const f_prn_t *f_prn2);
 
+/** Returns array of allocated fingerprints */
 f_prn_t *create_f_prn(void);
 
 #endif
