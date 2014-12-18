@@ -7,11 +7,22 @@
 
 #include <gtk/gtk.h>
 
+/** Song row get type */
 #define TYPE_SONG_ROW              (song_row_get_type())
+
+/** Song row check instance*/
 #define SONG_ROW(song_row)      (G_TYPE_CHECK_INSTANCE_CAST ((song_row), TYPE_SONG_ROW, SongRow))
+
+/** Song row check class */
 #define SONG_ROW_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_SONG_ROW, SongRowClass))
+
+/** Song row check instance type */
 #define IS_SONG_ROW(song_row)   (G_TYPE_CHECK_INSTANCE_TYPE ((song_row), TYPE_SONG_ROW))
+
+/** Song row check class type */
 #define IS_SONG_ROW_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_SONG_ROW))
+
+/** Song row get class */
 #define SONG_ROW_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_SONG_ROW, SongRowClass))
 
 typedef struct _SongRow         SongRow;
@@ -50,6 +61,7 @@ struct _SongRowPrivate
     GtkButton *fav_button;      /**< Song favorite button */
 };
 
+/** song row get type */
 GType      song_row_get_type(void) G_GNUC_CONST;
 
 void play_clicked(SongRow *row, GtkButton *button);
