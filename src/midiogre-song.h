@@ -56,6 +56,7 @@ void song_row_destroy(SongRow *row);
 GtkListBox *songbox_new(GtkNotebook *notebook, char *title);
 void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit);
 
+song_t *song_new(void);
 void song_free(song_t *song);
 
 #endif

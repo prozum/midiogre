@@ -60,11 +60,14 @@ static void fav_clicked(SongRow *row, GtkButton *button)
         song_free(app->cur_fav);
     }
 
-    app->cur_fav = calloc(1, sizeof(song_t));
+    /* Create new song to store favorite song */
+    app->cur_fav = song_new();
 
-    /* Copy finger print */
-    *app->cur_fav = *priv->song;
-
+    /* Copy title,artist,album & finger print  */
+    app->cur_fav->id  = priv->song->id;
+    strcpy(app->cur_fav->title, priv->song->title);
+    strcpy(app->cur_fav->artist, priv->song->artist);
+    strcpy(app->cur_fav->album, priv->song->album);
     copy_f_prn(app->cur_fav->finger_prints, priv->song->finger_prints);
 
     gtk_label_set_text(app->fav_title_label, app->cur_fav->title);
@@ -144,6 +147,17 @@ void song_row_destroy(SongRow *row)
     song_free(row->priv->song);
 
     gtk_widget_destroy(GTK_WIDGET(row));
+}
+
+song_t *song_new(void)
+{
+    song_t *song;
+
+    song = calloc(1, sizeof(song_t));
+
+    song->finger_prints = create_f_prn();
+
+    return song;
 }
 
 void song_free(song_t *song)
