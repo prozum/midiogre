@@ -1,3 +1,5 @@
+/** @file midiogre-song.h */
+
 #ifndef __MIDIOGRE_SONG_H__
 #define __MIDIOGRE_SONG_H__
 
@@ -50,13 +52,21 @@ struct _SongRowPrivate
 
 GType      song_row_get_type(void) G_GNUC_CONST;
 
+void play_clicked(SongRow *row, GtkButton *button);
+void delete_clicked(SongRow *row, GtkButton *button);
+void fav_clicked(SongRow *row, GtkButton *button);
+
+static void song_row_class_init(SongRowClass *klass);
+static void song_row_init(SongRow *row);
+void song_row_update(SongRow *row);
 SongRow *song_row_new(song_t *song);
 void song_row_destroy(SongRow *row);
+
+song_t *song_new(void);
+void song_free(song_t *song);
 
 GtkListBox *songbox_new(GtkNotebook *notebook, char *title);
 void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit);
 
-song_t *song_new(void);
-void song_free(song_t *song);
 
 #endif

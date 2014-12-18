@@ -1,3 +1,5 @@
+/** @file midiogre-app.h */
+
 #ifndef __MIDIOGRE_APP_H__
 #define __MIDIOGRE_APP_H__
 
@@ -57,7 +59,7 @@ typedef struct {
 
 extern MidiogreApp *app; /**< Instance of MidiogreApp */
 
-MidiogreApp *midiogre_app_init(void);
-gboolean key_event(GtkWidget *widget, GdkEventKey *event);
+MidiogreApp *midiogre_app_init(void); /**< Init MidiogreApp widgets */
+gboolean key_event(GtkWidget *widget, GdkEventKey *event); /**< Called for every key press in Midiogre */
 
 #endif

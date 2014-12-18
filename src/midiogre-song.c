@@ -14,7 +14,7 @@
 
 G_DEFINE_TYPE_WITH_PRIVATE(SongRow, song_row, GTK_TYPE_LIST_BOX_ROW)
 
-static void play_clicked(SongRow *row, GtkButton *button)
+void play_clicked(SongRow *row, GtkButton *button)
 {
     GError *err = NULL;
     gchar *tmp;
@@ -43,7 +43,7 @@ static void play_clicked(SongRow *row, GtkButton *button)
 
 }
 
-static void delete_clicked(SongRow *row, GtkButton *button)
+void delete_clicked(SongRow *row, GtkButton *button)
 {
     SongRowPrivate *priv = row->priv;
 
@@ -51,7 +51,7 @@ static void delete_clicked(SongRow *row, GtkButton *button)
     song_row_destroy(row);
 }
 
-static void fav_clicked(SongRow *row, GtkButton *button)
+void fav_clicked(SongRow *row, GtkButton *button)
 {
     SongRowPrivate *priv = row->priv;
 
@@ -73,32 +73,6 @@ static void fav_clicked(SongRow *row, GtkButton *button)
     gtk_label_set_text(app->fav_title_label, app->cur_fav->title);
     gtk_label_set_text(app->fav_artist_label, app->cur_fav->artist);
     gtk_label_set_text(app->fav_album_label, app->cur_fav->album);
-}
-
-static void song_row_update(SongRow *row)
-{
-    SongRowPrivate *priv = row->priv;
-
-    gchar *tmp;
-
-    tmp = g_strdup_printf("%02d:%02d", priv->song->length/1000 / 60,
-                                       priv->song->length/1000 % 60);
-
-    gtk_label_set_text(priv->time_label, tmp);
-    g_free(tmp);
-
-    gtk_label_set_text(priv->title_label, priv->song->title);
-    gtk_label_set_text(priv->album_label, priv->song->album);
-    gtk_label_set_text(priv->artist_label, priv->song->artist);
-
-
-    tmp = g_strdup_printf("%d", priv->song->edit_score);
-    gtk_label_set_text(priv->edit_dist_label, tmp);
-    g_free(tmp);
-
-    tmp = g_strdup_printf("%d", priv->song->plays);
-    gtk_label_set_text(priv->plays_label, tmp);
-    g_free(tmp);
 }
 
 static void song_row_class_init(SongRowClass *klass)
@@ -140,6 +114,32 @@ SongRow *song_row_new(song_t *song)
     song_row_update(row);
 
     return row;
+}
+
+void song_row_update(SongRow *row)
+{
+    SongRowPrivate *priv = row->priv;
+
+    gchar *tmp;
+
+    tmp = g_strdup_printf("%02d:%02d", priv->song->length/1000 / 60,
+                                       priv->song->length/1000 % 60);
+
+    gtk_label_set_text(priv->time_label, tmp);
+    g_free(tmp);
+
+    gtk_label_set_text(priv->title_label, priv->song->title);
+    gtk_label_set_text(priv->album_label, priv->song->album);
+    gtk_label_set_text(priv->artist_label, priv->song->artist);
+
+
+    tmp = g_strdup_printf("%d", priv->song->edit_score);
+    gtk_label_set_text(priv->edit_dist_label, tmp);
+    g_free(tmp);
+
+    tmp = g_strdup_printf("%d", priv->song->plays);
+    gtk_label_set_text(priv->plays_label, tmp);
+    g_free(tmp);
 }
 
 void song_row_destroy(SongRow *row)

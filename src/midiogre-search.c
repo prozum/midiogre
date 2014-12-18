@@ -98,11 +98,21 @@ gint search_event(void)
     g_free(sql_head);
     sqlite3_close(db);
 
+    /* Update all songboxes and deallocate unused songs */
     songbox_update(app->songbox_alpha, app->songs_alpha, limit);
+    g_queue_foreach(app->songs_alpha, song_free, NULL);
+
     songbox_update(app->songbox_new, app->songs_new, limit);
+    g_queue_foreach(app->songs_new, song_free, NULL);
+
     songbox_update(app->songbox_pop, app->songs_pop, limit);
+    g_queue_foreach(app->songs_pop, song_free, NULL);
+
     songbox_update(app->songbox_fprnt, app->songs_fprnt, limit);
+    g_queue_foreach(app->songs_fprnt, song_free, NULL);
+
     songbox_update(app->songbox_best, app->songs_best, limit);
+    g_queue_foreach(app->songs_best, song_free, NULL);
 
     return 0;
 }
@@ -221,8 +231,6 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
     strcpy(song->addr,argv[11]);
 
     song->edit_score = -1;
-
-    /*song->time_added*/
 
     /* Push column to queue */
     g_queue_push_tail(songs, song);
