@@ -212,7 +212,6 @@ void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
 
         row = song_row_new(song);
         gtk_widget_show(GTK_WIDGET(row));
-        //gtk_list_box_prepend(songbox, );
         gtk_list_box_insert(songbox,GTK_WIDGET(row),i);
     }
 }

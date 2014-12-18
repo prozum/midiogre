@@ -390,7 +390,7 @@ f_prn_t *finger_prn_pick(f_prn_t **f_prn, uint32_t *f_prns)
     return f_prn_ret;
 }
 
-uint32_t note_off_time(list_t *events, uint32_t position)
+double note_off_time(list_t *events, uint32_t position)
 {
     uint32_t i;
     event_t *event, *event_cur;

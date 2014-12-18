@@ -21,7 +21,6 @@ gint search_event(void)
     const gchar *title_value;
     gint limit;
 
-
     /* Gather search criterias */
     instr_classes = read_instr_classes(app);
 

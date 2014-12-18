@@ -75,7 +75,7 @@ channel_t *channel_extract(track_t *track);
  * @param events: List of events
  * @param position: Position in list
  */
-uint32_t note_off_time(list_t *events, uint32_t position);
+double note_off_time(list_t *events, uint32_t position);
 
 /** Top Rank algorithm
  * @param channels: Array of channels
