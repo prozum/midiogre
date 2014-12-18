@@ -1,4 +1,4 @@
-/** @ext.h Contains functions used to extract data from mid files */
+/** @file ext.h Contains functions used to extract data from mid files */
 
 #ifndef _EXT_H_
 #define _EXT_H_

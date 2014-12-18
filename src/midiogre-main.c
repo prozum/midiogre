@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-
+    /* Init gtk */
     gtk_init(&argc, &argv);
 
     /* Setup MidiogreApp */
@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     /* Populate songboxes with songs */
     search_event();
 
+    /* Run gtk main loop */
     gtk_main();
 
     return 0;

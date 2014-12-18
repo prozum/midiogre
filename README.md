@@ -10,6 +10,7 @@ Dependencies
 - pkg-config	≥ 0.26
 - Doxygen	≥ 1.8
 - GTK+		≥ 3.10
+- SQLite 3  ≥ 3.8.7.4
 
 Compile Instructions
 --------------------

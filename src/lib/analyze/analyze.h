@@ -1,3 +1,5 @@
+/** @file analyze.h */
+
 #ifndef __ANALYZE_H__
 #define __ANALYZE_H__
 
