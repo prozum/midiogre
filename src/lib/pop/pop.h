@@ -1,4 +1,4 @@
-/** @pop.h Contains functions used in the reddit algorithm */
+/** @pop.h Contains functions used in the MidiOgre Ranking Algorithm */
 
 #ifndef _POPULARITY_H_
 #define _POPULARITY_H_
