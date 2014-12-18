@@ -29,7 +29,9 @@ typedef struct _SongRow         SongRow;
 typedef struct _SongRowClass    SongRowClass;
 typedef struct _SongRowPrivate  SongRowPrivate;
 
-/** SongRow - SongRow struct with instance variables */
+/**
+ * @brief The _SongRow struct: SongRow struct with instance variables
+ */
 struct _SongRow
 {
     GtkListBoxRow parent;  /**< Parent instance struct     */
@@ -37,13 +39,17 @@ struct _SongRow
     SongRowPrivate *priv;  /**< Instance private variables */
 };
 
-/** SongRowClass - SongRow struct with class variables */
+/**
+ * @brief The _SongRowClass struct: SongRow struct with class variables
+ */
 struct _SongRowClass
 {
     GtkListBoxRowClass parent_class; /**< Parent class struct */
 };
 
-/** SongRowPrivate - SongRow struct with private instance variables */
+/**
+ * @brief  SongRowPrivate - SongRow struct with private instance variables
+ */
 struct _SongRowPrivate
 {
     song_t *song; /**< Song contain ing song data */
@@ -64,20 +70,77 @@ struct _SongRowPrivate
 /** song row get type */
 GType      song_row_get_type(void) G_GNUC_CONST;
 
+/**
+ * @brief play_clicked
+ * @param row
+ * @param button
+ */
 void play_clicked(SongRow *row, GtkButton *button);
+/**
+ * @brief delete_clicked
+ * @param row
+ * @param button
+ */
 void delete_clicked(SongRow *row, GtkButton *button);
+/**
+ * @brief fav_clicked
+ * @param row
+ * @param button
+ */
 void fav_clicked(SongRow *row, GtkButton *button);
 
+/**
+ * @brief song_row_class_init
+ * @param klass
+ */
 static void song_row_class_init(SongRowClass *klass);
+/**
+ * @brief song_row_init
+ * @param row
+ */
 static void song_row_init(SongRow *row);
+/**
+ * @brief song_row_update
+ * @param row
+ */
 void song_row_update(SongRow *row);
+/**
+ * @brief song_row_new
+ * @param song
+ * @return
+ */
 SongRow *song_row_new(song_t *song);
+/**
+ * @brief song_row_destroy
+ * @param row
+ */
 void song_row_destroy(SongRow *row);
 
+/**
+ * @brief song_new
+ * @return
+ */
 song_t *song_new(void);
+/**
+ * @brief song_free
+ * @param song
+ */
 void song_free(song_t *song);
 
+/**
+ * @brief songbox_new
+ * @param notebook
+ * @param title
+ * @return
+ */
 GtkListBox *songbox_new(GtkNotebook *notebook, char *title);
+
+/**
+ * @brief songbox_update
+ * @param songbox
+ * @param songs
+ * @param limit
+ */
 void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit);
 
 
