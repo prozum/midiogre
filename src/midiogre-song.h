@@ -40,8 +40,11 @@ struct _SongRowPrivate
     GtkLabel *album_label;  /**< Song album  label */
     GtkLabel *time_label;   /**< Song time   label */
 
+    GtkLabel *edit_dist_label; /**< Edit dist label */
+    GtkLabel *plays_label;     /**< Plays     label */
+
     GtkButton *play_button;     /**< Song play button     */
-    GtkButton *playlist_button; /**< Song playlist button */
+    GtkButton *delete_button;   /**< Song playlist button */
     GtkButton *fav_button;      /**< Song favorite button */
 };
 

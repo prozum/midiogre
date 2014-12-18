@@ -17,6 +17,7 @@
 
 /** song_t - Struct containing song variables from database */
 typedef struct {
+    uint32_t id;                  /**< Id of song in database            */
     char artist[ARTIST_MAX_NAME]; /**< Name of artist                    */
     char album[ALBUM_MAX_NAME];   /**< Name of album                     */
     char title[TITLE_MAX_NAME];   /**< Name of song                      */
@@ -44,5 +45,9 @@ int db_read_songs(sqlite3 *db, song_t *songs);
 int check_sql(const char *sql);
 
 void parse_filename (char *file_name, char *artist, char *album, unsigned *num, char *title);
+
+void db_increment_plays(uint32_t id);
+
+void db_delete_song(uint32_t id);
 
 #endif

@@ -21,9 +21,10 @@ MidiogreApp *midiogre_app_init(void)
     GtkWidget *scrolled;
     GtkWidget *label,*frame;
     GtkWidget *button;
-
     GtkBox *box;
+
     gint i;
+    GError *err;
 
     /* Allocate app */
     app = calloc(1, sizeof(MidiogreApp));
@@ -34,17 +35,18 @@ MidiogreApp *midiogre_app_init(void)
     gtk_window_set_default_size(GTK_WINDOW(app->window), 600, 400);
     g_signal_connect(app->window, "destroy",
                       G_CALLBACK(gtk_widget_destroyed), &app->window);
+    gtk_window_set_icon(app->window,gdk_pixbuf_new_from_resource("/org/prozum/midiogre/midiogre_logo.png",&err));
 
     /* Setup header bar */
     header = gtk_header_bar_new();
     gtk_header_bar_set_title (GTK_HEADER_BAR(header), "Midiogre");
     gtk_window_set_titlebar(app->window, header);
 
+#if GTK_MINOR_VERSION >= 12
     /* Setup close button */
     button = gtk_button_new();
     gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/window-close-symbolic.symbolic.png"));
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
-
     g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_widget_destroy), app->window);
 
     /* Add seperator */
@@ -55,28 +57,24 @@ MidiogreApp *midiogre_app_init(void)
     button = gtk_button_new();
     gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/document-open-symbolic.symbolic.png"));
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
-
+    g_signal_connect_swapped(button, "clicked", G_CALLBACK(folder_chooser), app->window);
+#else
+    /* Setup folder button */
+    button = gtk_button_new();
+    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/document-open-symbolic.symbolic.png"));
+    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
     g_signal_connect_swapped(button, "clicked", G_CALLBACK(folder_chooser), app->window);
 
+    /* Add seperator */
+    separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), separator);
 
-    /* Setup backward, play & forward buttons in a box */
-    box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
-    gtk_style_context_add_class(gtk_widget_get_style_context(GTK_WIDGET(box)), "linked");
-
+    /* Setup close button */
     button = gtk_button_new();
-    gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/media-skip-backward-symbolic.symbolic.png"));
-    gtk_container_add(GTK_CONTAINER(box), button);
-
-    button = gtk_button_new();
-    gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/media-playback-start-symbolic.symbolic.png"));
-    gtk_container_add(GTK_CONTAINER(box), button);
-
-    button = gtk_button_new();
-    gtk_container_add(GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/media-skip-forward-symbolic.symbolic.png"));
-    gtk_container_add(GTK_CONTAINER(box), button);
-
-    gtk_header_bar_pack_start(GTK_HEADER_BAR(header), GTK_WIDGET(box));
-
+    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/window-close-symbolic.symbolic.png"));
+    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
+    g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_widget_destroy), app->window);
+#endif
 
     /* Global horizontal box */
     app->win_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));
@@ -183,23 +181,26 @@ MidiogreApp *midiogre_app_init(void)
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->result_spinbutton), FALSE, FALSE, 0);
 
     /* Current favorite */
-    app->fav_title_label = gtk_label_new("N/A");
+    app->fav_title_label = GTK_LABEL(gtk_label_new("N/A"));
+    gtk_label_set_max_width_chars(app->fav_title_label, 20);
+    gtk_label_set_width_chars(app->fav_title_label, 20);
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_title_label), FALSE, FALSE, 0);
-    app->fav_artist_label = gtk_label_new("N/A");
+    app->fav_artist_label = GTK_LABEL(gtk_label_new("N/A"));
+    gtk_label_set_max_width_chars(app->fav_artist_label, 20);
+    gtk_label_set_width_chars(app->fav_artist_label, 20);
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_artist_label), FALSE, FALSE, 0);
-    app->fav_album_label = gtk_label_new("N/A");
+    app->fav_album_label = GTK_LABEL(gtk_label_new("N/A"));
+    gtk_label_set_max_width_chars(app->fav_album_label, 20);
+    gtk_label_set_width_chars(app->fav_album_label, 20);
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->fav_album_label), FALSE, FALSE, 0);
 
     /* Playlist */
     /* TODO */
 
-    /* Favorites */
-    /* TODO */
-
     /* Add song boxes */
     app->songbox_alpha = songbox_new(app->win_box, "<span size=\"large\">Alphabetical</span>", (GtkListBoxSortFunc)song_row_sort);
-    //app->songbox_best  = songbox_new(app->win_box, "<span size=\"large\">Best match</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_fprnt = songbox_new(app->win_box, "<span size=\"large\">Fingerprint</span>", (GtkListBoxSortFunc)song_row_sort);
+    app->songbox_best  = songbox_new(app->win_box, "<span size=\"large\">Best match</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_pop   = songbox_new(app->win_box, "<span size=\"large\">Popularity</span>", (GtkListBoxSortFunc)song_row_sort);
     app->songbox_new   = songbox_new(app->win_box, "<span size=\"large\">Newest</span>", (GtkListBoxSortFunc)song_row_sort);
 

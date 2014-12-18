@@ -1,6 +1,7 @@
 #include "db.h"
 
 #include <mid/mid.h>
+#include <pop/pop.h>
 #include <analyze/analyze.h>
 #include <ext/ext.h>
 
@@ -102,6 +103,7 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     int instr_classes;
     double time;
     unsigned finger_prints[3] = {0,0,0};
+    int plays;
 
     /* Check string for "'" */
     if (check_sql(mid_addr) == -1) {
@@ -144,14 +146,11 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
     /* Import 3 finger prints */
     f_prns = finger_prn_gen(mid->tracks->ptr);
-
     if (f_prns == NULL) {
         fprintf(stderr,"Could not generate finger print!\n");
         free_mid(mid);
         return -1;
     }
-
-
     for (i = 0; i < FINGER_PRNS; i++) {
         finger_prints[i] += f_prns[i].f_prn[0]<<20;
         finger_prints[i] += f_prns[i].f_prn[1]<<16;
@@ -168,19 +167,23 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
     }
     free(f_prns);
 
+    /* Generate random play number */
+    plays = g_random_int_range(0,MAX_PLAYS);
 
     /* Exec data import */
     tmp = g_strdup(mid_addr);
     parse_filename(tmp, artist, album, &num, title);
     free(tmp);
 
-    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, finger_print1, finger_print2, finger_print3, addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, %d, %d, %d, '%s');",
+    /* Setup sql statement */
+    sql = g_strdup_printf("INSERT INTO songs (artist, album, num, title, instr_classes, time, plays, finger_print1, finger_print2, finger_print3, addr) VALUES ('%s', '%s', %d, '%s', %d, %.0f, %d, %d, %d, %d, '%s');",
                           artist,
                           album,
                           num,
                           title,
                           instr_classes,
                           time,
+                          plays,
                           finger_prints[0],
                           finger_prints[1],
                           finger_prints[2],
@@ -234,3 +237,43 @@ void parse_filename (char *file_name, char *artist, char *album, unsigned *num, 
         *num = 0;
     }
 }
+
+void db_increment_plays(uint32_t id)
+{
+    sqlite3 *db;
+    char *sql;
+    int rc;
+    char *error;
+
+    sql = g_strdup_printf("UPDATE songs SET plays = plays + 1 WHERE rowid = %d", id);
+
+    sqlite3_open("mid.db", &db);
+
+    rc = sqlite3_exec(db, sql, NULL, 0, &error);
+    database_general_error(rc, error, 2);
+
+    free(sql);
+
+    sqlite3_close(db);
+}
+
+void db_delete_song(uint32_t id)
+{
+    sqlite3 *db;
+    char *sql;
+    int rc;
+    char *error;
+
+    sql = g_strdup_printf("DELETE FROM songs WHERE rowid = %d", id);
+
+    sqlite3_open("mid.db", &db);
+
+    rc = sqlite3_exec(db, sql, NULL, 0, &error);
+    database_general_error(rc, error, 2);
+
+    free(sql);
+
+    sqlite3_close(db);
+}
+
+
