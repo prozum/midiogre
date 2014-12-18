@@ -11,19 +11,15 @@
 
 gint search_event(void)
 {
-
     sqlite3 *db;
-
     gchar *sql_head;
+    song_t *song;
 
     gint instr_classes;
     const gchar *artist_value;
     const gchar *album_value;
     const gchar *title_value;
     gint limit;
-
-
-
 
 
     /* Gather search criterias */
@@ -55,14 +51,15 @@ gint search_event(void)
                                instr_classes);
 
 
+    /* Get max result from spinbox */
     limit = gtk_spin_button_get_value_as_int(app->result_spinbutton);
 
 
+    /* Open db */
     sqlite3_open("mid.db", &db);
 
 
-
-
+    /* Search db and add results to song GQueues */
     search_db(app->songs_alpha, db, sql_head, "%s ORDER BY title,album,artist LIMIT %d;", limit);
     search_db(app->songs_new, db, sql_head, "%s ORDER BY import_date DESC LIMIT %d;", limit);
     search_db(app->songs_pop, db, sql_head, "%s ORDER BY title,album,artist;", 0);
@@ -76,7 +73,8 @@ gint search_event(void)
         g_queue_sort(app->songs_fprnt, (GCompareDataFunc)sort_fprnt, app);
 
         while(app->songs_fprnt->length > limit) {
-            g_queue_pop_tail(app->songs_fprnt);
+            song = g_queue_pop_tail(app->songs_fprnt);
+            song_free(song);
         }
 
         /* Both fingerprint and popularity */
@@ -85,16 +83,17 @@ gint search_event(void)
 
         while(app->songs_best->length > limit) {
 
-            g_queue_pop_tail(app->songs_best);
+            song = g_queue_pop_tail(app->songs_best);
+            song_free(song);
         }
     }
 
     /* Popularity */
     g_queue_sort(app->songs_pop, (GCompareDataFunc)song_compare_pop, NULL);
     while(app->songs_pop->length > limit) {
-        g_queue_pop_tail(app->songs_pop);
+        song = g_queue_pop_tail(app->songs_pop);
+        song_free(song);
     }
-
 
     g_free(sql_head);
     sqlite3_close(db);

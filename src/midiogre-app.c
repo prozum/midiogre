@@ -226,7 +226,7 @@ MidiogreApp *midiogre_app_init(void)
     /* Add song boxes */
     app->songbox_alpha = songbox_new(app->song_notebook, "Alphabetical");
     app->songbox_fprnt = songbox_new(app->song_notebook, "Fingerprint");
-    app->songbox_best  = songbox_new(app->song_notebook, "Best match");
+    app->songbox_best  = songbox_new(app->song_notebook, "Best Match");
     app->songbox_pop   = songbox_new(app->song_notebook, "Popularity");
     app->songbox_new   = songbox_new(app->song_notebook, "Newest");
 
