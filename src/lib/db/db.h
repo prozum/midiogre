@@ -1,4 +1,4 @@
-/** @db.h*/
+/** @file db.h*/
 
 #ifndef __DB_H__
 #define __DB_H__
