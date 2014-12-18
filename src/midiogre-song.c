@@ -86,7 +86,7 @@ static void song_row_class_init(SongRowClass *klass)
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, album_label);
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, time_label);
 
-    gtk_widget_class_bind_template_child_private(widget_class, SongRow, edit_dist_label);
+    gtk_widget_class_bind_template_child_private(widget_class, SongRow, date_label);
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, plays_label);
 
     gtk_widget_class_bind_template_child_private(widget_class, SongRow, play_button);
@@ -121,6 +121,7 @@ void song_row_update(SongRow *row)
     SongRowPrivate *priv = row->priv;
 
     gchar *tmp;
+    time_t timestamp;
 
     tmp = g_strdup_printf("%02d:%02d", priv->song->length/1000 / 60,
                                        priv->song->length/1000 % 60);
@@ -133,8 +134,9 @@ void song_row_update(SongRow *row)
     gtk_label_set_text(priv->artist_label, priv->song->artist);
 
 
-    tmp = g_strdup_printf("%d", priv->song->edit_score);
-    gtk_label_set_text(priv->edit_dist_label, tmp);
+    timestamp = priv->song->time_added;
+    tmp = g_strdup_printf("%s", ctime(&timestamp));
+    gtk_label_set_text(priv->date_label, tmp);
     g_free(tmp);
 
     tmp = g_strdup_printf("%d", priv->song->plays);
@@ -210,6 +212,7 @@ void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
 
         row = song_row_new(song);
         gtk_widget_show(GTK_WIDGET(row));
-        gtk_list_box_prepend(songbox, GTK_WIDGET(row));
+        //gtk_list_box_prepend(songbox, );
+        gtk_list_box_insert(songbox,GTK_WIDGET(row),i);
     }
 }

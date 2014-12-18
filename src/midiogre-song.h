@@ -42,7 +42,7 @@ struct _SongRowPrivate
     GtkLabel *album_label;  /**< Song album  label */
     GtkLabel *time_label;   /**< Song time   label */
 
-    GtkLabel *edit_dist_label; /**< Edit dist label */
+    GtkLabel *date_label;      /**< Date      label */
     GtkLabel *plays_label;     /**< Plays     label */
 
     GtkButton *play_button;     /**< Song play button     */

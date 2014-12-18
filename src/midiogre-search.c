@@ -155,10 +155,10 @@ gint sort_fprnt(gpointer s1, gpointer s2, gpointer a)
 
     if (song1->edit_score > song2->edit_score) {
         return 1;
-    } else if (song1->edit_score == song2->edit_score) {
-        return 0;
-    } else {
+    } else if (song1->edit_score < song2->edit_score) {
         return -1;
+    } else {
+        return 0;
     }
 }
 
