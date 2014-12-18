@@ -181,12 +181,6 @@ gint sort_best(gpointer s1, gpointer s2, gpointer a)
 
 }
 
-
-GCompareFunc sort_pop(gconstpointer s1, gconstpointer s2, gpointer a)
-{
-    return song_compare_pop(s1,s2);
-}
-
 gint search_handler(void *s, int argc, char **argv, char **col_name)
 {
     song_t *song;
