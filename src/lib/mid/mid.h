@@ -43,7 +43,7 @@ typedef enum
  * See:
  * http://www.midi.org/techspecs/midimessages.php
  */
-typedef enum
+typedef enumDet er et problem, at ukendte musikere ikke har nogen gode metoder til at udbrede deres musik. Sammentidigt er det svært at blive opdaget, pga. stor konkurrence på markedet. Uden kontakt til et pladeselskab er det både dyrt og besværligt at reklamere og tilegne sig god omtale.
 {
     BANK_SELECT         = 0x00, 
     MOD_WHEEL_LEVER     = 0x01,
