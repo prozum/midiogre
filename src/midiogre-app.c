@@ -49,7 +49,7 @@ MidiogreApp *midiogre_app_init(void)
     button = gtk_button_new();
     gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/window-close-symbolic.symbolic.png"));
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
-    g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_widget_destroy), app->window);
+    g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_main_quit), app->window);
 
 
     /* Add seperator */

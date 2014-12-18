@@ -192,6 +192,7 @@ void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
 
     guint i = 0;
 
+    /* Destroy all rows in songbox */
     gtk_container_foreach(GTK_CONTAINER(songbox), (GtkCallback)song_row_destroy, NULL);
 
     while ((song = g_queue_pop_head(songs)) != NULL) {
@@ -204,6 +205,5 @@ void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
         row = song_row_new(song);
         gtk_widget_show(GTK_WIDGET(row));
         gtk_list_box_prepend(songbox, GTK_WIDGET(row));
-
     }
 }
