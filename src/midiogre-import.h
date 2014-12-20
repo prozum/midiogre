@@ -6,12 +6,15 @@
 #include <list/list.h>
 
 #include <gtk/gtk.h>
+#include <sqlite3.h>
 
 /** ImportStatus - Struct containing information about import progress */
 typedef struct
 {
+    sqlite3 *db;                  /**< Items db            */
     guint i;                      /**< Items done          */
     guint n;                      /**< Items total         */
+    gboolean stop;                /**< Import stop status  */
     GQueue *queue;                /**< Items queue         */
     GtkWidget *dialog;            /**< Progress dialog     */
     GtkProgressBar *progress_bar; /**< Progress bar widget */
@@ -19,10 +22,10 @@ typedef struct
 
 /**
  * @brief mid_import
- * @param s:
+ * @param status:
  * @return
  */
-gpointer mid_import(gpointer s);
+void mid_import(ImportStatus *status);
 
 /**
  * @brief folder_handler
@@ -46,6 +49,12 @@ gboolean progress_dialog_update(gpointer s);
  * @return
  */
 ImportStatus *import_dialog(GtkWindow *window, GQueue *queue);
+
+/**
+ * @brief import_cancel
+ * @param status
+ */
+gboolean import_cancel(GtkDialog *dialog, gint *id, ImportStatus *status);
 
 /**
  * @brief folder_chooser

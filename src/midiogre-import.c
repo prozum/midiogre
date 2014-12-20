@@ -16,33 +16,24 @@
 #include <dirent.h>
 #endif
 
-gpointer mid_import(gpointer s)
+void mid_import(ImportStatus *status)
 {
-    ImportStatus *status;
-    sqlite3 *db;
     char *mid_addr;
 
-    status = s;
-
-    /* Open db */
-    sqlite3_open("mid.db", &db);
-    db_init(db);
-
-    while ((mid_addr = g_queue_pop_head(status->queue)) != NULL) {
+    while ((mid_addr = g_queue_pop_head(status->queue))) {
 
         g_print("Import mid: %s\n", mid_addr);
 
         /* Clever function to handle mid file here! */
-        db_import_mid(db, mid_addr);
+        db_import_mid(status->db, mid_addr);
 
         g_free(mid_addr);
 
         status->i++;
     }
 
-    sqlite3_close(db);
-
-    return NULL;
+    /* Progress done */
+    status->stop = TRUE;
 }
 
 #ifdef WIN32
@@ -185,9 +176,16 @@ gboolean progress_dialog_update(gpointer s)
     gtk_progress_bar_set_text(status->progress_bar, tmp);
     g_free(tmp);
 
-    if (status->i == status->n) {
+
+    if (status->stop == TRUE) {
+        /* Cleanup */
+        gtk_widget_destroy(GTK_WIDGET(status->dialog));
+        sqlite3_close(status->db);
+        g_free(status);
         return FALSE;
+
     } else {
+
         return TRUE;
     }
 }
@@ -199,6 +197,7 @@ ImportStatus *import_dialog(GtkWindow *window, GQueue *queue)
 
 
     status = malloc(sizeof(ImportStatus));
+    status->stop = FALSE;
     status->i = 0;
     status->n = queue->length;
     status->queue = queue;
@@ -207,11 +206,10 @@ ImportStatus *import_dialog(GtkWindow *window, GQueue *queue)
     status->dialog = gtk_message_dialog_new (GTK_WINDOW (window),
                                      GTK_DIALOG_DESTROY_WITH_PARENT,
                                      GTK_MESSAGE_INFO,
-                                     GTK_BUTTONS_OK,
+                                     GTK_BUTTONS_CANCEL,
                                      "Importing files");
 
-    g_signal_connect (status->dialog, "response",
-                      G_CALLBACK(gtk_widget_destroy), status->dialog);
+    g_signal_connect(status->dialog, "response", G_CALLBACK(import_cancel), status);
 
     /* Setup progress bar */
     content_area = gtk_dialog_get_content_area (GTK_DIALOG (status->dialog));
@@ -228,9 +226,22 @@ ImportStatus *import_dialog(GtkWindow *window, GQueue *queue)
     return status;
 }
 
+gboolean import_cancel(GtkDialog *dialog, gint *id, ImportStatus *status)
+{
+    char *addr;
+
+    /* Stop import progress */
+    while ((addr = g_queue_pop_tail(status->queue)) != NULL) {
+
+        g_free(addr);
+    }
+
+    return 0;
+}
+
 void folder_chooser(GtkWindow *window)
 {
-    GtkWidget      *dialog;
+    GtkWidget    *dialog;
     ImportStatus *status;
     gint res;
     char *folder_addr = NULL;
@@ -266,8 +277,13 @@ void folder_chooser(GtkWindow *window)
         /* Setup progress dialog */
         status = import_dialog(window, mid_addrs);
 
+        /* Open db */
+        sqlite3_open("mid.db", &status->db);
+        db_init(status->db);
+
         /* Import mid files */
         g_thread_new("mid_import", mid_import, status);
+
 
     } else  {
       
