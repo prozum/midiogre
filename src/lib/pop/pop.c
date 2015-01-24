@@ -7,76 +7,57 @@
 #include <math.h>
 #include <stdio.h>
 
-unsigned int delta_time(unsigned int upload_time)
+void song_score_fprnt(song_t *song, song_t *song_fav)
 {
-    return time(NULL) - upload_time;
+    song->sort_score = finger_prn_cmp(song->fprns, song_fav->fprns);
 }
 
-/* The type for fingerprint may be changed based on the type given to it */
-double song_score_all(unsigned int plays, unsigned int upload_time, uint8_t edit_dist)
+void song_score_best(song_t *song, song_t *song_fav)
 {
-    unsigned int age = 0, play_rating = 0;
-    double score = 0;
+    unsigned int age, play_rating, edit_dist;
 
-    age = delta_time(upload_time);
+    edit_dist = finger_prn_cmp(song->fprns, song_fav->fprns);
 
-    /* Returns a score of 0 if the song does not meet the required conditions */
-    if (edit_dist > MAX_EDITDIST || plays > MAX_PLAYS) {
-        return 0;
+    /* Set sort score to 0 if the song does not meet the required conditions */
+    if (edit_dist > MAX_EDITDIST || song->plays > MAX_PLAYS) {
+        song->sort_score = 0;
+        return;
     }
 
-    if (edit_dist == 0) {
-        edit_dist = 1;
-    }
-
-    if (age == 0) {
+    if ((age = time(NULL) - song->time_added) == 0) {
         age = 2;
     }
 
-    play_rating = MAX_PLAYS - plays;
+    play_rating = MAX_PLAYS - song->plays;
 
-    score = (play_rating*((18 - edit_dist)/log2(edit_dist + 1))/log2((double)age))/100;
-
-    return score;
-
+    song->sort_score = (play_rating * ((18 - edit_dist) / log2(edit_dist + 1)) / log2((double)age)) / 100;
 }
 
-double song_score_play(unsigned int plays, unsigned int upload_time)
+void song_score_pop(song_t *song)
 {
-    unsigned int age = 0, play_rating = 0;
-    double score = 0;
+    unsigned int age, play_rating;
 
-    age = delta_time(upload_time);
+    age = time(NULL) - song->time_added;
 
     /* Returns a score of 0 if the song does not meet the required conditions */
-    if(plays > MAX_PLAYS) {
-        return 0;
-    } else if(age == 0) {
-        return 0;
+    if(song->plays > MAX_PLAYS || age == 0) {
+        song->sort_score = 0;
+        return;
     }
 
-    play_rating = MAX_PLAYS - plays;
+    play_rating = MAX_PLAYS - song->plays;
 
-    score = ((play_rating)/log2((double)age))/100;
-
-    return score;
-
+    song->sort_score = (play_rating / log2((double)age)) / 100;
 }
 
-int song_compare_pop(const void *s1, const void *s2) {
-    const song_t *song1 = s1;
-    const song_t *song2 = s2;
-
-    double song1_score = 0, song2_score = 0;
-
-    song1_score = song_score_play(song1->plays,song1->time_added);
-    song2_score = song_score_play(song2->plays,song2->time_added);
-
-    if(song1_score > song2_score) {
+int sort_score(const void *song1, const void *song2, const void *f)
+{
+    if (((song_t*)song1)->sort_score > ((song_t*)song2)->sort_score) {
         return -1;
-    } else if(song1_score < song2_score) {
+    } else if(((song_t*)song1)->sort_score < ((song_t*)song2)->sort_score) {
         return 1;
     } else {
         return 0;
     }
+
 }

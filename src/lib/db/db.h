@@ -29,9 +29,9 @@ typedef struct {
     uint32_t num;                 /**< Track number                      */
     uint32_t length;              /**< Length of song                    */
     uint32_t plays;               /**< Number of plays                   */
-    f_prn_t *finger_prints;       /**< Fingerprint value                 */
-    int16_t edit_score;           /**< Score used to sort by fingerprint */
     uint32_t time_added;          /**< Time when added                   */
+    f_prn_t *fprns;               /**< Fingerprints                      */
+    float sort_score;           /**< Score used to sort songs          */
     char *addr;                   /**< Song file addr                    */
 } song_t;
 

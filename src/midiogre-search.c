@@ -12,8 +12,8 @@
 gint search_event(void)
 {
     sqlite3 *db;
+    gint page;
     gchar *sql_head;
-    song_t *song;
 
     gint instr_classes;
     const gchar *artist_value;
@@ -53,65 +53,90 @@ gint search_event(void)
     /* Get max result from spinbox */
     limit = gtk_spin_button_get_value_as_int(app->result_spinbutton);
 
-
     /* Open db */
     sqlite3_open("mid.db", &db);
 
+    /* Act according to current page */
+    page = gtk_notebook_get_current_page(app->song_notebook);
 
-    /* Search db and add results to song GQueues */
-    search_db(app->songs_alpha, db, sql_head, "%s ORDER BY title,album,artist LIMIT %d;", limit);
-    search_db(app->songs_new, db, sql_head, "%s ORDER BY import_date DESC LIMIT %d;", limit);
-    search_db(app->songs_pop, db, sql_head, "%s ORDER BY title,album,artist;", 0);
+    switch (page) {
 
+        case SONGBOX_ALPHA:
+            /* Load songs into app->songs */
+            search_db(app->songs[SONGBOX_ALPHA], db, sql_head, "%s ORDER BY title,album,artist LIMIT %d;", limit);
 
-    /* Only add songs to fingerprint songbox if a favorite song is chosen. */
-    if (app->cur_fav != NULL) {
+            break;
 
-        /* Finger print only */
-        search_db(app->songs_fprnt, db, sql_head, "%s ORDER BY title,album,artist;", 0);
-        g_queue_sort(app->songs_fprnt, (GCompareDataFunc)sort_fprnt, app);
+        case SONGBOX_FPRNT:
+            /* Only update if a favorite song is selected */
+            if (app->cur_fav == NULL) {
+                /* Cleanup */
+                g_free(sql_head);
+                sqlite3_close(db);
+                return -1;
+            }
 
-        while(app->songs_fprnt->length > limit) {
-            song = g_queue_pop_tail(app->songs_fprnt);
-            song_free(song);
-        }
+            /* Load songs into app->songs */
+            search_db(app->songs[SONGBOX_FPRNT], db, sql_head, "%s ORDER BY title,album,artist;", 0);
 
-        /* Both fingerprint and popularity */
-        search_db(app->songs_best, db, sql_head, "%s ORDER BY title,album,artist;", 0);
-        g_queue_sort(app->songs_best, (GCompareDataFunc)sort_best, app);
+            /* Calculate sort score */
+            g_queue_foreach(app->songs[SONGBOX_FPRNT], (GFunc)song_score_fprnt, app->cur_fav);
 
-        while(app->songs_best->length > limit) {
+            /* Sort according to sort score */
+            g_queue_sort(app->songs[SONGBOX_FPRNT], (GCompareDataFunc)sort_score, app->cur_fav);
 
-            song = g_queue_pop_tail(app->songs_best);
-            song_free(song);
-        }
+            break;
+
+        case SONGBOX_BEST:
+            /* Only update if a favorite song is selected */
+            if (app->cur_fav == NULL) {
+                /* Cleanup */
+                g_free(sql_head);
+                sqlite3_close(db);
+                return -1;
+            }
+
+            /* Load songs into app->songs */
+            search_db(app->songs[SONGBOX_BEST], db, sql_head, "%s ORDER BY title,album,artist;", 0);
+
+            /* Calculate sort score */
+            g_queue_foreach(app->songs[SONGBOX_BEST], (GFunc)song_score_best, app->cur_fav);
+
+            /* Sort according to sort score */
+            g_queue_sort(app->songs[SONGBOX_BEST], (GCompareDataFunc)sort_score, app->cur_fav);
+
+            break;
+
+        case SONGBOX_POP:
+            /* Load songs into app->songs */
+            search_db(app->songs[SONGBOX_POP], db, sql_head, "%s ORDER BY title,album,artist;", 0);
+
+            /* Calculate sort score */
+            g_queue_foreach(app->songs[SONGBOX_POP], (GFunc)song_score_pop, NULL);
+
+            /* Sort according to sort score */
+            g_queue_sort(app->songs[SONGBOX_POP], (GCompareDataFunc)sort_score, NULL);
+
+            break;
+
+        case SONGBOX_NEW:
+            /* Load songs into app->songs */
+            search_db(app->songs[SONGBOX_NEW], db, sql_head, "%s ORDER BY import_date DESC LIMIT %d;", limit);
+
+            break;
     }
 
-    /* Popularity */
-    g_queue_sort(app->songs_pop, (GCompareDataFunc)song_compare_pop, NULL);
-    while(app->songs_pop->length > limit) {
-        song = g_queue_pop_tail(app->songs_pop);
-        song_free(song);
-    }
-
+    /* Cleanup */
     g_free(sql_head);
     sqlite3_close(db);
 
-    /* Update all songboxes and deallocate unused songs */
-    songbox_update(app->songbox_alpha, app->songs_alpha, limit);
-    g_queue_foreach(app->songs_alpha, song_free, NULL);
+    /* Deallocate unused songs */
+    while (app->songs[page]->length > limit) {
+        song_free(g_queue_pop_tail(app->songs[page]));
+    }
 
-    songbox_update(app->songbox_new, app->songs_new, limit);
-    g_queue_foreach(app->songs_new, song_free, NULL);
-
-    songbox_update(app->songbox_pop, app->songs_pop, limit);
-    g_queue_foreach(app->songs_pop, song_free, NULL);
-
-    songbox_update(app->songbox_fprnt, app->songs_fprnt, limit);
-    g_queue_foreach(app->songs_fprnt, song_free, NULL);
-
-    songbox_update(app->songbox_best, app->songs_best, limit);
-    g_queue_foreach(app->songs_best, song_free, NULL);
+    /* Update all songboxes in current page */
+    songbox_update(app->songboxes[page], app->songs[page], limit);
 
     return 0;
 }
@@ -137,58 +162,7 @@ int search_db(GQueue *songs, sqlite3 *db, gchar *head, gchar *body, gint limit)
     return 0;
 }
 
-gint sort_fprnt(gpointer s1, gpointer s2, gpointer a)
-{
-    song_t *song1 = s1;
-    song_t *song2 = s2;
-    song_t *song_fav = app->cur_fav;
 
-
-    if (song1->edit_score == -1) {
-        song1->edit_score = finger_prn_cmp(song1->finger_prints, song_fav->finger_prints);
-    }
-
-    if (song2->edit_score == -1) {
-        song2->edit_score = finger_prn_cmp(song2->finger_prints, song_fav->finger_prints);
-    }
-
-    if (song1->edit_score > song2->edit_score) {
-        return 1;
-    } else if (song1->edit_score < song2->edit_score) {
-        return -1;
-    } else {
-        return 0;
-    }
-}
-
-gint sort_best(gpointer s1, gpointer s2, gpointer a)
-{
-    song_t *song1 = s1;
-    song_t *song2 = s2;
-    song_t *song_fav = app->cur_fav;
-
-    double song1_score = 0, song2_score = 0;
-
-    if (song1->edit_score == -1) {
-        song1->edit_score = finger_prn_cmp(song1->finger_prints, song_fav->finger_prints);
-    }
-
-    if (song2->edit_score == -1) {
-        song2->edit_score = finger_prn_cmp(song2->finger_prints, song_fav->finger_prints);
-    }
-
-    song1_score = song_score_all(song1->plays, song1->time_added, song1->edit_score);
-    song2_score = song_score_all(song2->plays, song2->time_added, song2->edit_score);
-
-    if (song1_score > song2_score) {
-        return -1;
-    } else if(song1_score < song2_score) {
-        return 1;
-    } else {
-        return 0;
-    }
-
-}
 
 gint search_handler(void *s, int argc, char **argv, char **col_name)
 {
@@ -198,7 +172,6 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
     song = calloc(1, sizeof(song_t));
 
     /* Load columns for song row */
-
     song->id = atoi(argv[0]);
 
     /* Inforce max string length ARTIST_MAX_NAME */
@@ -224,12 +197,10 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
     fingerprints[0] = atoi(argv[8]);
     fingerprints[1] = atoi(argv[9]);
     fingerprints[2] = atoi(argv[10]);
-    song->finger_prints = convert_to_f_prn(fingerprints);
+    song->fprns = convert_to_f_prn(fingerprints);
 
     song->addr = malloc(strlen(argv[11])+1);
     strcpy(song->addr,argv[11]);
-
-    song->edit_score = -1;
 
     /* Push column to queue */
     g_queue_push_tail(songs, song);

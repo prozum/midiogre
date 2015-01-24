@@ -8,9 +8,20 @@
 
 #include <gtk/gtk.h>
 
+enum songboxes
+{
+    SONGBOX_ALPHA, /**< SongBox sorting songs by alphabetical order */
+    SONGBOX_FPRNT, /**< SongBox sorting songs by fingerprint        */
+    SONGBOX_BEST,  /**< SongBox sorting songs by best match         */
+    SONGBOX_POP,   /**< SongBox sorting songs by popularity         */
+    SONGBOX_NEW,   /**< SongBox sorting songs by date               */
+    SONGBOXES_NUM  /**< Number of songboxes                         */
+};
+
 
 /** MidiogreApp - Struct containing app vars */
-typedef struct {
+typedef struct
+{
 
     /* App widgets */
     GtkWindow *window;         /**< Midiogre window */
@@ -34,17 +45,9 @@ typedef struct {
 
     GtkNotebook *song_notebook; /**< Tabs widget for songboxes */
 
-    GtkListBox *songbox_alpha; /**< SongBox sorting songs by alphabetical order */
-    GtkListBox *songbox_best;  /**< SongBox sorting songs by best match         */
-    GtkListBox *songbox_fprnt; /**< SongBox sorting songs by fingerprint        */
-    GtkListBox *songbox_pop;   /**< SongBox sorting songs by popularity         */
-    GtkListBox *songbox_new;   /**< SongBox sorting songs by date               */
+    GtkListBox *songboxes[SONGBOXES_NUM]; /**< Songboxes contains song rows */
 
-    GQueue *songs_alpha;       /**< Used to store and sort songs from db */
-    GQueue *songs_best;        /**< Used to store and sort songs from db */
-    GQueue *songs_fprnt;       /**< Used to store and sort songs from db */
-    GQueue *songs_pop;         /**< Used to store and sort songs from db */
-    GQueue *songs_new;         /**< Used to store and sort songs from db */
+    GQueue *songs[SONGBOXES_NUM]; /**< Used to store and sort songs from db */
 
     GtkLabel *fav_title_label; /**< Favorite song title name  */
     GtkLabel *fav_artist_label;/**< Favorite song artist name */

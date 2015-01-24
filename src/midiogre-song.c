@@ -68,7 +68,7 @@ void fav_clicked(SongRow *row, GtkButton *button)
     strcpy(app->cur_fav->title, priv->song->title);
     strcpy(app->cur_fav->artist, priv->song->artist);
     strcpy(app->cur_fav->album, priv->song->album);
-    copy_f_prn(app->cur_fav->finger_prints, priv->song->finger_prints);
+    copy_f_prn(app->cur_fav->fprns, priv->song->fprns);
 
     gtk_label_set_text(app->fav_title_label, app->cur_fav->title);
     gtk_label_set_text(app->fav_artist_label, app->cur_fav->artist);
@@ -157,7 +157,7 @@ song_t *song_new(void)
 
     song = calloc(1, sizeof(song_t));
 
-    song->finger_prints = create_f_prn();
+    song->fprns = create_f_prn();
 
     return song;
 }
@@ -165,7 +165,7 @@ song_t *song_new(void)
 void song_free(song_t *song)
 {
     g_free(song->addr);
-    free_f_prn(song->finger_prints);
+    free_f_prn(song->fprns);
     g_free(song);
 }
 
@@ -195,23 +195,23 @@ GtkListBox *songbox_new(GtkNotebook *notebook, char *title)
 
 void songbox_update(GtkListBox *songbox, GQueue *songs, gint limit)
 {
-    SongRow *row;
     song_t *song;
+    SongRow *row;
 
-    guint i = 0;
+    gint i = 0;
 
     /* Destroy all rows in songbox */
     gtk_container_foreach(GTK_CONTAINER(songbox), (GtkCallback)song_row_destroy, NULL);
 
+    /* Create songbox from songs limited by limit */
     while ((song = g_queue_pop_head(songs)) != NULL) {
 
-        /* Limit number of results by result spinbox */
-        if (i++ >= limit) {
+        if (limit <= i++) {
             break;
         }
 
         row = song_row_new(song);
         gtk_widget_show(GTK_WIDGET(row));
-        gtk_list_box_insert(songbox,GTK_WIDGET(row),i);
+        gtk_list_box_insert(songbox, GTK_WIDGET(row), i);
     }
 }

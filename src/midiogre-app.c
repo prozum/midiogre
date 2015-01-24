@@ -189,11 +189,11 @@ MidiogreApp *midiogre_app_init(void)
     for (i = 0; i < INSTR_CLASSES; i++) {
 
         label = gtk_label_new(instrument_classes[i]);
-        gtk_widget_set_halign(GTK_WIDGET(label),GTK_ALIGN_START);
+        gtk_widget_set_halign(GTK_WIDGET(label), GTK_ALIGN_START);
         gtk_grid_attach(app->instr_grid, label, 1, i + 1, 1, 1);
 
         app->instr_buttons[i] = GTK_CHECK_BUTTON(gtk_check_button_new());
-        gtk_widget_set_halign(GTK_WIDGET(app->instr_buttons[i]),GTK_ALIGN_END);
+        gtk_widget_set_halign(GTK_WIDGET(app->instr_buttons[i]), GTK_ALIGN_END);
         gtk_grid_attach(app->instr_grid, GTK_WIDGET(app->instr_buttons[i]), 2, i + 1, 1, 1);
     }
 
@@ -211,7 +211,6 @@ MidiogreApp *midiogre_app_init(void)
 
     gtk_box_pack_start(box, GTK_WIDGET(app->result_spinbutton), TRUE, TRUE, 0);
 
-
     /* Search button */
     app->search_button = GTK_BUTTON(gtk_button_new_with_label("Search"));
     gtk_box_pack_start(app->search_box, GTK_WIDGET(app->search_button), FALSE, FALSE, 0);
@@ -223,12 +222,13 @@ MidiogreApp *midiogre_app_init(void)
     gtk_widget_set_hexpand(GTK_WIDGET(app->song_notebook), TRUE);
     gtk_box_pack_start(app->win_box, GTK_WIDGET(app->song_notebook), TRUE, TRUE, 0);
 
+
     /* Add song boxes */
-    app->songbox_alpha = songbox_new(app->song_notebook, "Alphabetical");
-    app->songbox_fprnt = songbox_new(app->song_notebook, "Fingerprint");
-    app->songbox_best  = songbox_new(app->song_notebook, "Best Match");
-    app->songbox_pop   = songbox_new(app->song_notebook, "Popularity");
-    app->songbox_new   = songbox_new(app->song_notebook, "Newest");
+    app->songboxes[SONGBOX_ALPHA] = songbox_new(app->song_notebook, "Alphabetical");
+    app->songboxes[SONGBOX_FPRNT] = songbox_new(app->song_notebook, "Fingerprint");
+    app->songboxes[SONGBOX_BEST]  = songbox_new(app->song_notebook, "Best Match");
+    app->songboxes[SONGBOX_POP]   = songbox_new(app->song_notebook, "Popularity");
+    app->songboxes[SONGBOX_NEW]   = songbox_new(app->song_notebook, "Newest");
 
 
     /* Show all widgets */
@@ -236,11 +236,11 @@ MidiogreApp *midiogre_app_init(void)
 
 
     /* Allocate song queue */
-    app->songs_alpha   = g_queue_new();
-    app->songs_best    = g_queue_new();
-    app->songs_fprnt   = g_queue_new();
-    app->songs_pop     = g_queue_new();
-    app->songs_new     = g_queue_new();
+    app->songs[SONGBOX_ALPHA]   = g_queue_new();
+    app->songs[SONGBOX_FPRNT]   = g_queue_new();
+    app->songs[SONGBOX_BEST]    = g_queue_new();
+    app->songs[SONGBOX_POP]     = g_queue_new();
+    app->songs[SONGBOX_NEW]     = g_queue_new();
 
 
     return app;
