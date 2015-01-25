@@ -53,13 +53,8 @@ int main( int argc, char *argv[] )
     /*Test skyline*/
     
     /* Cleanup */
-    for (i = 0; i < FINGER_PRNS; i++) {
-        free(finger_prints1[i].f_prn);
-        free(finger_prints2[i].f_prn);
-    }
-
-    free(finger_prints1);
-    free(finger_prints2);
+    free_f_prn(finger_prints1);
+    free_f_prn(finger_prints2);
     free_mid(tmp_mid1);
     free_mid(mid1);
 

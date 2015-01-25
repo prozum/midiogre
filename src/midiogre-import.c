@@ -5,16 +5,15 @@
 #include <list/list.h>
 #include <db/db.h>
 
-#include <stdlib.h>
-#include <string.h>
-
 #include <gtk/gtk.h>
-
 #ifdef WIN32
 #include <windows.h>
 #else
 #include <dirent.h>
 #endif
+
+#include <stdlib.h>
+#include <string.h>
 
 void mid_import(ImportStatus *status)
 {
@@ -46,9 +45,7 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
 
     char *tmp, *folder_addr_fixed;
 
-
     folder_addr_fixed = g_strdup_printf("%s\\*", folder_addr);
-
 
     if ((hFind = FindFirstFile(folder_addr_fixed, &file)) == INVALID_HANDLE_VALUE) {
 
@@ -107,14 +104,16 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
     struct dirent *file;
     char *tmp;
 
-   if ((directory = opendir(folder_addr)) == NULL) {
+    /* Open dir */
+    if ((directory = opendir(folder_addr)) == NULL) {
 
        return -1;
     }
 
+    /* For every file in dir */
     while ((file = readdir(directory)) != NULL) {
 
-        /* Don't try to open hidden or previous folders */
+        /* Don't try to open hidden or previous files/folders */
         if (file->d_name[0] != '.') {
 
             /* If folder */
@@ -195,12 +194,14 @@ ImportStatus *import_dialog(GtkWindow *window, GQueue *queue)
     ImportStatus *status;
     GtkWidget *content_area;
 
-
+    /* Setup import status struct */
     status = malloc(sizeof(ImportStatus));
     status->stop = FALSE;
     status->i = 0;
     status->n = queue->length;
     status->queue = queue;
+    sqlite3_open("mid.db", &status->db);
+    db_init(status->db);
 
     /* Setup progress dialog */
     status->dialog = gtk_message_dialog_new (GTK_WINDOW (window),
@@ -212,7 +213,7 @@ ImportStatus *import_dialog(GtkWindow *window, GQueue *queue)
     g_signal_connect(status->dialog, "response", G_CALLBACK(import_cancel), status);
 
     /* Setup progress bar */
-    content_area = gtk_dialog_get_content_area (GTK_DIALOG (status->dialog));
+    content_area = gtk_dialog_get_content_area(GTK_DIALOG (status->dialog));
     status->progress_bar = GTK_PROGRESS_BAR(gtk_progress_bar_new());
     gtk_progress_bar_set_show_text(status->progress_bar, TRUE);
     gtk_box_pack_start(GTK_BOX(content_area), GTK_WIDGET(status->progress_bar), FALSE, FALSE, 0);
@@ -221,7 +222,6 @@ ImportStatus *import_dialog(GtkWindow *window, GQueue *queue)
 
     /* Update progressbar every 100 ms */
     g_timeout_add(100, progress_dialog_update, status);
-
 
     return status;
 }
@@ -243,11 +243,13 @@ void folder_chooser(GtkWindow *window)
 {
     GtkWidget    *dialog;
     ImportStatus *status;
+
+    char *folder_addr;
+    GQueue *mid_addrs;
+
     gint res;
-    char *folder_addr = NULL;
 
-    GQueue *mid_addrs = NULL;
-
+    /* Setup dialog window */
     dialog = gtk_file_chooser_dialog_new("Pick a Folder",
                                          window,
                                          GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
@@ -257,11 +259,13 @@ void folder_chooser(GtkWindow *window)
                                          GTK_RESPONSE_ACCEPT,
                                          NULL);
 
-
+    /* Run dialog window */
     res = gtk_dialog_run(GTK_DIALOG(dialog));
 
+    /* If folder is chosen */
     if (res == GTK_RESPONSE_ACCEPT) {
 
+        /* Read folder adress from dialog */
         folder_addr = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
         gtk_widget_destroy(dialog);
 
@@ -277,12 +281,8 @@ void folder_chooser(GtkWindow *window)
         /* Setup progress dialog */
         status = import_dialog(window, mid_addrs);
 
-        /* Open db */
-        sqlite3_open("mid.db", &status->db);
-        db_init(status->db);
-
         /* Import mid files */
-        g_thread_new("mid_import", mid_import, status);
+        g_thread_new("mid_import", (GThreadFunc)mid_import, status);
 
 
     } else  {

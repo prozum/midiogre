@@ -67,7 +67,6 @@ mid_t *read_mid(FILE *file)
     return mid;
 }
 
-/** Read tracks */
 int read_tracks(list_t *data, uint16_t division, list_t *tracks)
 {
     track_t *track;
@@ -126,8 +125,7 @@ uint32_t find_start_tempo(uint8_t *data, uint32_t bytes)
 {
     uint32_t tempo = 0;  /**< Tempo */
     uint32_t b = 0;      /**< Current byte offset */
-    uint32_t msg,n;
-    uint32_t i;
+    uint32_t msg,n,i;
 
     /* Skip track signature + number of bytes */
     b += 8;
@@ -184,11 +182,9 @@ uint32_t find_start_tempo(uint8_t *data, uint32_t bytes)
     return SET_TEMPO_DEFAULT;
 }
 
-/** Read events */
-int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *events)
+int read_events(list_t *data, uint16_t division, uint32_t tempo, list_t *events)
 {
     double time_last = 0;
-    uint32_t tempo = start_tempo;
 
     int get_tmp;
     uint32_t tmp;
@@ -240,16 +236,12 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
         /* Read message parameters */
         switch (event->msg) {
 
-            case PITCH_BEND:
-                event->byte_1 = list_get(data);
-                event->byte_2 = list_get(data);
-                break;
-
             /* Messages with two parameters */
             case NOTE_OFF:
             case NOTE_ON:
             case POLY_AFT:
             case CTRL_MODE:
+            case PITCH_BEND:
             case SONG_POS_PTR:
                 event->byte_1 = list_get(data);
                 event->byte_2 = list_get(data);
@@ -304,6 +296,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo,list_t *ev
                 /* Count data length */
                 i = data->i;
                 do {
+
                     byte = list_index(data, i);
                     i++;
 
@@ -387,7 +380,9 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
             data[b] < PITCH_BEND + CHANNELS) {
 
             msg = data[b] - (data[b] % CHANNELS);
+
         } else {
+
             msg = data[b];
         }
 
@@ -531,7 +526,7 @@ mid_t *merge_tracks(mid_t *mid)
 
         case MULTI_TRACK_SYNC:
 
-            /* Untill only one event is left (1 for END_OF_TRACK) */
+            /* Until only one event is left (1 for END_OF_TRACK) */
             while (track_new->events->i < track_new->events->n - 1) {
 
                 /* Find minimum time for current events */
@@ -562,7 +557,8 @@ mid_t *merge_tracks(mid_t *mid)
                     /* Get current event in track */
                     if ((event = track->events->cur) != NULL) {
 
-                        if ( event->time == time_min) {
+                        /* If current event has minimum time */
+                        if (event->time == time_min) {
 
                             /* Copy all events except END_OF_TRACK */
                             if ((event->msg    != META_MSG ||
@@ -621,7 +617,6 @@ mid_t *merge_tracks(mid_t *mid)
 
 void write_mid(FILE *midi_file, mid_t *mid);
 
-/** Deallocate data in mid_t */
 void free_mid(mid_t *mid)
 {
     track_t *track;

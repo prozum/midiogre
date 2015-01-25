@@ -19,7 +19,6 @@ typedef enum {
     LIST_END
 } list_whence_t;
 
-/** Struct */
 typedef struct {
     void *ptr;   /**< Points to first element          */
     void *cur;   /**< Points to current element        */

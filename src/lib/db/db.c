@@ -146,29 +146,28 @@ int db_import_mid(sqlite3 *db, char *mid_addr)
 
     /* Import 3 finger prints */
     f_prns = finger_prn_gen(mid->tracks->ptr);
+
     if (f_prns == NULL) {
         fprintf(stderr,"Could not generate finger print!\n");
         free_mid(mid);
         return -1;
     }
+
     for (i = 0; i < FINGER_PRNS; i++) {
-        finger_prints[i] += f_prns[i].f_prn[0]<<20;
-        finger_prints[i] += f_prns[i].f_prn[1]<<16;
-        finger_prints[i] += f_prns[i].f_prn[2]<<12;
-        finger_prints[i] += f_prns[i].f_prn[3]<<8;
-        finger_prints[i] += f_prns[i].f_prn[4]<<4;
+        finger_prints[i] += f_prns[i].f_prn[0] << 20;
+        finger_prints[i] += f_prns[i].f_prn[1] << 16;
+        finger_prints[i] += f_prns[i].f_prn[2] << 12;
+        finger_prints[i] += f_prns[i].f_prn[3] << 8;
+        finger_prints[i] += f_prns[i].f_prn[4] << 4;
         finger_prints[i] += f_prns[i].f_prn[5];
     }
 
     /* Cleanup */
     free_mid(mid);
-    for (i = 0; i < FINGER_PRNS; i++) {
-        free(f_prns[i].f_prn);
-    }
-    free(f_prns);
+    free_f_prn(f_prns);
 
     /* Generate random play number */
-    plays = g_random_int_range(0,MAX_PLAYS);
+    plays = g_random_int_range(0, MAX_PLAYS);
 
     /* Exec data import */
     tmp = g_strdup(mid_addr);

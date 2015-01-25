@@ -33,8 +33,7 @@ MidiogreApp *midiogre_app_init(void)
     /* Setup window */
     app->window = GTK_WINDOW(gtk_window_new(GTK_WINDOW_TOPLEVEL));
     gtk_window_set_default_size(GTK_WINDOW(app->window), 600, 400);
-    g_signal_connect(app->window, "destroy",
-                      G_CALLBACK(gtk_widget_destroyed), &app->window);
+    g_signal_connect(app->window, "destroy", G_CALLBACK(gtk_widget_destroyed), NULL);
     g_signal_connect(app->window, "key-release-event", G_CALLBACK(key_event), NULL);
     gtk_window_set_icon(app->window,gdk_pixbuf_new_from_resource("/org/prozum/midiogre/midiogre_logo.png",&err));
 
