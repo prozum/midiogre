@@ -192,6 +192,8 @@ gint search_handler(void *s, int argc, char **argv, char **col_name)
 
     song->plays = atoi(argv[6]);
 
+    //song->sort_score = 0;
+
     song->time_added = atoi(argv[7]);
 
     fingerprints[0] = atoi(argv[8]);

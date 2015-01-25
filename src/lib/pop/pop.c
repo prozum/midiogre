@@ -7,14 +7,26 @@
 #include <math.h>
 #include <stdio.h>
 
+#define THIS_IS_THE_MAGIC_NUMBER 18
+
 void song_score_fprnt(song_t *song, song_t *song_fav)
 {
-    song->sort_score = finger_prn_cmp(song->fprns, song_fav->fprns);
+    int edit_dist;
+
+    edit_dist = finger_prn_cmp(song->fprns, song_fav->fprns);
+
+    /* Set sort score to 0 if the song does not meet the required conditions */
+    if (edit_dist > MAX_EDITDIST) {
+        song->sort_score = 0;
+        return;
+    }
+
+    song->sort_score = THIS_IS_THE_MAGIC_NUMBER - edit_dist;
 }
 
 void song_score_best(song_t *song, song_t *song_fav)
 {
-    unsigned int age, play_rating, edit_dist;
+    double age, play_rating, edit_dist;
 
     edit_dist = finger_prn_cmp(song->fprns, song_fav->fprns);
 
@@ -30,7 +42,7 @@ void song_score_best(song_t *song, song_t *song_fav)
 
     play_rating = MAX_PLAYS - song->plays;
 
-    song->sort_score = (play_rating * ((18 - edit_dist) / log2(edit_dist + 1)) / log2((double)age)) / 100;
+    song->sort_score = (play_rating * ((THIS_IS_THE_MAGIC_NUMBER - edit_dist) / log2(edit_dist + 1)) / log2((double)age)) / 100;
 }
 
 void song_score_pop(song_t *song)

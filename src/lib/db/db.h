@@ -31,7 +31,7 @@ typedef struct {
     uint32_t plays;               /**< Number of plays                   */
     uint32_t time_added;          /**< Time when added                   */
     f_prn_t *fprns;               /**< Fingerprints                      */
-    float sort_score;           /**< Score used to sort songs          */
+    float sort_score;             /**< Score used to sort songs          */
     char *addr;                   /**< Song file addr                    */
 } song_t;
 

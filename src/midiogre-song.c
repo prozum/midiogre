@@ -34,7 +34,7 @@ void play_clicked(SongRow *row, GtkButton *button)
 
 #endif
 
-    tmp = g_strdup_printf("%d", ++priv->song->plays);
+    tmp = g_strdup_printf("%.2f %d", priv->song->sort_score,++priv->song->plays);
     gtk_label_set_text(priv->plays_label, tmp);
     g_free(tmp);
 
@@ -139,7 +139,7 @@ void song_row_update(SongRow *row)
     gtk_label_set_text(priv->date_label, tmp);
     g_free(tmp);
 
-    tmp = g_strdup_printf("%d", priv->song->plays);
+    tmp = g_strdup_printf("%.2f %d", priv->song->sort_score, priv->song->plays);
     gtk_label_set_text(priv->plays_label, tmp);
     g_free(tmp);
 }

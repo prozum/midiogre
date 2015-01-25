@@ -35,6 +35,7 @@ int main( int argc, char *argv[] )
 
     i = finger_prn_cmp(finger_prints1, finger_prints2);
 
+    printf("Compare: %d\n", i);
 
     for (i = 0; i < FINGER_PRNS; i++) {
         for (j = 0; j < FINGER_PRN_CMP_LEN; j++) {
@@ -52,7 +53,6 @@ int main( int argc, char *argv[] )
     /*Test skyline*/
     
     /* Cleanup */
-
     for (i = 0; i < FINGER_PRNS; i++) {
         free(finger_prints1[i].f_prn);
         free(finger_prints2[i].f_prn);
