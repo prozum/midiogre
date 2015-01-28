@@ -19,7 +19,7 @@ int extract_instr_classes(mid_t *mid)
             if (event->msg == PRG_CHANGE) {
     
                 /* Find instrument class */
-              instr_class = event->byte_1 /  INSTR_PER_CLASS;
+              instr_class = event->byte_1 / INSTR_PER_CLASS;
                 
               switch (instr_class) {
                   case PIANO:
@@ -76,12 +76,7 @@ int extract_instr_classes(mid_t *mid)
     }
 
     /* Is piano default? */
-    if (bitmap == 0) {
-
-        bitmap = 1;
-    }
-
-    return bitmap;
+    return bitmap ? bitmap : 1;
 }
 
 double extract_time(mid_t *mid)

@@ -345,22 +345,22 @@ typedef enum
  */
 typedef enum
 {
-    PIANO                   = 0x0,
-    CHROMATIC_PERCUSSION    = 0x1,
-    ORGAN                   = 0x2,
-    GUITAR                  = 0x3,
-    BASS                    = 0x4,
-    STRINGS                 = 0x5,
-    ENSEMBLE                = 0x6,
-    BRASS                   = 0x7,
-    REED                    = 0x8,
-    PIPE                    = 0x9,
-    SYNTH_LEAD              = 0xA,
-    SYNTH_PAD               = 0xB,
-    SYNTH_EFFECT            = 0xC,
-    ETHNIC                  = 0xD,
-    PERCUSSION              = 0xE,
-    SOUND_EFFECTS           = 0xF
+    PIANO,
+    CHROMATIC_PERCUSSION,
+    ORGAN,
+    GUITAR,
+    BASS,
+    STRINGS,
+    ENSEMBLE,
+    BRASS,
+    REED,
+    PIPE,
+    SYNTH_LEAD,
+    SYNTH_PAD ,
+    SYNTH_EFFECT,
+    ETHNIC,
+    PERCUSSION,
+    SOUND_EFFECTS
 } instr_class_t;
 
 /** event_t - Struct containing midi events */
