@@ -36,7 +36,7 @@ void song_score_best(song_t *song, song_t *song_fav)
         return;
     }
 
-    if ((age = time(NULL) - song->time_added) == 0) {
+    if ((age = time(NULL) - song->time_added) <= 1) {
         age = 2;
     }
 
