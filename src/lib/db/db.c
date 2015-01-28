@@ -214,15 +214,25 @@ int check_sql(const char *sql)
 }
 
 /** Parse file name for song data */
-void parse_filename (char *file_name, char *artist, char *album, unsigned *num, char *title)
+void parse_filename(char *file_name, char *artist, char *album, unsigned *num, char *title)
 {
     char *file_pnt;
+    char *c;
 
     /* Removes file path */
     file_pnt = basename(file_name);
 
     /* Removes file extension from last string */
     file_pnt[strlen(file_pnt)-4] = '\0';
+
+    /* Convert '_' tp ' ' */
+    for (c = file_pnt; *c != '\0'; ++c) {
+
+        if (*c == '_') {
+
+            *c = ' ';
+        }
+    }
 
     if (4 != sscanf(file_pnt, "%[^-]- %[^-]- %u- %[^.]",
                     artist,
@@ -231,10 +241,12 @@ void parse_filename (char *file_name, char *artist, char *album, unsigned *num, 
                     title)) {
 
         strcpy(title, file_pnt);
-        strcpy(artist, "N/A");
-        strcpy(album, "N/A");
+        strcpy(artist, "Unknown Artist");
+        strcpy(album, "Unknown Album");
         *num = 0;
+
     }
+
 }
 
 void db_increment_plays(uint32_t id)
