@@ -491,7 +491,7 @@ uint8_t finger_prn_cmp(f_prn_t *f_prn1, f_prn_t *f_prn2)
         dist_best = dist_tmp;
     }
 
-    return dist_best ? 1 : dist_best;
+    return dist_best ? dist_best : 1;
 }
 
 uint8_t edit_dist(uint8_t *f_prn1, uint8_t *f_prn2)

@@ -15,6 +15,8 @@ void song_score_fprnt(song_t *song, song_t *song_fav)
 
     edit_dist = finger_prn_cmp(song->fprns, song_fav->fprns);
 
+    printf("%u - ",edit_dist);
+
     /* Set sort score to 0 if the song does not meet the required conditions */
     if (edit_dist > MAX_EDITDIST) {
         song->sort_score = 0;

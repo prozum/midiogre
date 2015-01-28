@@ -211,7 +211,7 @@ int read_events(list_t *data, uint16_t division, uint32_t tempo, list_t *events)
         };
         event->delta += tmp;
 
-        /* Calc total ticks */
+        /* Calc total ms */
         event->time = time_last + event->delta * (tempo/division)/1000;
         time_last = event->time;
 
@@ -386,7 +386,7 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
             msg = data[b];
         }
 
-        /* Skib message byte */
+        /* Skip message byte */
         b++;
 
         switch (msg) {
@@ -403,8 +403,8 @@ uint32_t count_events(uint8_t *data, uint32_t bytes)
             
             /* Meta message */
             case META_MSG:
-                b++;          /* Skib to length */
-                b += data[b]; /* Skib length    */
+                b++;          /* Skip to length */
+                b += data[b]; /* Skip length    */
                 b++;
                 break;
 
