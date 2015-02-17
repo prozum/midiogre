@@ -33,8 +33,16 @@ if(MAIN)
     install(TARGETS midiogre
             RUNTIME DESTINATION bin)
 
+    # Windows hack to fix schemas (No GSettings schemas are installed on the system)
+    if(MINGW)
+        file(COPY ${CMAKE_SOURCE_DIR}/res/gschemas.compiled
+             DESTINATION share/glib-2.0/schemas/)
+        install(FILES ${CMAKE_SOURCE_DIR}/res/gschemas.compiled
+                DESTINATION share/glib-2.0/schemas/)
+    endif(MINGW)
+
     # TODO: Desktop file
-    #install (FILES ${CMAKE_SOURCE_DIR}/res/midiogre.desktop
-    #         DESTINATION share/midiogre)
+    #install(FILES ${CMAKE_SOURCE_DIR}/res/midiogre.desktop
+    #        DESTINATION share/midiogre)
 
 endif(MAIN)

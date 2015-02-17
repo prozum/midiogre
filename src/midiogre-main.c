@@ -5,6 +5,11 @@
 
 int main(int argc, char *argv[])
 {
+    /* Windows hack to fix schemas (No GSettings schemas are installed on the system) */
+#ifdef WIN32
+    g_setenv("GSETTINGS_SCHEMA_DIR", "share/glib-2.0/schemas/", TRUE);
+#endif
+
     /* Init gtk */
     gtk_init(&argc, &argv);
 
