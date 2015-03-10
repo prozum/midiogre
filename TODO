@@ -1,1 +1,3 @@
-Fix xfs support
+1. Fix xfs support
+2. Make proper class for midiogre app
+3. Fix widget composition (Etc. Songboxes)
