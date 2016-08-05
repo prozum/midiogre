@@ -3,7 +3,7 @@
 
 midiogre
 ========
-A MIDI music recommendation program written in C/GTK+
+MIDI music recommendation program written in C/GTK+
 
 Dependencies
 --------------------
