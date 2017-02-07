@@ -241,7 +241,7 @@ gboolean import_cancel(GtkDialog *dialog, gint *id, ImportStatus *status)
 
 void folder_chooser(GtkWindow *window)
 {
-    GtkWidget    *dialog;
+    GtkFileChooserNative *dialog;
     ImportStatus *status;
 
     char *folder_addr;
@@ -250,17 +250,14 @@ void folder_chooser(GtkWindow *window)
     gint res;
 
     /* Setup dialog window */
-    dialog = gtk_file_chooser_dialog_new("Pick a Folder",
+    dialog = gtk_file_chooser_native_new("Pick a Folder",
                                          window,
                                          GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-                                         ("_Cancel"),
-                                         GTK_RESPONSE_CANCEL,
-                                         ("_Open"),
-                                         GTK_RESPONSE_ACCEPT,
-                                         NULL);
+                                         "_Open",
+                                         "_Cancel");
 
     /* Run dialog window */
-    res = gtk_dialog_run(GTK_DIALOG(dialog));
+    res = gtk_native_dialog_run(dialog);
 
     /* If folder is chosen */
     if (res == GTK_RESPONSE_ACCEPT) {
