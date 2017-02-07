@@ -20,7 +20,6 @@ void mid_import(ImportStatus *status)
     char *mid_addr;
 
     while ((mid_addr = g_queue_pop_head(status->queue))) {
-
         g_print("Import mid: %s\n", mid_addr);
 
         /* Clever function to handle mid file here! */
@@ -44,6 +43,10 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
     DWORD error;
 
     char *tmp, *folder_addr_fixed;
+
+    if (folder_addr == NULL) {
+       return -1;
+    }
 
     folder_addr_fixed = g_strdup_printf("%s\\*", folder_addr);
 
@@ -105,8 +108,7 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
     char *tmp;
 
     /* Open dir */
-    if ((directory = opendir(folder_addr)) == NULL) {
-
+    if (folder_addr == NULL || (directory = opendir(folder_addr)) == NULL) {
        return -1;
     }
 
@@ -115,10 +117,8 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
 
         /* Don't try to open hidden or previous files/folders */
         if (file->d_name[0] != '.') {
-
             /* If folder */
             if (file->d_type == DT_DIR) {
-
                 tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
                 g_print("unix: next folder: %s\n", tmp);
 
@@ -130,7 +130,6 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
             /* If file with ".mid" extention */
             } else if (g_ascii_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".mid") == 0 ||
                        g_ascii_strcasecmp(file->d_name + strlen(file->d_name) - 4, ".kar") == 0) {
-
                 tmp = g_strdup_printf("%s/%s", folder_addr, file->d_name);
 
                 /* Add address to mid_addr */
@@ -141,7 +140,6 @@ int folder_handler(char* folder_addr, GQueue *mid_addrs)
     }
 
     if (closedir(directory) < 0) {
-
         return -1;
     }
 
@@ -160,7 +158,6 @@ gboolean progress_dialog_update(gpointer s)
 
     /* Update progress bar */
     if (status->n != 0) {
-
         frac = (float)status->i / (float)status->n;
         gtk_progress_bar_set_fraction(status->progress_bar, frac);
 
@@ -232,7 +229,6 @@ gboolean import_cancel(GtkDialog *dialog, gint *id, ImportStatus *status)
 
     /* Stop import progress */
     while ((addr = g_queue_pop_tail(status->queue)) != NULL) {
-
         g_free(addr);
     }
 
@@ -257,35 +253,29 @@ void folder_chooser(GtkWindow *window)
                                          "_Cancel");
 
     /* Run dialog window */
-    res = gtk_native_dialog_run(dialog);
+    res = gtk_native_dialog_run(GTK_NATIVE_DIALOG(dialog));
 
-    /* If folder is chosen */
-    if (res == GTK_RESPONSE_ACCEPT) {
-
-        /* Read folder adress from dialog */
-        folder_addr = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        gtk_widget_destroy(dialog);
-
-        g_print("dialog: folder: %s\n",folder_addr);
-
-        /* Create list to store mid files adresses */
-        mid_addrs = g_queue_new();
-
-        /* Find mid files in folder_addr */
-        folder_handler(folder_addr, mid_addrs);
-        g_free(folder_addr);
-
-        /* Setup progress dialog */
-        status = import_dialog(window, mid_addrs);
-
-        /* Import mid files */
-        g_thread_new("mid_import", (GThreadFunc)mid_import, status);
-
-
-    } else  {
-      
-        gtk_widget_destroy(dialog);
-
+    /* If folder is not chosen */
+    if (res != GTK_RESPONSE_ACCEPT) {
+        g_object_unref(dialog);
     }
 
+    /* Read folder adress from dialog */
+    folder_addr = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    g_object_unref(dialog);
+
+    g_print("dialog: folder: %s\n", folder_addr);
+
+    /* Create list to store mid files adresses */
+    mid_addrs = g_queue_new();
+
+    /* Find mid files in folder_addr */
+    folder_handler(folder_addr, mid_addrs);
+    g_free(folder_addr);
+
+    /* Setup progress dialog */
+    status = import_dialog(window, mid_addrs);
+
+    /* Import mid files */
+    g_thread_new("mid_import", (GThreadFunc)mid_import, status);
 }
