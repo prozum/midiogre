@@ -6,8 +6,8 @@ if(MAIN)
 
     # Setup ressource generation
     add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/midiogre-res.c
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            COMMAND ${GLIB_COMPILE_RESOURCES} --generate-source --target=midiogre-res.c midiogre.gresource.xml)
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/res
+            COMMAND ${GLIB_COMPILE_RESOURCES} --generate-source --target=${CMAKE_CURRENT_SOURCE_DIR}/midiogre-res.c ${PROJECT_SOURCE_DIR}/res/midiogre.gresource.xml)
 
     # Compile
     add_executable(midiogre
