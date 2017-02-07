@@ -29,5 +29,9 @@
 *.hex
 
 .*
-
 !/.gitignore
+
+
+*.res.c
+cmake*
+build
