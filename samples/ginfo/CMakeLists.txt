@@ -1,7 +1,7 @@
 # Convert resources to c
-add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/ginfo-res.c
+add_custom_command(OUTPUT ginfo-res.c
                   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                  COMMAND ${GLIB_COMPILE_RESOURCES} --generate-source --target=ginfo-res.c ginfo.gresource.xml)
+                  COMMAND ${GLIB_COMPILE_RESOURCES} --generate-source --target=${CMAKE_CURRENT_BINARY_DIR}/ginfo-res.c ginfo.gresource.xml)
 
 # Compile
 add_executable(ginfo
