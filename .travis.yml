@@ -7,7 +7,7 @@ compiler:
 before_install:
   - sudo sed -i "s/precise/xenial/g" /etc/apt/sources.list
   - sudo apt-get -qq update
-  - sudo apt-get -qq --no-install-recommends install gcc meson pkg-config doxygen libgtk-3-dev libexpat1-dev
+  - sudo apt-get -qq -o Dpkg::Options::="--force-overwrite" --no-install-recommends install gcc meson pkg-config doxygen libgtk-3-dev libexpat1-dev
   - #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
   - # DEBUG:
   - pwd
