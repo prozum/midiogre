@@ -2,7 +2,7 @@ subdir('lib')
 
 if main_enabled
   midiogre_res = gnome.compile_resources('midiogre-res', 'midiogre.gresource.xml', 
-                                         source_dir: '..')
+                                         source_dir: join_paths(meson.source_root(), 'res'))
   midiogre_exe = executable('midiogre', 
                             'midiogre-main.c', 'midiogre-app.c', 'midiogre-import.c', 
                             'midiogre-song.c', 'midiogre-search.c', midiogre_res, 

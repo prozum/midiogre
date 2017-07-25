@@ -43,10 +43,9 @@ MidiogreApp *midiogre_app_init(void)
     gtk_header_bar_set_title (GTK_HEADER_BAR(header), "Midiogre");
     gtk_window_set_titlebar(app->window, header);
 
-#if GTK_MINOR_VERSION >= 12
     /* Setup close button */
     button = gtk_button_new();
-    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/window-close-symbolic.symbolic.png"));
+    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/icons/window-close-symbolic.symbolic.png"));
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
     g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_main_quit), app->window);
 
@@ -58,28 +57,9 @@ MidiogreApp *midiogre_app_init(void)
 
     /* Setup folder button */
     button = gtk_button_new();
-    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/document-open-symbolic.symbolic.png"));
+    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/icons/document-open-symbolic.symbolic.png"));
     gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
     g_signal_connect_swapped(button, "clicked", G_CALLBACK(folder_chooser), app->window);
-#else
-    /* Setup folder button */
-    button = gtk_button_new();
-    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/document-open-symbolic.symbolic.png"));
-    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
-    g_signal_connect_swapped(button, "clicked", G_CALLBACK(folder_chooser), app->window);
-
-
-    /* Add seperator */
-    separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
-    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), separator);
-
-
-    /* Setup close button */
-    button = gtk_button_new();
-    gtk_container_add (GTK_CONTAINER(button), gtk_image_new_from_resource("/org/prozum/midiogre/window-close-symbolic.symbolic.png"));
-    gtk_header_bar_pack_end(GTK_HEADER_BAR(header), button);
-    g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_widget_destroy), app->window);
-#endif
 
     /* Global horizontal box */
     app->win_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0));

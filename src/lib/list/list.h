@@ -1,4 +1,4 @@
-/** @list.h contains functions used to manipulate lists */
+/** @file list.h contains functions used to manipulate lists */
 
 #ifndef _LIST_H_
 #define _LIST_H_

@@ -21,9 +21,8 @@ void play_clicked(SongRow *row, GtkButton *button)
     SongRowPrivate *priv = row->priv;
 
 #ifdef WIN32
-	spawnl( P_NOWAIT, "C:/Program Files/Windows Media Player/wmplayer.exe",
-    	"wmplayer.exe", priv->song->addr, NULL );
-	
+    spawnl(P_NOWAIT, "C:/Program Files/Windows Media Player/wmplayer.exe",
+           "wmplayer.exe", priv->song->addr, NULL);
 #else
 
     tmp = g_strdup_printf("file://%s",priv->song->addr);
