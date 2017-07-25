@@ -1,0 +1,6 @@
+subdir('list')
+subdir('mid')
+subdir('analyze')
+subdir('pop')
+subdir('ext')
+subdir('db')

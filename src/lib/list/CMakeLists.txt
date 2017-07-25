@@ -1,2 +1,0 @@
-add_library(list
-	    list.c)

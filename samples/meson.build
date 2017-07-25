@@ -1,0 +1,7 @@
+subdir('list-test')
+subdir('ext-test')
+subdir('analyze-test')
+subdir('pop-test')
+subdir('info')
+subdir('db-test')
+subdir('ginfo')

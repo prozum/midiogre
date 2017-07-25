@@ -416,7 +416,7 @@ int read_events(list_t *data, uint16_t division, uint32_t start_tempo, list_t *e
  */
 uint32_t find_start_tempo(uint8_t *data, uint32_t bytes);
 
-/** count_events - Counts ammount of events
+/** count_events - Counts amount of events
  * @param data: List of bytes in mid file at current position
  * @param bytes: Event count
  */

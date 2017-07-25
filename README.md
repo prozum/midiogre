@@ -5,13 +5,13 @@ midiogre
 ========
 MIDI music recommendation program written in C/GTK+
 
-Dependencies
+Dependencies (Tested with)
 --------------------
-- CMake		≥ 2.8
-- pkg-config	≥ 0.26
+- Meson		≥ 0.41.0
+- pkg-config	≥ 1.3.0
 - Doxygen	≥ 1.8
 - GTK+		≥ 3.10
-- SQLite 3  ≥ 3.8.7.4
+- SQLite 3  ≥ 3.19.0
 
 Compile Instructions
 --------------------
