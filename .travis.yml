@@ -1,15 +1,11 @@
 language: c
-
-compiler:
-  - gcc
-  - clang
+sudo: required
+services:
+  - docker
 
 before_install:
-  - sudo sed -i "s/precise/xenial/g" /etc/apt/sources.list
-  - sudo apt-get -qq update
-  - sudo apt-get -qq -o Dpkg::Options::="--force-overwrite" --no-install-recommends dpkg
-  - sudo apt-get -qq -o Dpkg::Options::="--force-overwrite" --no-install-recommends install gcc meson pkg-config doxygen libgtk-3-dev libexpat1-dev
-  - #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
+  - docker pull carlad/sinatra
+  - sudo dnf install gcc meson pkg-config doxygen libgtk-3-dev libexpat1-dev
   - # DEBUG:
   - pwd
   - gcc --version
@@ -23,8 +19,7 @@ install:
   - ninja -C build
 
 script:
-  - make -j 8
-  - sudo make install
+  - sudo ninja -C build install
   - # TEST:
   - /usr/local/bin/info ~/build/prozum/midiogre/res/mid/test.mid
   - /usr/local/bin/analyze-test ~/build/prozum/midiogre/res/mid/bass.mid ~/build/prozum/midiogre/res/mid/bass.mid
