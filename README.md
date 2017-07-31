@@ -15,26 +15,25 @@ Dependencies (Tested with)
 
 Compile Instructions
 --------------------
-Midiogre uses CMake as the build system.
+Midiogre uses Meson as the build system.
 
-Here is a description of Midiogres CMake arguments:
+Here is a description of Midiogres Meson options:
 
-CMake Argument  | Default Value | Meaning
+Meson Option    | Default Value | Meaning
 -------------   | ------------- | -------------
--DMAIN          |       0       | Build Midiogre
--DDEBUG         |       1       | Build in Debug Mode
--DSAMPLES       |       1       | Build Samples
--DDOC           |       1       | Build Documentation
+main            | true          | Build Midiogre app
+samples         | true          | Build Samples
+doc             | true          | Build Documentation
 
 ### Compile Example
-So to install Midiogre to */home/user/midiogre* without including the samples you could do the following:
+Install Midiogre to */home/user/midiogre* without the samples:
 
 ```bash
 git clone git@github.com:prozum/midiogre.git 
-mkdir midiogre-build && cd midiogre-build
-cmake ../midiogre -DMAIN=1 -DSAMPLES=0 \
-	-DCMAKE_INSTALL_PREFIX=/home/user/midiogre
-make install
+mkdir build
+meson -Dsamples=false \
+	-Dprefix=/home/$user/midiogre
+ninja install
 ```
 
 CodingStyle
