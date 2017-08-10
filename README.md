@@ -24,6 +24,7 @@ Meson Option    | Default Value | Meaning
 main            | true          | Build Midiogre app
 samples         | true          | Build Samples
 doc             | true          | Build Documentation
+test            | true          | Build Test
 
 ### Compile Example
 Install Midiogre to */home/user/midiogre* without the samples:
