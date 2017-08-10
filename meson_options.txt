@@ -1,3 +1,4 @@
 option('main', type: 'boolean', value: 'true', description: 'Build Midiogre')
 option('samples', type: 'boolean', value: 'true', description: 'Build Samples')
 option('doc', type: 'boolean', value: 'true', description: 'Build Documentation')
+option('test', type: 'boolean', value: 'true', description: 'Build Test')

@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     /* Print mid data */
     while ((byte = list_get(sliced_data)) != EOL) {
 
-	    printf("%02x ", byte);
+        printf("%02x ", byte);
 
         if (++i % BYTES_PER_LINE == 0) {
             putchar('\n');

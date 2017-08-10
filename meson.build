@@ -7,6 +7,7 @@ main_enabled = get_option('main')
 debug_enabled = get_option('debug')
 samples_enabled = get_option('samples')
 doc_enabled = get_option('doc')
+test_enabled = get_option('test')
 
 # Include dirs
 incdir = include_directories('src/lib')
@@ -27,4 +28,8 @@ endif
 
 if doc_enabled
   subdir('doc')
+endif
+
+if test_enabled
+  subdir('test')
 endif
